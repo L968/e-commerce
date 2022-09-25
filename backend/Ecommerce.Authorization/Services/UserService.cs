@@ -41,7 +41,7 @@ namespace Ecommerce.Authorization.Services
             return Result.Ok();
         }
 
-        public async Task<Result> UpdatePhoneNumber(int userId, string phoneNumber)
+        public Result UpdatePhoneNumber(int userId, string phoneNumber)
         {
             if (string.IsNullOrWhiteSpace(phoneNumber)) return Result.Fail("Phone number is required");
 
@@ -51,18 +51,18 @@ namespace Ecommerce.Authorization.Services
             var identityUser = _userManager.Users.FirstOrDefault(user => user.Id == userId);
             if (identityUser == null) return Result.Fail("Error in updating phone number");
 
-            string confirmationToken = await _userManager.GenerateChangePhoneNumberTokenAsync(identityUser, phoneNumber);
+            string confirmationToken = _userManager.GenerateChangePhoneNumberTokenAsync(identityUser, phoneNumber).Result;
             _smsService.SendPhoneNumberConfirmationSms(phoneNumber, confirmationToken);
 
             return Result.Ok();
         }
 
-        public async Task<Result> ConfirmPhoneNumber(int userId, string phoneNumber, string confirmationToken)
+        public Result ConfirmPhoneNumber(int userId, string phoneNumber, string confirmationToken)
         {
             var identityUser = _userManager.Users.FirstOrDefault(user => user.Id == userId);
             if (identityUser == null) return Result.Fail("Error in confirming phone number");
 
-            var result = await _userManager.ChangePhoneNumberAsync(identityUser, phoneNumber, confirmationToken);
+            var result = _userManager.ChangePhoneNumberAsync(identityUser, phoneNumber, confirmationToken).Result;
 
             if (!result.Succeeded) return Result.Fail(result.Errors.FirstOrDefault()!.Code);
 

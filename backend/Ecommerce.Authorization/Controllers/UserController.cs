@@ -25,10 +25,10 @@ namespace Ecommerce.Authorization.Controllers
 
         [Authorize(Roles = "regular")]
         [HttpPatch("phoneNumber/{phoneNumber}")]
-        public async Task<IActionResult> UpdatePhoneNumber(string phoneNumber)
+        public IActionResult UpdatePhoneNumber(string phoneNumber)
         {
             int userId = int.Parse(User.FindFirst("id")!.Value);
-            Result result = await _userService.UpdatePhoneNumber(userId, phoneNumber);
+            Result result = _userService.UpdatePhoneNumber(userId, phoneNumber);
 
             if (result.IsFailed) return BadRequest(result.Reasons[0]);
 
@@ -37,10 +37,10 @@ namespace Ecommerce.Authorization.Controllers
 
         [Authorize(Roles = "regular")]
         [HttpPost("phoneNumber/confirm")]
-        public async Task<IActionResult> ConfirmPhoneNumber([Required] string phoneNumber, [Required] string confirmationToken)
+        public IActionResult ConfirmPhoneNumber([Required] string phoneNumber, [Required] string confirmationToken)
         {
             int userId = int.Parse(User.FindFirst("id")!.Value);
-            Result result = await _userService.ConfirmPhoneNumber(userId, phoneNumber, confirmationToken);
+            Result result = _userService.ConfirmPhoneNumber(userId, phoneNumber, confirmationToken);
 
             if (result.IsFailed) return BadRequest(result.Reasons[0]);
 
