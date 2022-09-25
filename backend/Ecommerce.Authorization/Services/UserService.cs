@@ -57,6 +57,19 @@ namespace Ecommerce.Authorization.Services
             return Result.Ok();
         }
 
+        public Result UpdateTwoFactorAuthentication(int userId, bool twoFactorEnabled)
+        {
+            var identityUser = _userManager.Users.FirstOrDefault(user => user.Id == userId);
+            if (identityUser == null) return Result.Fail("Error in updating two factor authentication");
+
+            if (twoFactorEnabled && !identityUser.PhoneNumberConfirmed) return Result.Fail("You must have a confirmed phone number in order to activate two factor authentication");
+
+            identityUser.TwoFactorEnabled = twoFactorEnabled;
+            var result = _userManager.UpdateAsync(identityUser).Result;
+
+            return Result.Ok();
+        }
+
         public Result ConfirmPhoneNumber(int userId, string phoneNumber, string confirmationToken)
         {
             var identityUser = _userManager.Users.FirstOrDefault(user => user.Id == userId);

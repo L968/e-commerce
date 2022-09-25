@@ -47,6 +47,18 @@ namespace Ecommerce.Authorization.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "regular")]
+        [HttpPatch("twoFactorEnabled/{twoFactorEnabled}")]
+        public IActionResult UpdateTwoFactorAuthentication(bool twoFactorEnabled)
+        {
+            int userId = int.Parse(User.FindFirst("id")!.Value);
+            Result result = _userService.UpdateTwoFactorAuthentication(userId, twoFactorEnabled);
+
+            if (result.IsFailed) return BadRequest(result.Reasons[0]);
+
+            return NoContent();
+        }
+
         [HttpGet("activate")]
         public IActionResult Activate([FromQuery] ActivateUserRequest activateUserRequest)
         {
