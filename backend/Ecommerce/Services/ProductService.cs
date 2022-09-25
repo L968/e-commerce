@@ -43,6 +43,10 @@ namespace Ecommerce.Services
                 Sku = productDto.Sku,
                 Price = productDto.Price,
                 Active = productDto.Active,
+                Visible = productDto.Visible,
+                Length = productDto.Length,
+                Width = productDto.Width,
+                Height = productDto.Height,
                 Weight = productDto.Weight,
                 ProductCategoryId = productDto.ProductCategoryId,
             };
@@ -76,9 +80,14 @@ namespace Ecommerce.Services
             product.Name = productDto.Name;
             product.Description = productDto.Description;
             product.Sku = productDto.Sku;
+            product.Price = productDto.Price;
+            product.Active = productDto.Active;
+            product.Visible = productDto.Visible;
+            product.Length = productDto.Length;
+            product.Width = productDto.Width;
+            product.Height = productDto.Height;
             product.Weight = productDto.Weight;
             product.ProductCategoryId = productDto.ProductCategoryId;
-            product.Price = productDto.Price;
 
             _context.SaveChanges();
             return Result.Ok();

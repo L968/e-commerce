@@ -1,4 +1,4 @@
-﻿namespace Authorization.Data.DTO
+﻿namespace Ecommerce.Authorization.Data.DTO
 {
     public class CreateUserDto
     {

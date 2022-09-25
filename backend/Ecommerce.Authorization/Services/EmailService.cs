@@ -1,7 +1,7 @@
 ﻿using MimeKit;
 using MailKit.Net.Smtp;
 
-namespace Authorization.Services
+namespace Ecommerce.Authorization.Services
 {
     public class EmailService
     {
@@ -12,7 +12,7 @@ namespace Authorization.Services
             _configuration = configuration;
         }
 
-        public void SendEmailConfirmationEmail(string to, int userId, string confirmationCode)
+        public void SendEmailConfirmationEmail(string to, int userId, string confirmationToken)
         {
             var mailboxAdressess = new List<MailboxAddress> { new MailboxAddress("", to) };
 
@@ -22,7 +22,7 @@ namespace Authorization.Services
             emailMessage.Subject = "Verify your new Ecommerce account";
             emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Text)
             {
-                Text = $"To verify your email address, please use the following link: \n\nhttps://localhost:7283/activate?id={userId}&confirmationCode={confirmationCode}"
+                Text = $"To verify your email address, please use the following link: \n\nhttps://localhost:7283/user/activate?id={userId}&confirmationCode={confirmationToken}"
             };
 
             Send(emailMessage);

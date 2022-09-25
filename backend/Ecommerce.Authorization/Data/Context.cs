@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
-namespace Authorization.Data
+namespace Ecommerce.Authorization.Data
 {
     public class Context : IdentityDbContext<CustomIdentityUser, IdentityRole<int>, int>
     {

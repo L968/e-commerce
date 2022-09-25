@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Authorization.Migrations
+namespace Ecommerce.Authorization.Migrations
 {
     public partial class initial : Migration
     {

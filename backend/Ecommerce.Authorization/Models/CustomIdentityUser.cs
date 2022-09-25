@@ -1,4 +1,4 @@
-﻿namespace Authorization.Models
+﻿namespace Ecommerce.Authorization.Models
 {
     public class CustomIdentityUser : IdentityUser<int>
     {

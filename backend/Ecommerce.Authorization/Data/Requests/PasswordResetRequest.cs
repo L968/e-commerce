@@ -1,4 +1,4 @@
-﻿namespace Authorization.Data.Requests
+﻿namespace Ecommerce.Authorization.Data.Requests
 {
     public class PasswordResetRequest
     {

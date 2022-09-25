@@ -1,4 +1,6 @@
-﻿namespace Authorization.Controllers
+﻿using Ecommerce.Authorization.Data.Requests;
+
+namespace Ecommerce.Authorization.Controllers
 {
     [ApiController]
     [Route("[controller]")]

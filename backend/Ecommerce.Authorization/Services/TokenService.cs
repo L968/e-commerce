@@ -3,7 +3,7 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 
-namespace Authorization.Services
+namespace Ecommerce.Authorization.Services
 {
     public class TokenService
     {

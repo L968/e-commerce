@@ -26,6 +26,18 @@
 
         [Required]
         [Range(0, float.MaxValue, ErrorMessage = "Only positive numbers allowed")]
+        public float? Length { get; set; }
+
+        [Required]
+        [Range(0, float.MaxValue, ErrorMessage = "Only positive numbers allowed")]
+        public float? Width { get; set; }
+
+        [Required]
+        [Range(0, float.MaxValue, ErrorMessage = "Only positive numbers allowed")]
+        public float? Height { get; set; }
+
+        [Required]
+        [Range(0, float.MaxValue, ErrorMessage = "Only positive numbers allowed")]
         public float? Weight { get; set; }
 
         [Required]

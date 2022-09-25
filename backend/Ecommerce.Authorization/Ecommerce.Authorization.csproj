@@ -9,29 +9,31 @@
 
   <ItemGroup>
 	<Using Include="FluentResults" />
-	<Using Include="Authorization.Models" />
-	<Using Include="Authorization.Data.DTO" />
-	<Using Include="Authorization.Services" />
 	<Using Include="Microsoft.AspNetCore.Mvc" />
-	<Using Include="Authorization.Data.Requests" />
 	<Using Include="Microsoft.AspNetCore.Identity" />
 	<Using Include="Microsoft.EntityFrameworkCore" />
+	<Using Include="Ecommerce.Authorization.Models" />
+	<Using Include="Ecommerce.Authorization.Data.DTO" />
+	<Using Include="Ecommerce.Authorization.Services" />
+	<Using Include="Ecommerce.Authorization.Data.Requests" />
 	<Using Include="System.ComponentModel.DataAnnotations" />
 	<PackageReference Include="EFCore.NamingConventions" Version="6.0.0" />
 	<PackageReference Include="FluentResults" Version="3.7.0" />
-	<PackageReference Include="MailKit" Version="3.3.0" />
+	<PackageReference Include="MailKit" Version="3.4.1" />
+	<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.9" />
 	<PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
-	<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.6" />
-	<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.6" />
-	<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.6">
+	<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.9" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.9" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.9">
 	  <PrivateAssets>all</PrivateAssets>
 	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
-	<PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="6.0.6" />
-	<PackageReference Include="MimeKit" Version="3.3.0" />
-	<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.1" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.19.0" />
+	<PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="6.0.9" />
+	<PackageReference Include="MimeKit" Version="3.4.1" />
+	<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.23.1" />
+    <PackageReference Include="Twilio" Version="5.80.0" />
   </ItemGroup>
 
   <ItemGroup>

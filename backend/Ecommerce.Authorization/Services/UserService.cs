@@ -1,17 +1,19 @@
 ﻿using System.Web;
 using System.Transactions;
 
-namespace Authorization.Services
+namespace Ecommerce.Authorization.Services
 {
     public class UserService
     {
         private readonly UserManager<CustomIdentityUser> _userManager;
         private readonly EmailService _emailService;
+        private readonly SmsService _smsService;
 
-        public UserService(UserManager<CustomIdentityUser> userManager, EmailService emailService)
+        public UserService(UserManager<CustomIdentityUser> userManager, EmailService emailService, SmsService smsService)
         {
             _userManager = userManager;
             _emailService = emailService;
+            _smsService = smsService;
         }
 
         public Result CreateUser(CreateUserDto createUserDto)
@@ -22,7 +24,7 @@ namespace Authorization.Services
             {
                 UserName = createUserDto.Email!,
                 Name = createUserDto.Name!,
-                Email = createUserDto.Email!,
+                Email = createUserDto.Email!
             };
 
             var identityResult = _userManager.CreateAsync(identityUser, createUserDto.Password).Result;
@@ -31,24 +33,48 @@ namespace Authorization.Services
 
             _userManager.AddToRoleAsync(identityUser, "regular");
 
-            string confirmationCode = _userManager.GenerateEmailConfirmationTokenAsync(identityUser).Result;
-            string encodedCode = HttpUtility.UrlEncode(confirmationCode);
-            _emailService.SendEmailConfirmationEmail(identityUser.Email, identityUser.Id, encodedCode);
+            string confirmationToken = _userManager.GenerateEmailConfirmationTokenAsync(identityUser).Result;
+            string encodedToken = HttpUtility.UrlEncode(confirmationToken);
+            _emailService.SendEmailConfirmationEmail(identityUser.Email, identityUser.Id, encodedToken);
 
             transaction.Complete();
             return Result.Ok();
         }
 
+        public async Task<Result> UpdatePhoneNumber(int userId, string phoneNumber)
+        {
+            if (string.IsNullOrWhiteSpace(phoneNumber)) return Result.Fail("Phone number is required");
+
+            bool IsPhoneAlreadyRegistered = _userManager.Users.Any(user => user.PhoneNumber == phoneNumber);
+            if (IsPhoneAlreadyRegistered) return Result.Fail("Phone number is already taken");
+
+            var identityUser = _userManager.Users.FirstOrDefault(user => user.Id == userId);
+            if (identityUser == null) return Result.Fail("Error in updating phone number");
+
+            string confirmationToken = await _userManager.GenerateChangePhoneNumberTokenAsync(identityUser, phoneNumber);
+            _smsService.SendPhoneNumberConfirmationSms(phoneNumber, confirmationToken);
+
+            return Result.Ok();
+        }
+
+        public async Task<Result> ConfirmPhoneNumber(int userId, string phoneNumber, string confirmationToken)
+        {
+            var identityUser = _userManager.Users.FirstOrDefault(user => user.Id == userId);
+            if (identityUser == null) return Result.Fail("Error in confirming phone number");
+
+            var result = await _userManager.ChangePhoneNumberAsync(identityUser, phoneNumber, confirmationToken);
+
+            if (!result.Succeeded) return Result.Fail(result.Errors.FirstOrDefault()!.Code);
+
+            return Result.Ok();
+        }
+
         public Result ActivateUser(ActivateUserRequest activateUserRequest)
         {
-            var identityUser = _userManager
-                .Users
-                .FirstOrDefault(user => user.Id == activateUserRequest.Id);
-
+            var identityUser = _userManager.Users.FirstOrDefault(user => user.Id == activateUserRequest.Id);
             if (identityUser == null) return Result.Fail("Error in activating user");
 
             var identityResult = _userManager.ConfirmEmailAsync(identityUser, activateUserRequest.ConfirmationCode).Result;
-
             if (!identityResult.Succeeded) return Result.Fail("Error in activating user");
 
             return Result.Ok();

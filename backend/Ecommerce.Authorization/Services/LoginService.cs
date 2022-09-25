@@ -1,4 +1,6 @@
-﻿namespace Authorization.Services
+﻿using Ecommerce.Authorization.Data.Requests;
+
+namespace Ecommerce.Authorization.Services
 {
     public class LoginService
     {
@@ -19,6 +21,7 @@
 
             if (identityUser == null) return Result.Fail("Your login credentials don't match an account in our system");
 
+            // CheckPasswordSignInAsync
             var signInResult = _signInManager.PasswordSignInAsync(identityUser.UserName, loginRequest.Password, false, true).Result;
 
             if (!signInResult.Succeeded)
