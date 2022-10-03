@@ -14,6 +14,7 @@ builder.Services.AddIdentity<CustomIdentityUser, IdentityRole<int>>(options =>
 {
     options.User.RequireUniqueEmail = true;
     options.SignIn.RequireConfirmedEmail = true;
+    options.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultPhoneProvider;
 })
     .AddEntityFrameworkStores<Context>()
     .AddDefaultTokenProviders();

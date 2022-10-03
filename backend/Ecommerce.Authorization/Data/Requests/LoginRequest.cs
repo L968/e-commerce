@@ -3,7 +3,7 @@
     public class LoginRequest
     {
         [Required]
-        public string? Email { get; set; }
+        public string? EmailOrPhoneNumber { get; set; }
 
         [Required]
         public string? Password { get; set; }

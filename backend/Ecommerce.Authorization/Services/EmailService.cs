@@ -36,10 +36,12 @@ namespace Ecommerce.Authorization.Services
             emailMessage.From.Add(new MailboxAddress("", _configuration.GetValue<string>("EmailSettings:From")));
             emailMessage.To.AddRange(mailboxAdressess);
             emailMessage.Subject = "Reset your Ecommerce password";
-            emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Text)
-            {
-                Text = $"https://localhost:7283/reset-password/{passwordResetToken}"
-            };
+
+            string htmlBody = Properties.Resources.reset_password_email.Replace("{resetPasswordUrl}", $"https://localhost:7283/reset-password/{passwordResetToken}");
+            var bodyBuilder = new BodyBuilder();
+            bodyBuilder.HtmlBody = htmlBody;
+
+            emailMessage.Body = bodyBuilder.ToMessageBody();
 
             Send(emailMessage);
         }

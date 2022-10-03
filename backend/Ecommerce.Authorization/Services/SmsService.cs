@@ -15,7 +15,12 @@ namespace Ecommerce.Authorization.Services
 
         public void SendPhoneNumberConfirmationSms(string to, string confirmationToken)
         {
-            Send(to, $"Confirmation Token: {confirmationToken}");
+            Send(to, $"Confirm your phone number: {confirmationToken}");
+        }
+
+        public void SendTwoFactorTokenSms(string to, string twoFactorToken)
+        {
+            Send(to, $"Two factor authentication token: {twoFactorToken}");
         }
 
         private void Send(string to, string body)

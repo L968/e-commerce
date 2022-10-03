@@ -1,28 +1,66 @@
-﻿using Ecommerce.Authorization.Data.Requests;
-
-namespace Ecommerce.Authorization.Services
+﻿namespace Ecommerce.Authorization.Services
 {
     public class LoginService
     {
         private readonly SignInManager<CustomIdentityUser> _signInManager;
         private readonly TokenService _tokenService;
         private readonly EmailService _emailService;
+        private readonly SmsService _smsService;
 
-        public LoginService(SignInManager<CustomIdentityUser> signInManager, TokenService tokenService, EmailService emailService)
+        public LoginService(SignInManager<CustomIdentityUser> signInManager, TokenService tokenService, EmailService emailService, SmsService smsService)
         {
             _signInManager = signInManager;
             _tokenService = tokenService;
             _emailService = emailService;
+            _smsService = smsService;
         }
 
         public Result Login(LoginRequest loginRequest)
         {
-            var identityUser = GetIdentityUserByEmail(loginRequest.Email!);
-
+            var identityUser = GetIdentityUserByEmailOrPhoneNumber(loginRequest.EmailOrPhoneNumber!);
             if (identityUser == null) return Result.Fail("Your login credentials don't match an account in our system");
 
-            // CheckPasswordSignInAsync
-            var signInResult = _signInManager.PasswordSignInAsync(identityUser.UserName, loginRequest.Password, false, true).Result;
+            var signInResult = _signInManager.PasswordSignInAsync(identityUser, loginRequest.Password, false, true).Result;
+
+            if (!signInResult.Succeeded)
+            {
+                if (signInResult.IsNotAllowed)
+                {
+                    return Result.Fail("Email isn't confirmed");
+                }
+
+                if (signInResult.IsLockedOut)
+                {
+                    return Result.Fail("User is currently locked out");
+                }
+
+                if (signInResult.RequiresTwoFactor)
+                {
+                    var twoFactorToken = _signInManager.UserManager.GenerateTwoFactorTokenAsync(identityUser, "Phone").Result;
+                    _smsService.SendTwoFactorTokenSms(identityUser.PhoneNumber, twoFactorToken);
+                    return Result.Fail("User requires two factor authentication");
+                }
+
+                return Result.Fail("Your login credentials don't match an account in our system");
+            }
+
+            var role = _signInManager.UserManager.GetRolesAsync(identityUser).Result.FirstOrDefault();
+            var token = _tokenService.CreateToken(identityUser, role!);
+
+            return Result.Ok().WithSuccess(token.Value);
+        }
+
+        public Result TwoFactorLogin(TwoFactorLoginRequest twoFactorLoginRequest)
+        {
+            var identityUser = _signInManager.UserManager.Users.FirstOrDefault(user => user.Id == twoFactorLoginRequest.UserId);
+            if (identityUser == null) return Result.Fail("Error in two factor login");
+
+            var signInResult = _signInManager.TwoFactorSignInAsync(
+                "Phone",
+                twoFactorLoginRequest.TwoFactorToken,
+                false,
+                true
+            ).Result;
 
             if (!signInResult.Succeeded)
             {
@@ -48,19 +86,17 @@ namespace Ecommerce.Authorization.Services
         public Result RequestPasswordReset(RequestPasswordResetRequest request)
         {
             var identityUser = GetIdentityUserByEmail(request.Email!);
-
-            if (identityUser == null) return Result.Fail("Email not registered");
+            if (identityUser == null) return Result.Ok();
 
             string passwordResetToken = _signInManager.UserManager.GeneratePasswordResetTokenAsync(identityUser).Result;
             _emailService.SendResetPasswordEmail(request.Email!, passwordResetToken);
 
-            return Result.Ok().WithSuccess(passwordResetToken);
+            return Result.Ok();
         }
 
         public Result PasswordReset(PasswordResetRequest request)
         {
             var identityUser = GetIdentityUserByEmail(request.Email!);
-
             if (identityUser == null) return Result.Fail("Error in password reset");
 
             var identityResult = _signInManager
@@ -79,6 +115,17 @@ namespace Ecommerce.Authorization.Services
                 .UserManager
                 .Users
                 .FirstOrDefault(user => user.NormalizedEmail == email.ToUpper());
+        }
+
+        private CustomIdentityUser? GetIdentityUserByEmailOrPhoneNumber(string emailOrPhoneNumber)
+        {
+            return _signInManager
+                .UserManager
+                .Users
+                .FirstOrDefault(user =>
+                    user.NormalizedEmail == emailOrPhoneNumber.ToUpper() ||
+                    user.PhoneNumber == emailOrPhoneNumber
+                );
         }
     }
 }

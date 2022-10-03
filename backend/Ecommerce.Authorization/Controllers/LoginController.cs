@@ -1,6 +1,4 @@
-﻿using Ecommerce.Authorization.Data.Requests;
-
-namespace Ecommerce.Authorization.Controllers
+﻿namespace Ecommerce.Authorization.Controllers
 {
     [ApiController]
     [Route("[controller]")]
@@ -17,6 +15,16 @@ namespace Ecommerce.Authorization.Controllers
         public IActionResult Login([FromBody] LoginRequest loginRequest)
         {
             Result result = _loginService.Login(loginRequest);
+
+            if (result.IsFailed) return Unauthorized(result.Errors[0]);
+
+            return Ok(result.Successes[0]);
+        }
+
+        [HttpPost("twoFactorLogin")]
+        public IActionResult TwoFactorLogin([FromBody] TwoFactorLoginRequest twoFactorLoginRequest)
+        {
+            Result result = _loginService.TwoFactorLogin(twoFactorLoginRequest);
 
             if (result.IsFailed) return Unauthorized(result.Errors[0]);
 
