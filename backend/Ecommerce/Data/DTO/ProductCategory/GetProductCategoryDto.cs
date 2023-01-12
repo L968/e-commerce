@@ -1,4 +1,6 @@
-﻿namespace Ecommerce.Data.DTO
+﻿using Ecommerce.Models.ProductModels;
+
+namespace Ecommerce.Data.DTO
 {
     public record GetProductCategoryDto
     {

@@ -1,4 +1,6 @@
-﻿namespace Ecommerce.Data.DTO.Address
+﻿using Ecommerce.Models.AddressModels;
+
+namespace Ecommerce.Data.DTO.Address
 {
     public class GetAddressDto
     {

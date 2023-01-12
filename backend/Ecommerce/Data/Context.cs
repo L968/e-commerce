@@ -1,4 +1,6 @@
-﻿using Ecommerce.Utils;
+﻿using Ecommerce.Models.ProductModels;
+using Ecommerce.Models.AddressModels;
+using Ecommerce.Utils;
 
 namespace Ecommerce.Data
 {

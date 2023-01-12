@@ -1,4 +1,6 @@
-﻿namespace Ecommerce.Services
+﻿using Ecommerce.Models.ProductModels;
+
+namespace Ecommerce.Services
 {
     public class ProductCategoryService
     {

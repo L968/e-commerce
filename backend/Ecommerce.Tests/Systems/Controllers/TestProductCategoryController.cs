@@ -2,11 +2,11 @@
 using Ecommerce.Services;
 using Ecommerce.Controllers;
 using Microsoft.AspNetCore.Mvc;
-using Ecommerce.Models;
 using Ecommerce.Data;
 using Moq;
 using Microsoft.EntityFrameworkCore;
 using Ecommerce.Data.DTO;
+using Ecommerce.Models.ProductModels;
 
 namespace Ecommerce.Tests.Systems.Controllers
 {

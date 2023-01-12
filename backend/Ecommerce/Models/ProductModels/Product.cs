@@ -1,4 +1,4 @@
-﻿namespace Ecommerce.Models
+﻿namespace Ecommerce.Models.ProductModels
 {
     public class Product : BaseModel
     {
@@ -64,6 +64,7 @@
                 Name = Name,
                 Description = Description,
                 Sku = Sku,
+                Price = Price,
                 Length = Length,
                 Width = Width,
                 Height = Height,
@@ -71,7 +72,6 @@
                 ProductCategoryId = ProductCategoryId,
                 ProductCategory = ProductCategory,
                 Images = Images,
-                Price = Price,
             };
         }
     }

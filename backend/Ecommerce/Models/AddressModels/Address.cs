@@ -1,6 +1,6 @@
 ﻿using Ecommerce.Data.DTO.Address;
 
-namespace Ecommerce.Models
+namespace Ecommerce.Models.AddressModels
 {
     public class Address : BaseModel
     {

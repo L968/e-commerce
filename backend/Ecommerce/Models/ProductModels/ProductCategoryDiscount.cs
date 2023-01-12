@@ -1,6 +1,6 @@
-﻿namespace Ecommerce.Models
+﻿namespace Ecommerce.Models.ProductModels
 {
-    public class ProductDiscount : BaseModel
+    public class ProductCategoryDiscount : BaseModel
     {
         [Key]
         public int? Id { get; set; }
@@ -23,9 +23,9 @@
         public DateTime? ValidUntil { get; set; }
 
         [Required]
-        public int? ProductId { get; set; }
+        public int? ProductCategoryId { get; set; }
 
         [JsonIgnore]
-        public Product? Product { get; set; }
+        public ProductCategory? ProductCategory { get; set; }
     }
 }
