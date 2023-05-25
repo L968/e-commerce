@@ -4,16 +4,17 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var serverVersion = new MySqlServerVersion(new Version(8, 0, 27));
+var connectionString = builder.Configuration.GetConnectionString("Connection");
+var serverVersion = ServerVersion.AutoDetect(connectionString);
+
 builder.Services.AddDbContext<Context>(options =>
     options
         .UseSnakeCaseNamingConvention()
-        .UseMySql(builder.Configuration.GetConnectionString("Connection"), serverVersion)
+        .UseMySql(connectionString, serverVersion)
 );
 
 builder.Services.AddAuthentication(auth =>
@@ -58,7 +59,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-app.UseStaticFiles();
 
 app.Run();
