@@ -43,10 +43,10 @@ public class AppDbContext : DbContext
         }
     }
 
-    public override async Task<int> SaveChangesAsync(CancellationToken token = default)
+    public override int SaveChanges()
     {
         AddTimestamps();
-        return await base.SaveChangesAsync(token);
+        return base.SaveChanges();
     }
 
     private void AddTimestamps()
