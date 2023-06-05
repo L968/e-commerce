@@ -1,11 +1,10 @@
-﻿namespace Ecommerce.Authorization.Data.Requests
-{
-    public class LoginRequest
-    {
-        [Required]
-        public string? EmailOrPhoneNumber { get; set; }
+﻿namespace Ecommerce.Authorization.Data.Requests;
 
-        [Required]
-        public string? Password { get; set; }
-    }
+public class LoginRequest
+{
+    [Required]
+    public string EmailOrPhoneNumber { get; set; } = "";
+
+    [Required]
+    public string Password { get; set; } = "";
 }

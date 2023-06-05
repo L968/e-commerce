@@ -1,7 +1,6 @@
-﻿namespace Ecommerce.Authorization.Models
+﻿namespace Ecommerce.Authorization.Models;
+
+public class CustomIdentityUser : IdentityUser<int>
 {
-    public class CustomIdentityUser : IdentityUser<int>
-    {
-        public string? Name { get; set; }
-    }
+    public string Name { get; set; } = "";
 }
