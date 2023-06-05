@@ -2,39 +2,32 @@
 using Twilio.Types;
 using Twilio.Rest.Api.V2010.Account;
 
-namespace Ecommerce.Authorization.Services
+namespace Ecommerce.Authorization.Services;
+
+public class SmsService
 {
-    public class SmsService
+    public void SendPhoneNumberConfirmationSms(string to, string confirmationToken)
     {
-        private readonly IConfiguration _configuration;
+        Send(to, $"Confirm your phone number: {confirmationToken}");
+    }
 
-        public SmsService(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
+    public void SendTwoFactorTokenSms(string to, string twoFactorToken)
+    {
+        Send(to, $"Two factor authentication token: {twoFactorToken}");
+    }
 
-        public void SendPhoneNumberConfirmationSms(string to, string confirmationToken)
-        {
-            Send(to, $"Confirm your phone number: {confirmationToken}");
-        }
+    private void Send(string to, string body)
+    {
+        var username = Config.TwilioSID;
+        var password = Config.TwilioAuthToken;
+        var twilioPhoneNumber = Config.TwilioPhoneNumber;
 
-        public void SendTwoFactorTokenSms(string to, string twoFactorToken)
-        {
-            Send(to, $"Two factor authentication token: {twoFactorToken}");
-        }
+        TwilioClient.Init(username, password);
 
-        private void Send(string to, string body)
-        {
-            var username = _configuration.GetValue<string>("Twilio:SID");
-            var password = _configuration.GetValue<string>("Twilio:AuthToken");
-            var twilioPhoneNumber = _configuration.GetValue<string>("Twilio:PhoneNumber");
-            TwilioClient.Init(username, password);
-
-            MessageResource.Create(
-                from: twilioPhoneNumber,
-                to: new PhoneNumber(to),
-                body: body
-            );
-        }
+        MessageResource.Create(
+            from: twilioPhoneNumber,
+            to: new PhoneNumber(to),
+            body: body
+        );
     }
 }

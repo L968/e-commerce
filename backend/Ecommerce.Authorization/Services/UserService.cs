@@ -1,96 +1,95 @@
 ﻿using System.Web;
 using System.Transactions;
 
-namespace Ecommerce.Authorization.Services
+namespace Ecommerce.Authorization.Services;
+
+public class UserService
 {
-    public class UserService
+    private readonly UserManager<CustomIdentityUser> _userManager;
+    private readonly EmailService _emailService;
+    private readonly SmsService _smsService;
+
+    public UserService(UserManager<CustomIdentityUser> userManager, EmailService emailService, SmsService smsService)
     {
-        private readonly UserManager<CustomIdentityUser> _userManager;
-        private readonly EmailService _emailService;
-        private readonly SmsService _smsService;
+        _userManager = userManager;
+        _emailService = emailService;
+        _smsService = smsService;
+    }
 
-        public UserService(UserManager<CustomIdentityUser> userManager, EmailService emailService, SmsService smsService)
+    public Result CreateUser(CreateUserDto createUserDto)
+    {
+        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+
+        var identityUser = new CustomIdentityUser()
         {
-            _userManager = userManager;
-            _emailService = emailService;
-            _smsService = smsService;
-        }
+            UserName = createUserDto.Email!,
+            Name = createUserDto.Name!,
+            Email = createUserDto.Email!
+        };
 
-        public Result CreateUser(CreateUserDto createUserDto)
-        {
-            using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+        var identityResult = _userManager.CreateAsync(identityUser, createUserDto.Password).Result;
 
-            var identityUser = new CustomIdentityUser()
-            {
-                UserName = createUserDto.Email!,
-                Name = createUserDto.Name!,
-                Email = createUserDto.Email!
-            };
+        if (!identityResult.Succeeded) return Result.Fail(identityResult.Errors.Where(error => !error.Description.Contains("Username")).FirstOrDefault()!.Description);
 
-            var identityResult = _userManager.CreateAsync(identityUser, createUserDto.Password).Result;
+        _userManager.AddToRoleAsync(identityUser, "regular");
 
-            if (!identityResult.Succeeded) return Result.Fail(identityResult.Errors.Where(error => !error.Description.Contains("Username")).FirstOrDefault()!.Description);
+        string confirmationToken = _userManager.GenerateEmailConfirmationTokenAsync(identityUser).Result;
+        string encodedToken = HttpUtility.UrlEncode(confirmationToken);
+        _emailService.SendEmailConfirmationEmail(identityUser.Email, identityUser.Id, encodedToken);
 
-            _userManager.AddToRoleAsync(identityUser, "regular");
+        transaction.Complete();
+        return Result.Ok();
+    }
 
-            string confirmationToken = _userManager.GenerateEmailConfirmationTokenAsync(identityUser).Result;
-            string encodedToken = HttpUtility.UrlEncode(confirmationToken);
-            _emailService.SendEmailConfirmationEmail(identityUser.Email, identityUser.Id, encodedToken);
+    public Result UpdatePhoneNumber(int userId, string phoneNumber)
+    {
+        if (string.IsNullOrWhiteSpace(phoneNumber)) return Result.Fail("Phone number is required");
 
-            transaction.Complete();
-            return Result.Ok();
-        }
+        bool IsPhoneAlreadyRegistered = _userManager.Users.Any(user => user.PhoneNumber == phoneNumber);
+        if (IsPhoneAlreadyRegistered) return Result.Fail("Phone number is already taken");
 
-        public Result UpdatePhoneNumber(int userId, string phoneNumber)
-        {
-            if (string.IsNullOrWhiteSpace(phoneNumber)) return Result.Fail("Phone number is required");
+        var identityUser = _userManager.Users.FirstOrDefault(user => user.Id == userId);
+        if (identityUser == null) return Result.Fail("Error in updating phone number");
 
-            bool IsPhoneAlreadyRegistered = _userManager.Users.Any(user => user.PhoneNumber == phoneNumber);
-            if (IsPhoneAlreadyRegistered) return Result.Fail("Phone number is already taken");
+        string confirmationToken = _userManager.GenerateChangePhoneNumberTokenAsync(identityUser, phoneNumber).Result;
+        _smsService.SendPhoneNumberConfirmationSms(phoneNumber, confirmationToken);
 
-            var identityUser = _userManager.Users.FirstOrDefault(user => user.Id == userId);
-            if (identityUser == null) return Result.Fail("Error in updating phone number");
+        return Result.Ok();
+    }
 
-            string confirmationToken = _userManager.GenerateChangePhoneNumberTokenAsync(identityUser, phoneNumber).Result;
-            _smsService.SendPhoneNumberConfirmationSms(phoneNumber, confirmationToken);
+    public Result UpdateTwoFactorAuthentication(int userId, bool twoFactorEnabled)
+    {
+        var identityUser = _userManager.Users.FirstOrDefault(user => user.Id == userId);
+        if (identityUser == null) return Result.Fail("Error in updating two factor authentication");
 
-            return Result.Ok();
-        }
+        if (twoFactorEnabled && !identityUser.PhoneNumberConfirmed) return Result.Fail("You must have a confirmed phone number in order to activate two factor authentication");
 
-        public Result UpdateTwoFactorAuthentication(int userId, bool twoFactorEnabled)
-        {
-            var identityUser = _userManager.Users.FirstOrDefault(user => user.Id == userId);
-            if (identityUser == null) return Result.Fail("Error in updating two factor authentication");
+        identityUser.TwoFactorEnabled = twoFactorEnabled;
+        var result = _userManager.UpdateAsync(identityUser).Result;
 
-            if (twoFactorEnabled && !identityUser.PhoneNumberConfirmed) return Result.Fail("You must have a confirmed phone number in order to activate two factor authentication");
+        return Result.Ok();
+    }
 
-            identityUser.TwoFactorEnabled = twoFactorEnabled;
-            var result = _userManager.UpdateAsync(identityUser).Result;
+    public Result ConfirmPhoneNumber(int userId, string phoneNumber, string confirmationToken)
+    {
+        var identityUser = _userManager.Users.FirstOrDefault(user => user.Id == userId);
+        if (identityUser == null) return Result.Fail("Error in confirming phone number");
 
-            return Result.Ok();
-        }
+        var result = _userManager.ChangePhoneNumberAsync(identityUser, phoneNumber, confirmationToken).Result;
 
-        public Result ConfirmPhoneNumber(int userId, string phoneNumber, string confirmationToken)
-        {
-            var identityUser = _userManager.Users.FirstOrDefault(user => user.Id == userId);
-            if (identityUser == null) return Result.Fail("Error in confirming phone number");
+        if (!result.Succeeded) return Result.Fail(result.Errors.FirstOrDefault()!.Code);
 
-            var result = _userManager.ChangePhoneNumberAsync(identityUser, phoneNumber, confirmationToken).Result;
+        return Result.Ok();
+    }
 
-            if (!result.Succeeded) return Result.Fail(result.Errors.FirstOrDefault()!.Code);
+    public Result ActivateUser(ActivateUserRequest activateUserRequest)
+    {
+        var identityUser = _userManager.Users.FirstOrDefault(user => user.Id == activateUserRequest.Id);
+        if (identityUser == null) return Result.Fail("Error in activating user");
 
-            return Result.Ok();
-        }
+        var identityResult = _userManager.ConfirmEmailAsync(identityUser, activateUserRequest.ConfirmationCode).Result;
+        if (!identityResult.Succeeded) return Result.Fail("Error in activating user");
 
-        public Result ActivateUser(ActivateUserRequest activateUserRequest)
-        {
-            var identityUser = _userManager.Users.FirstOrDefault(user => user.Id == activateUserRequest.Id);
-            if (identityUser == null) return Result.Fail("Error in activating user");
-
-            var identityResult = _userManager.ConfirmEmailAsync(identityUser, activateUserRequest.ConfirmationCode).Result;
-            if (!identityResult.Succeeded) return Result.Fail("Error in activating user");
-
-            return Result.Ok();
-        }
+        return Result.Ok();
     }
 }

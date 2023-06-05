@@ -1,131 +1,125 @@
-﻿namespace Ecommerce.Authorization.Services
+﻿namespace Ecommerce.Authorization.Services;
+
+public class LoginService
 {
-    public class LoginService
+    private readonly SignInManager<CustomIdentityUser> _signInManager;
+    private readonly TokenService _tokenService;
+    private readonly EmailService _emailService;
+    private readonly SmsService _smsService;
+
+    public LoginService(SignInManager<CustomIdentityUser> signInManager, TokenService tokenService, EmailService emailService, SmsService smsService)
     {
-        private readonly SignInManager<CustomIdentityUser> _signInManager;
-        private readonly TokenService _tokenService;
-        private readonly EmailService _emailService;
-        private readonly SmsService _smsService;
+        _signInManager = signInManager;
+        _tokenService = tokenService;
+        _emailService = emailService;
+        _smsService = smsService;
+    }
 
-        public LoginService(SignInManager<CustomIdentityUser> signInManager, TokenService tokenService, EmailService emailService, SmsService smsService)
+    public Result Login(LoginRequest loginRequest)
+    {
+        var identityUser = GetIdentityUserByEmailOrPhoneNumber(loginRequest.EmailOrPhoneNumber!);
+        if (identityUser == null) return Result.Fail("Your login credentials don't match an account in our system");
+
+        var signInResult = _signInManager.PasswordSignInAsync(identityUser, loginRequest.Password, false, true).Result;
+
+        if (!signInResult.Succeeded)
         {
-            _signInManager = signInManager;
-            _tokenService = tokenService;
-            _emailService = emailService;
-            _smsService = smsService;
-        }
+            if (signInResult.IsNotAllowed) return Result.Fail("Email isn't confirmed");
+            if (signInResult.IsLockedOut) return Result.Fail("User is currently locked out");
 
-        public Result Login(LoginRequest loginRequest)
-        {
-            var identityUser = GetIdentityUserByEmailOrPhoneNumber(loginRequest.EmailOrPhoneNumber!);
-            if (identityUser == null) return Result.Fail("Your login credentials don't match an account in our system");
-
-            var signInResult = _signInManager.PasswordSignInAsync(identityUser, loginRequest.Password, false, true).Result;
-
-            if (!signInResult.Succeeded)
+            if (signInResult.RequiresTwoFactor)
             {
-                if (signInResult.IsNotAllowed)
-                {
-                    return Result.Fail("Email isn't confirmed");
-                }
+                if (string.IsNullOrWhiteSpace(identityUser.PhoneNumber)) return Result.Fail("Two factor login requires phoneNumber");
 
-                if (signInResult.IsLockedOut)
-                {
-                    return Result.Fail("User is currently locked out");
-                }
-
-                if (signInResult.RequiresTwoFactor)
-                {
-                    var twoFactorToken = _signInManager.UserManager.GenerateTwoFactorTokenAsync(identityUser, "Phone").Result;
-                    _smsService.SendTwoFactorTokenSms(identityUser.PhoneNumber, twoFactorToken);
-                    return Result.Fail("User requires two factor authentication");
-                }
-
-                return Result.Fail("Your login credentials don't match an account in our system");
+                var twoFactorToken = _signInManager.UserManager.GenerateTwoFactorTokenAsync(identityUser, "Phone").Result;
+                _smsService.SendTwoFactorTokenSms(identityUser.PhoneNumber, twoFactorToken);
+                return Result.Fail("User requires two factor authentication");
             }
 
-            var role = _signInManager.UserManager.GetRolesAsync(identityUser).Result.FirstOrDefault();
-            var token = _tokenService.CreateToken(identityUser, role!);
-
-            return Result.Ok().WithSuccess(token.Value);
+            return Result.Fail("Your login credentials don't match an account in our system");
         }
 
-        public Result TwoFactorLogin(TwoFactorLoginRequest twoFactorLoginRequest)
+        var role = _signInManager.UserManager.GetRolesAsync(identityUser).Result.FirstOrDefault();
+        var token = _tokenService.CreateToken(identityUser, role!);
+
+        return Result.Ok().WithSuccess(token.Value);
+    }
+
+    public Result TwoFactorLogin(TwoFactorLoginRequest twoFactorLoginRequest)
+    {
+        var identityUser = _signInManager.UserManager.Users.FirstOrDefault(user => user.Id == twoFactorLoginRequest.UserId);
+        if (identityUser == null) return Result.Fail("Error in two factor login");
+
+        var signInResult = _signInManager.TwoFactorSignInAsync(
+            "Phone",
+            twoFactorLoginRequest.TwoFactorToken,
+            false,
+            true
+        ).Result;
+
+        if (!signInResult.Succeeded)
         {
-            var identityUser = _signInManager.UserManager.Users.FirstOrDefault(user => user.Id == twoFactorLoginRequest.UserId);
-            if (identityUser == null) return Result.Fail("Error in two factor login");
-
-            var signInResult = _signInManager.TwoFactorSignInAsync(
-                "Phone",
-                twoFactorLoginRequest.TwoFactorToken,
-                false,
-                true
-            ).Result;
-
-            if (!signInResult.Succeeded)
+            if (signInResult.IsNotAllowed)
             {
-                if (signInResult.IsNotAllowed)
-                {
-                    return Result.Fail("Email isn't confirmed");
-                }
-
-                if (signInResult.IsLockedOut)
-                {
-                    return Result.Fail("User is currently locked out");
-                }
-
-                return Result.Fail("Your login credentials don't match an account in our system");
+                return Result.Fail("Email isn't confirmed");
             }
 
-            var role = _signInManager.UserManager.GetRolesAsync(identityUser).Result.FirstOrDefault();
-            var token = _tokenService.CreateToken(identityUser, role!);
+            if (signInResult.IsLockedOut)
+            {
+                return Result.Fail("User is currently locked out");
+            }
 
-            return Result.Ok().WithSuccess(token.Value);
+            return Result.Fail("Your login credentials don't match an account in our system");
         }
 
-        public Result RequestPasswordReset(RequestPasswordResetRequest request)
-        {
-            var identityUser = GetIdentityUserByEmail(request.Email!);
-            if (identityUser == null) return Result.Ok();
+        var role = _signInManager.UserManager.GetRolesAsync(identityUser).Result.FirstOrDefault();
+        var token = _tokenService.CreateToken(identityUser, role!);
 
-            string passwordResetToken = _signInManager.UserManager.GeneratePasswordResetTokenAsync(identityUser).Result;
-            _emailService.SendResetPasswordEmail(request.Email!, passwordResetToken);
+        return Result.Ok().WithSuccess(token.Value);
+    }
 
-            return Result.Ok();
-        }
+    public Result RequestPasswordReset(RequestPasswordResetRequest request)
+    {
+        var identityUser = GetIdentityUserByEmail(request.Email!);
+        if (identityUser == null) return Result.Ok();
 
-        public Result PasswordReset(PasswordResetRequest request)
-        {
-            var identityUser = GetIdentityUserByEmail(request.Email!);
-            if (identityUser == null) return Result.Fail("Error in password reset");
+        string passwordResetToken = _signInManager.UserManager.GeneratePasswordResetTokenAsync(identityUser).Result;
+        _emailService.SendResetPasswordEmail(request.Email!, passwordResetToken);
 
-            var identityResult = _signInManager
-                .UserManager
-                .ResetPasswordAsync(identityUser, request.Token, request.Password)
-                .Result;
+        return Result.Ok();
+    }
 
-            return identityResult.Succeeded
-                ? Result.Ok()
-                : Result.Fail("Error in password reset");
-        }
+    public Result PasswordReset(PasswordResetRequest request)
+    {
+        var identityUser = GetIdentityUserByEmail(request.Email!);
+        if (identityUser == null) return Result.Fail("Error in password reset");
 
-        private CustomIdentityUser? GetIdentityUserByEmail(string email)
-        {
-            return _signInManager
-                .UserManager
-                .Users
-                .FirstOrDefault(user => user.NormalizedEmail == email.ToUpper());
-        }
+        var identityResult = _signInManager
+            .UserManager
+            .ResetPasswordAsync(identityUser, request.Token, request.Password)
+            .Result;
 
-        private CustomIdentityUser? GetIdentityUserByEmailOrPhoneNumber(string emailOrPhoneNumber)
-        {
-            return _signInManager
-                .UserManager
-                .Users
-                .FirstOrDefault(user =>
-                    user.NormalizedEmail == emailOrPhoneNumber.ToUpper() ||
-                    user.PhoneNumber == emailOrPhoneNumber
-                );
-        }
+        return identityResult.Succeeded
+            ? Result.Ok()
+            : Result.Fail("Error in password reset");
+    }
+
+    private CustomIdentityUser? GetIdentityUserByEmail(string email)
+    {
+        return _signInManager
+            .UserManager
+            .Users
+            .FirstOrDefault(user => user.NormalizedEmail == email.ToUpper());
+    }
+
+    private CustomIdentityUser? GetIdentityUserByEmailOrPhoneNumber(string emailOrPhoneNumber)
+    {
+        return _signInManager
+            .UserManager
+            .Users
+            .FirstOrDefault(user =>
+                user.NormalizedEmail == emailOrPhoneNumber.ToUpper() ||
+                user.PhoneNumber == emailOrPhoneNumber
+            );
     }
 }

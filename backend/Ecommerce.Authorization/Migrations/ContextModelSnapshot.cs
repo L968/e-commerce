@@ -16,10 +16,10 @@ namespace Ecommerce.Authorization.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.6")
+                .HasAnnotation("ProductVersion", "6.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("Authorization.Models.CustomIdentityUser", b =>
+            modelBuilder.Entity("Ecommerce.Authorization.Models.CustomIdentityUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -108,16 +108,16 @@ namespace Ecommerce.Authorization.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e424b2df-6243-4c88-a20f-a7bd8ef18bda",
+                            ConcurrencyStamp = "3ec3f292-9eb3-4a85-8a4e-2b1504294df2",
                             Email = "admin@admin.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             Name = "Admin",
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEDs8b5jwFLgeClBtKdfNixw3jt8Ix10qNZ0UPMFfu2hAJdLXjRBkwoVxP5iHxRJL1Q==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEGlIfsKQLCVHnIDJhEKp2gvVaqcvh82hn/vKL8/x9Oe3gFzQzKQWSovyTI0EQ4SN5g==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "01200130-2e45-4dae-9693-cd0f90eb0c5e",
+                            SecurityStamp = "39c9d82d-5843-4c90-8493-ec1c047ae610",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });
@@ -158,14 +158,14 @@ namespace Ecommerce.Authorization.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "20eaabba-a96a-4736-b6c8-937bdc9242b3",
+                            ConcurrencyStamp = "b392b265-0817-44b7-89ba-c84b03dc4be4",
                             Name = "admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "0570adcc-90bc-4b65-84d1-9ac26deaedf8",
+                            ConcurrencyStamp = "c78d4a6b-e6e2-488a-aa35-9a9bbe1a191c",
                             Name = "regular",
                             NormalizedName = "REGULAR"
                         });
@@ -316,7 +316,7 @@ namespace Ecommerce.Authorization.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
-                    b.HasOne("Authorization.Models.CustomIdentityUser", null)
+                    b.HasOne("Ecommerce.Authorization.Models.CustomIdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -326,7 +326,7 @@ namespace Ecommerce.Authorization.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
-                    b.HasOne("Authorization.Models.CustomIdentityUser", null)
+                    b.HasOne("Ecommerce.Authorization.Models.CustomIdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -343,7 +343,7 @@ namespace Ecommerce.Authorization.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_asp_net_user_roles_asp_net_roles_role_id");
 
-                    b.HasOne("Authorization.Models.CustomIdentityUser", null)
+                    b.HasOne("Ecommerce.Authorization.Models.CustomIdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -353,7 +353,7 @@ namespace Ecommerce.Authorization.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
-                    b.HasOne("Authorization.Models.CustomIdentityUser", null)
+                    b.HasOne("Ecommerce.Authorization.Models.CustomIdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

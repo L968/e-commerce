@@ -1,15 +1,19 @@
 using System.Text;
+using Ecommerce.Authorization;
 using Ecommerce.Authorization.Data;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
+new Config(builder.Configuration).Init();
+
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Configuration.AddUserSecrets<Program>();
+
 builder.Services.AddIdentity<CustomIdentityUser, IdentityRole<int>>(options =>
 {
     options.User.RequireUniqueEmail = true;
@@ -19,11 +23,13 @@ builder.Services.AddIdentity<CustomIdentityUser, IdentityRole<int>>(options =>
     .AddEntityFrameworkStores<Context>()
     .AddDefaultTokenProviders();
 
-var serverVersion = new MySqlServerVersion(new Version(8, 0, 27));
+var connectionString = builder.Configuration.GetConnectionString("Connection");
+var serverVersion = ServerVersion.AutoDetect(connectionString);
+
 builder.Services.AddDbContext<Context>(options =>
     options
         .UseSnakeCaseNamingConvention()
-        .UseMySql(builder.Configuration.GetConnectionString("Connection"), serverVersion)
+        .UseMySql(connectionString, serverVersion)
 );
 
 builder.Services.AddAuthentication(auth =>
@@ -38,7 +44,7 @@ builder.Services.AddAuthentication(auth =>
     token.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Config.JwtKey)),
         ValidateIssuer = false,
         ValidateAudience = false,
         ClockSkew = TimeSpan.Zero,

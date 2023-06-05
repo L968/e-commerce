@@ -1,67 +1,52 @@
 ﻿using MimeKit;
 using MailKit.Net.Smtp;
 
-namespace Ecommerce.Authorization.Services
+namespace Ecommerce.Authorization.Services;
+
+public class EmailService
 {
-    public class EmailService
+    public void SendEmailConfirmationEmail(string to, int userId, string confirmationToken)
     {
-        private readonly IConfiguration _configuration;
+        var mailboxAdressess = new List<MailboxAddress> { new MailboxAddress("", to) };
 
-        public EmailService(IConfiguration configuration)
+        var emailMessage = new MimeMessage();
+        emailMessage.From.Add(new MailboxAddress("", Config.EmailSettingsFrom));
+        emailMessage.To.AddRange(mailboxAdressess);
+        emailMessage.Subject = "Verify your new Ecommerce account";
+        emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Text)
         {
-            _configuration = configuration;
-        }
+            Text = $"To verify your email address, please use the following link: \n\nhttps://localhost:7252/user/activate?id={userId}&confirmationCode={confirmationToken}"
+        };
 
-        public void SendEmailConfirmationEmail(string to, int userId, string confirmationToken)
-        {
-            var mailboxAdressess = new List<MailboxAddress> { new MailboxAddress("", to) };
+        Send(emailMessage);
+    }
 
-            var emailMessage = new MimeMessage();
-            emailMessage.From.Add(new MailboxAddress("", _configuration.GetValue<string>("EmailSettings:From")));
-            emailMessage.To.AddRange(mailboxAdressess);
-            emailMessage.Subject = "Verify your new Ecommerce account";
-            emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Text)
-            {
-                Text = $"To verify your email address, please use the following link: \n\nhttps://localhost:7283/user/activate?id={userId}&confirmationCode={confirmationToken}"
-            };
+    public void SendResetPasswordEmail(string to, string passwordResetToken)
+    {
+        var mailboxAdressess = new List<MailboxAddress> { new MailboxAddress("", to) };
 
-            Send(emailMessage);
-        }
+        var emailMessage = new MimeMessage();
+        emailMessage.From.Add(new MailboxAddress("", Config.EmailSettingsFrom));
+        emailMessage.To.AddRange(mailboxAdressess);
+        emailMessage.Subject = "Reset your Ecommerce password";
 
-        public void SendResetPasswordEmail(string to, string passwordResetToken)
-        {
-            var mailboxAdressess = new List<MailboxAddress> { new MailboxAddress("", to) };
+        string htmlBody = Properties.Resources.reset_password_email.Replace("{resetPasswordUrl}", $"https://localhost:7252/reset-password/{passwordResetToken}");
+        var bodyBuilder = new BodyBuilder();
+        bodyBuilder.HtmlBody = htmlBody;
 
-            var emailMessage = new MimeMessage();
-            emailMessage.From.Add(new MailboxAddress("", _configuration.GetValue<string>("EmailSettings:From")));
-            emailMessage.To.AddRange(mailboxAdressess);
-            emailMessage.Subject = "Reset your Ecommerce password";
+        emailMessage.Body = bodyBuilder.ToMessageBody();
 
-            string htmlBody = Properties.Resources.reset_password_email.Replace("{resetPasswordUrl}", $"https://localhost:7283/reset-password/{passwordResetToken}");
-            var bodyBuilder = new BodyBuilder();
-            bodyBuilder.HtmlBody = htmlBody;
+        Send(emailMessage);
+    }
 
-            emailMessage.Body = bodyBuilder.ToMessageBody();
+    private void Send(MimeMessage emailMessage)
+    {
+        using var client = new SmtpClient();
 
-            Send(emailMessage);
-        }
+        client.Connect(Config.EmailSettingsSmtpServer, Config.EmailSettingsPort, true);
+        client.AuthenticationMechanisms.Remove("XOUATH2");
+        client.Authenticate(Config.EmailSettingsFrom, Config.EmailSettingsPassword);
 
-        private void Send(MimeMessage emailMessage)
-        {
-            using var client = new SmtpClient();
-
-            client.Connect(
-                _configuration.GetValue<string>("EmailSettings:SmtpServer"),
-                _configuration.GetValue<int>("EmailSettings:Port"),
-                true
-            );
-            client.AuthenticationMechanisms.Remove("XOUATH2");
-            client.Authenticate(
-                _configuration.GetValue<string>("EmailSettings:From"),
-                _configuration.GetValue<string>("EmailSettings:Password")
-            );
-
-            client.Send(emailMessage);
-        }
+        client.Send(emailMessage);
     }
 }

@@ -1,19 +1,18 @@
-﻿namespace Ecommerce.Authorization.Data.DTO
+﻿namespace Ecommerce.Authorization.Data.DTO;
+
+public class CreateUserDto
 {
-    public class CreateUserDto
-    {
-        [Required]
-        public string? Name { get; set; }
+    [Required]
+    public string Name { get; set; } = "";
 
-        [Required]
-        public string? Email { get; set; }
+    [Required]
+    public string Email { get; set; } = "";
 
-        [Required]
-        [DataType(DataType.Password)]
-        public string? Password { get; set; }
+    [Required]
+    [DataType(DataType.Password)]
+    public string Password { get; set; } = "";
 
-        [Required]
-        [Compare("Password")]
-        public string? RePassword { get; set; }
-    }
+    [Required]
+    [Compare("Password")]
+    public string RePassword { get; set; } = "";
 }

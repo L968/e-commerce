@@ -1,19 +1,19 @@
-﻿using Ecommerce.Data;
+﻿using Ecommerce.Infra.Data.Context;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.Tests.Systems.Controllers
 {
     public abstract class BaseTest : IDisposable
     {
-        protected readonly Context _context;
+        protected readonly AppDbContext _context;
 
         protected BaseTest()
         {
             var serverVersion = new MySqlServerVersion(new Version(8, 0, 27));
-            var optionsBuilder = new DbContextOptionsBuilder<Context>()
+            var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>()
                 .UseMySql("server=localhost;database=test;user=root;password=root", serverVersion);
 
-            var context = new Context(optionsBuilder.Options);
+            var context = new AppDbContext(optionsBuilder.Options);
             context.Database.EnsureCreated();
 
             _context = context;

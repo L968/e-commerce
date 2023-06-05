@@ -1,11 +1,10 @@
-﻿namespace Ecommerce.Authorization.Data.Requests
-{
-    public class TwoFactorLoginRequest
-    {
-        [Required]
-        public int? UserId { get; set; }
+﻿namespace Ecommerce.Authorization.Data.Requests;
 
-        [Required]
-        public string? TwoFactorToken { get; set; }
-    }
+public class TwoFactorLoginRequest
+{
+    [Required]
+    public int? UserId { get; set; }
+
+    [Required]
+    public string? TwoFactorToken { get; set; }
 }

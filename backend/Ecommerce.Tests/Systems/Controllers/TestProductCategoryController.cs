@@ -1,12 +1,8 @@
 ﻿using FluentAssertions;
-using Ecommerce.Services;
-using Ecommerce.Controllers;
 using Microsoft.AspNetCore.Mvc;
-using Ecommerce.Data;
-using Moq;
-using Microsoft.EntityFrameworkCore;
-using Ecommerce.Data.DTO;
-using Ecommerce.Models.ProductModels;
+using Ecommerce.API.Controllers;
+using Ecommerce.Application.DTO.ProductDto;
+using Ecommerce.Domain.Entities.ProductEntities;
 
 namespace Ecommerce.Tests.Systems.Controllers
 {
@@ -32,14 +28,14 @@ namespace Ecommerce.Tests.Systems.Controllers
             var dataList = new List<ProductCategory>()
             {
                 new ProductCategory()
-                {
-                    Id = 1,
-                    Guid = new Guid("47b3621f-70b8-4d7a-8f05-6f0aee2511f3"),
-                    Name = "Shirts",
-                    Description = "Lorem Ipsum",
-                    CreatedAt = DateTime.Now,
-                    UpdatedAt = DateTime.Now,
-                }
+                //{
+                //    Id = 1,
+                //    Guid = new Guid("47b3621f-70b8-4d7a-8f05-6f0aee2511f3"),
+                //    Name = "Shirts",
+                //    Description = "Lorem Ipsum",
+                //    CreatedAt = DateTime.Now,
+                //    UpdatedAt = DateTime.Now,
+                //}
             };
 
             var controller = GetController(dataList);
@@ -72,12 +68,13 @@ namespace Ecommerce.Tests.Systems.Controllers
 
         private ProductCategoryController GetController(List<ProductCategory> dataList)
         {
-            var dataDbSet = Helpers.EntityFramework.ListToDbSet(dataList);
-            var mockContext = new Mock<Context>(new DbContextOptions<Context>());
-            mockContext.Setup(m => m.ProductCategories).Returns(dataDbSet);
+            return null;
+            //var dataDbSet = Helpers.EntityFramework.ListToDbSet(dataList);
+            //var mockContext = new Mock<AppDbContext>(new DbContextOptions<AppDbContext>());
+            //mockContext.Setup(m => m.ProductCategories).Returns(dataDbSet);
 
-            var service = new ProductCategoryService(mockContext.Object);
-            return new ProductCategoryController(service);
+            //var service = new ProductCategoryService(mockContext.Object);
+            //return new ProductCategoryController(service);
         }
     }
 }

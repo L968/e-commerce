@@ -1,8 +1,7 @@
-﻿namespace Ecommerce.Authorization.Data.Requests
+﻿namespace Ecommerce.Authorization.Data.Requests;
+
+public class RequestPasswordResetRequest
 {
-    public class RequestPasswordResetRequest
-    {
-        [Required]
-        public string? Email { get; set; }
-    }
+    [Required]
+    public string? Email { get; set; }
 }

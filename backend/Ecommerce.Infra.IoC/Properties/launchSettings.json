@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Ecommerce.Infra.IoC": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:50673;http://localhost:50677"
+    }
+  }
+}
