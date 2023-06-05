@@ -16,7 +16,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetByUserId()
         {
             int userId = int.Parse(User.FindFirst("id")!.Value);
 

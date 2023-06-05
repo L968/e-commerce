@@ -13,8 +13,8 @@ public class AddressService : IAddressService
 
     public async Task<IEnumerable<GetAddressDto>> GetByUserIdAsync(int userId)
     {
-        IEnumerable<Address> categories = await _addressRepository.GetByUserIdAsync(userId);
-        return _mapper.Map<IEnumerable<GetAddressDto>>(categories);
+        IEnumerable<Address> addresses = await _addressRepository.GetByUserIdAsync(userId);
+        return _mapper.Map<IEnumerable<GetAddressDto>>(addresses);
     }
 
     public async Task<GetAddressDto?> GetByIdAndUserIdAsync(int id, int userId)
@@ -25,7 +25,7 @@ public class AddressService : IAddressService
 
     public async Task<GetAddressDto> CreateAsync(CreateAddressDto addressDto)
     {
-        var address = _mapper.Map<Address>(addressDto);
+        Address address = _mapper.Map<Address>(addressDto);
 
         await _addressRepository.CreateAsync(address);
 
