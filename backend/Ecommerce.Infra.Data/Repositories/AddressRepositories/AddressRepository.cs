@@ -18,7 +18,7 @@ public class AddressRepository : IAddressRepository
 
     public async Task<Address?> GetByIdAndUserIdAsync(int id, int userId)
     {
-        return await _context.Addresses.FindAsync(id, userId);
+        return await _context.Addresses.FirstOrDefaultAsync(address => address.Id == id && address.UserId == userId);
     }
 
     public async Task<Address> CreateAsync(Address address)
