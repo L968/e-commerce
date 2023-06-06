@@ -4,7 +4,7 @@ namespace Ecommerce.Domain.Entities.AddressEntities;
 
 public sealed class Address : BaseEntity
 {
-    public int Id { get; private set; }
+    public int? Id { get; private set; }
     public int UserId { get; private set; }
     public string RecipientFullName { get; private set; }
     public string RecipientPhoneNumber { get; private set; }
