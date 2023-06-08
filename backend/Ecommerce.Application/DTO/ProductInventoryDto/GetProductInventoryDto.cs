@@ -1,6 +1,6 @@
 ﻿namespace Ecommerce.Application.DTO.ProductInventoryDto;
 
-public class GetProductInventoryDto
+public record GetProductInventoryDto
 {
     [Key]
     public int? Id { get; init; }

@@ -1,6 +1,6 @@
 ﻿namespace Ecommerce.Application.DTO.AddressDto;
 
-public class UpdateAddressDto
+public record UpdateAddressDto
 {
     [Required]
     public string RecipientFullName { get; set; }

@@ -1,6 +1,6 @@
 ﻿namespace Ecommerce.Application.DTO.AddressDto;
 
-public class CreateAddressDto
+public record CreateAddressDto
 {
     [Required]
     public int UserId { get; set; }

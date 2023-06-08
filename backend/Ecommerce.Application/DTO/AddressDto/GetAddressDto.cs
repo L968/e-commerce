@@ -1,6 +1,6 @@
 ﻿namespace Ecommerce.Application.DTO.AddressDto;
 
-public class GetAddressDto
+public record GetAddressDto
 {
     public int? Id { get; set; }
     public string? RecipientFullName { get; set; }
