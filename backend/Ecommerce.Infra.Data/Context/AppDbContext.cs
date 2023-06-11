@@ -52,7 +52,7 @@ public class AppDbContext : DbContext
     private void AddTimestamps()
     {
         var entities = ChangeTracker.Entries()
-            .Where(x => x.Entity is BaseEntity && (x.State == EntityState.Added || x.State == EntityState.Modified));
+            .Where(x => x.Entity is AuditableEntity && (x.State == EntityState.Added || x.State == EntityState.Modified));
 
         foreach (var entity in entities)
         {
@@ -60,10 +60,10 @@ public class AppDbContext : DbContext
 
             if (entity.State == EntityState.Added)
             {
-                ((BaseEntity)entity.Entity).CreatedAt = now;
+                ((AuditableEntity)entity.Entity).CreatedAt = now;
             }
 
-            ((BaseEntity)entity.Entity).UpdatedAt = now;
+            ((AuditableEntity)entity.Entity).UpdatedAt = now;
         }
     }
 }
