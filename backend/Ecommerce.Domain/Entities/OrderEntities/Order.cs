@@ -1,6 +1,6 @@
 ﻿namespace Ecommerce.Domain.Entities.OrderEntities;
 
-public sealed class Order : BaseEntity
+public sealed class Order : AuditableEntity
 {
     public int Id { get; private set; }
     public Guid Guid { get; private set; }

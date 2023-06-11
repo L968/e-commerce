@@ -1,6 +1,6 @@
 ﻿namespace Ecommerce.Domain.Entities.ProductEntities;
 
-public sealed class ProductReview : BaseEntity
+public sealed class ProductReview : AuditableEntity
 {
     public int Id { get; private set; }
     public int UserId { get; private set; }

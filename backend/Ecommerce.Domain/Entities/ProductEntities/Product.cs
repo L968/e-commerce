@@ -1,6 +1,6 @@
 ﻿namespace Ecommerce.Domain.Entities.ProductEntities;
 
-public sealed class Product : BaseEntity
+public sealed class Product : AuditableEntity
 {
     public int Id { get; private set; }
     public Guid Guid { get; private set; }

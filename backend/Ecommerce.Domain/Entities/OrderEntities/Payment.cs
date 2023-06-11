@@ -1,6 +1,6 @@
 ﻿namespace Ecommerce.Domain.Entities.OrderEntities;
 
-public sealed class Payment : BaseEntity
+public sealed class Payment : AuditableEntity
 {
     public int Id { get; private set; }
     public int OrderId { get; private set; }
