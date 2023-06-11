@@ -10,9 +10,6 @@ public class AppDbContext : DbContext
     public virtual DbSet<ProductInventory> ProductInventories { get; set; }
     public virtual DbSet<ProductImage> ProductImages { get; set; }
 
-    public virtual DbSet<Country> Countries { get; set; }
-    public virtual DbSet<State> States { get; set; }
-    public virtual DbSet<City> Cities { get; set; }
     public virtual DbSet<Address> Addresses { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
