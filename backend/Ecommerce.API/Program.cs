@@ -1,9 +1,9 @@
-using System.Text;
-using Ecommerce.Infra.IoC;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Ecommerce.Application.Common.Interfaces;
 using Ecommerce.API.Services;
+using Ecommerce.Application.Common.Interfaces;
+using Ecommerce.Infra.IoC;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 

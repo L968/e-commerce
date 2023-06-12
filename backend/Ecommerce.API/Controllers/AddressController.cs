@@ -1,9 +1,8 @@
-﻿using MediatR;
-using Ecommerce.Application.DTO.AddressDto;
-using Ecommerce.Application.Addresses.Queries;
-using Ecommerce.Application.Addresses.Commands;
+﻿using Ecommerce.Application.Addresses.Commands;
 using Ecommerce.Application.Addresses.Commands.CreateAddress;
 using Ecommerce.Application.Addresses.Commands.UpdateAddress;
+using Ecommerce.Application.Addresses.Queries;
+using MediatR;
 
 namespace Ecommerce.API.Controllers
 {
