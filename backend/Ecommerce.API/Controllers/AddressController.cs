@@ -1,5 +1,9 @@
-﻿using Ecommerce.Application.DTO.AddressDto;
-using Ecommerce.Application.Interfaces.AddressService;
+﻿using MediatR;
+using Ecommerce.Application.DTO.AddressDto;
+using Ecommerce.Application.Addresses.Queries;
+using Ecommerce.Application.Addresses.Commands;
+using Ecommerce.Application.Addresses.Commands.CreateAddress;
+using Ecommerce.Application.Addresses.Commands.UpdateAddress;
 
 namespace Ecommerce.API.Controllers
 {
@@ -8,27 +12,23 @@ namespace Ecommerce.API.Controllers
     [Authorize(Roles = "regular")]
     public class AddressController : ControllerBase
     {
-        private readonly IAddressService _addressService;
+        private readonly IMediator _mediator;
 
-        public AddressController(IAddressService addressService)
+        public AddressController(IMediator mediator)
         {
-            _addressService = addressService;
+            _mediator = mediator;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetByUserId()
+        public async Task<IActionResult> GetByUserId([FromQuery] GetAddressByUserIdQuery query)
         {
-            int userId = int.Parse(User.FindFirst("id")!.Value);
-
-            return Ok(await _addressService.GetByUserIdAsync(userId));
+            return Ok(await _mediator.Send(query));
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            int userId = int.Parse(User.FindFirst("id")!.Value);
-
-            GetAddressDto? address = await _addressService.GetByIdAndUserIdAsync(id, userId);
+            GetAddressDto? address = await _mediator.Send(new GetAddressByIdAndUserIdQuery(id));
 
             if (address == null) return NotFound();
 
@@ -36,22 +36,17 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateAddressDto addressDto)
+        public async Task<IActionResult> Create([FromBody] CreateAddressCommand command)
         {
-            int userId = int.Parse(User.FindFirst("id")!.Value);
-
-            addressDto.UserId = userId;
-            GetAddressDto address = await _addressService.CreateAsync(addressDto);
-
+            GetAddressDto address = await _mediator.Send(command);
             return CreatedAtAction(nameof(GetById), new { address.Id }, address);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] UpdateAddressDto addressDto)
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateAddressCommand command)
         {
-            int userId = int.Parse(User.FindFirst("id")!.Value);
-
-            Result result = await _addressService.UpdateAsync(id, userId, addressDto);
+            command.Id = id;
+            Result result = await _mediator.Send(command);
 
             if (result.IsFailed) return NotFound();
 
@@ -61,9 +56,7 @@ namespace Ecommerce.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            int userId = int.Parse(User.FindFirst("id")!.Value);
-
-            Result result = await _addressService.DeleteAsync(id, userId);
+            Result result = await _mediator.Send(new DeleteAddressCommand(id));
 
             if (result.IsFailed) return NotFound();
 

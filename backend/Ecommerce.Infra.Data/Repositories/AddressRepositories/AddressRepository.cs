@@ -1,4 +1,7 @@
-﻿namespace Ecommerce.Infra.Data.Repositories.AddressRepositories;
+﻿using Ecommerce.Domain.Entities;
+using Ecommerce.Domain.Interfaces;
+
+namespace Ecommerce.Infra.Data.Repositories.AddressRepositories;
 
 public class AddressRepository : IAddressRepository
 {
