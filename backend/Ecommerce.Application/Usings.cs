@@ -15,7 +15,6 @@ global using Ecommerce.Domain.Interfaces.ProductRepositories;
 
 global using Ecommerce.Application.Common.Interfaces;
 
-global using Ecommerce.Application.DTO.AddressDto;
 global using Ecommerce.Application.DTO.ProductDto;
 global using Ecommerce.Application.DTO.ProductInventoryDto;
 

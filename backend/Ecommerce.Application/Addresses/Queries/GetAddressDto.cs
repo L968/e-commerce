@@ -1,4 +1,4 @@
-﻿namespace Ecommerce.Application.DTO.AddressDto;
+﻿namespace Ecommerce.Application.Addresses.Queries;
 
 public record GetAddressDto
 {

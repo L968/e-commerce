@@ -1,4 +1,5 @@
-﻿using Ecommerce.Domain.Interfaces;
+﻿using Ecommerce.Application.Addresses.Queries;
+using Ecommerce.Domain.Interfaces;
 
 namespace Ecommerce.Application.Addresses.Commands.CreateAddress;
 
