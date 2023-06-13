@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecommerce.Tests", "Ecommerce.Tests\Ecommerce.Tests.csproj", "{0EBC8480-7A75-4224-8C0B-CA5C3FF9515C}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{9D4FEA1E-937E-446E-8727-C4248D6AC8A1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{13FFF39C-4AF8-4CB5-8205-90FD2A663B93}"
@@ -29,7 +27,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecommerce.API", "Ecommerce.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecommerce.Authorization", "Ecommerce.Authorization\Ecommerce.Authorization.csproj", "{F3C58090-046C-4825-9778-4008B38727E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecommerce.Architecture.Tests", "Ecommerce.Architecture.Tests\Ecommerce.Architecture.Tests.csproj", "{77657A3D-7DEC-4AC3-8BA9-AF5A7D8CA0B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecommerce.Architecture.Tests", "Ecommerce.Architecture.Tests\Ecommerce.Architecture.Tests.csproj", "{77657A3D-7DEC-4AC3-8BA9-AF5A7D8CA0B5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecommerce.Application.IntegrationTests", "Ecommerce.Application.IntegrationTests\Ecommerce.Application.IntegrationTests.csproj", "{F60E5474-13A6-4444-AE49-9779AB09E12E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecommerce.Application.UnitTests", "Ecommerce.Application.UnitTests\Ecommerce.Application.UnitTests.csproj", "{F79F0750-E34E-4D05-8A07-CFD1E7286290}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,10 +39,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0EBC8480-7A75-4224-8C0B-CA5C3FF9515C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0EBC8480-7A75-4224-8C0B-CA5C3FF9515C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0EBC8480-7A75-4224-8C0B-CA5C3FF9515C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0EBC8480-7A75-4224-8C0B-CA5C3FF9515C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EB181657-5BF8-41CF-A559-A3C88EDAB9FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EB181657-5BF8-41CF-A559-A3C88EDAB9FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB181657-5BF8-41CF-A559-A3C88EDAB9FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -69,12 +67,19 @@ Global
 		{77657A3D-7DEC-4AC3-8BA9-AF5A7D8CA0B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77657A3D-7DEC-4AC3-8BA9-AF5A7D8CA0B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77657A3D-7DEC-4AC3-8BA9-AF5A7D8CA0B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F60E5474-13A6-4444-AE49-9779AB09E12E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F60E5474-13A6-4444-AE49-9779AB09E12E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F60E5474-13A6-4444-AE49-9779AB09E12E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F60E5474-13A6-4444-AE49-9779AB09E12E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F79F0750-E34E-4D05-8A07-CFD1E7286290}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F79F0750-E34E-4D05-8A07-CFD1E7286290}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F79F0750-E34E-4D05-8A07-CFD1E7286290}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F79F0750-E34E-4D05-8A07-CFD1E7286290}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{0EBC8480-7A75-4224-8C0B-CA5C3FF9515C} = {13FFF39C-4AF8-4CB5-8205-90FD2A663B93}
 		{EB181657-5BF8-41CF-A559-A3C88EDAB9FE} = {389A401C-E6A9-41E4-A654-7D5413529D5F}
 		{DDF383F9-B26F-48B2-8343-93DC01FE45B5} = {63C05B8A-7322-45F7-9449-F9CFD6740988}
 		{9060B07F-56FB-4380-BCE6-CFB76E54531C} = {84D1BA2F-D5AA-4BA5-BB7D-09CCAB284AAD}
@@ -86,6 +91,8 @@ Global
 		{61E74E09-0BC9-493B-B370-10FD820F4FCF} = {C5A74936-DDD1-489D-8E35-153666831638}
 		{F3C58090-046C-4825-9778-4008B38727E7} = {C5A74936-DDD1-489D-8E35-153666831638}
 		{77657A3D-7DEC-4AC3-8BA9-AF5A7D8CA0B5} = {13FFF39C-4AF8-4CB5-8205-90FD2A663B93}
+		{F60E5474-13A6-4444-AE49-9779AB09E12E} = {13FFF39C-4AF8-4CB5-8205-90FD2A663B93}
+		{F79F0750-E34E-4D05-8A07-CFD1E7286290} = {13FFF39C-4AF8-4CB5-8205-90FD2A663B93}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4667238D-291A-455F-9BA3-5123DA06325C}
