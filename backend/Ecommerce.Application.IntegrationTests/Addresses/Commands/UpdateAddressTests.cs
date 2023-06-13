@@ -1,5 +1,7 @@
 ﻿using Ecommerce.Application.Addresses.Commands.CreateAddress;
+using Ecommerce.Application.Addresses.Commands.UpdateAddress;
 using Ecommerce.Application.Addresses.Queries;
+using Ecommerce.Domain.Entities;
 
 namespace Ecommerce.Application.IntegrationTests.Addresses.Commands;
 
@@ -13,7 +15,7 @@ public class UpdateAddressTests : BaseTestFixture
         // Arrange
         RunAsRegularUser();
 
-        var command = new CreateAddressCommand()
+        GetAddressDto createdAddress = await SendAsync(new CreateAddressCommand()
         {
             RecipientFullName = "John Smith",
             RecipientPhoneNumber = "1234567890",
@@ -26,19 +28,31 @@ public class UpdateAddressTests : BaseTestFixture
             State = "California",
             Country = "United States",
             AdditionalInformation = "Please deliver to the front desk"
-        };
+        });
 
         // Act
-        GetAddressDto createdAddress = await SendAsync(command);
+        FluentResults.Result result = await SendAsync(new UpdateAddressCommand()
+        {
+            Id = createdAddress.Id!.Value,
+            RecipientFullName = "Spencer Smith",
+            RecipientPhoneNumber = "1234567890",
+            PostalCode = "AB123CD",
+            StreetName = "Main Street",
+            BuildingNumber = "123",
+            Complement = "Apt 4B",
+            Neighborhood = "Central City",
+            City = "Metropolis",
+            State = "California",
+            Country = "United States",
+            AdditionalInformation = "Please deliver to the front desk"
+        });
 
         // Assert
-        Assert.IsNotNull(createdAddress);
-        Assert.True(createdAddress.Id > 0);
+        Assert.IsTrue(result.IsSuccess);
 
-        var query = new GetAddressByIdAndUserIdQuery(createdAddress.Id!.Value);
-        GetAddressDto? address = await SendAsync(query);
+        Address? address = await FindAsync<Address>(createdAddress.Id!.Value);
 
         Assert.IsNotNull(address);
-        Assert.True(address!.Id > 0);
+        Assert.AreEqual(address.RecipientFullName, "Spencer Smith");
     }
 }

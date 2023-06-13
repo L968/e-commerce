@@ -13,9 +13,7 @@ public class DeleteAddressTests : BaseTestFixture
     public async Task ShouldDeleteAddress_GivenExistingAddress()
     {
         // Arrange
-        RunAsRegularUser();
-
-        var createCommand = new CreateAddressCommand()
+        GetAddressDto createdAddress = await SendAsync(new CreateAddressCommand()
         {
             RecipientFullName = "John Smith",
             RecipientPhoneNumber = "1234567890",
@@ -28,19 +26,15 @@ public class DeleteAddressTests : BaseTestFixture
             State = "California",
             Country = "United States",
             AdditionalInformation = "Please deliver to the front desk"
-        };
-
-        GetAddressDto createdAddress = await SendAsync(createCommand);
-        var deleteCommand = new DeleteAddressCommand(createdAddress.Id!.Value);
-        var query = new GetAddressByIdAndUserIdQuery(createdAddress.Id!.Value);
+        });
 
         // Act
-        Result result = await SendAsync(deleteCommand);
+        Result result = await SendAsync(new DeleteAddressCommand(createdAddress.Id!.Value));
 
         // Assert
         Assert.True(result.IsSuccess);
 
-        GetAddressDto? addresses = await SendAsync(query);
+        GetAddressDto? addresses = await SendAsync(new GetAddressByIdAndUserIdQuery(createdAddress.Id!.Value));
 
         Assert.IsNull(addresses);
     }

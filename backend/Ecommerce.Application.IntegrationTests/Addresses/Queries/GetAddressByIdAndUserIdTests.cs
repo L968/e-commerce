@@ -1,19 +1,19 @@
 ﻿using Ecommerce.Application.Addresses.Commands.CreateAddress;
 using Ecommerce.Application.Addresses.Queries;
 
-namespace Ecommerce.Application.IntegrationTests.Addresses.Commands;
+namespace Ecommerce.Application.IntegrationTests.Addresses.Queries;
 
 using static Testing;
 
-public class CreateAddressTests : BaseTestFixture
+public class GetAddressByIdAndUserIdTests : BaseTestFixture
 {
     [Test]
-    public async Task ShouldInsertAddress_GivenValidData()
+    public async Task ShoudlReturnAllUserAddresses_WhenTableHasData()
     {
         // Arrange
         RunAsRegularUser();
 
-        var command = new CreateAddressCommand()
+        GetAddressDto createdAddress = await SendAsync(new CreateAddressCommand()
         {
             RecipientFullName = "John Smith",
             RecipientPhoneNumber = "1234567890",
@@ -26,19 +26,13 @@ public class CreateAddressTests : BaseTestFixture
             State = "California",
             Country = "United States",
             AdditionalInformation = "Please deliver to the front desk"
-        };
+        });
 
         // Act
-        GetAddressDto createdAddress = await SendAsync(command);
+        GetAddressDto? addresses = await SendAsync(new GetAddressByIdAndUserIdQuery(createdAddress.Id!.Value));
 
         // Assert
-        Assert.IsNotNull(createdAddress);
-        Assert.True(createdAddress.Id > 0);
-
-        var query = new GetAddressByIdAndUserIdQuery(createdAddress.Id!.Value);
-        GetAddressDto? address = await SendAsync(query);
-
-        Assert.IsNotNull(address);
-        Assert.True(address!.Id > 0);
+        Assert.NotNull(addresses);
+        Assert.AreEqual(addresses!.Id, createdAddress.Id);
     }
 }
