@@ -1,6 +1,4 @@
-﻿using Ecommerce.Domain.Entities;
-using Ecommerce.Domain.Interfaces;
-using System.Net;
+﻿using Ecommerce.Domain.Interfaces;
 
 namespace Ecommerce.Application.Addresses.Queries;
 
