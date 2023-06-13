@@ -16,7 +16,7 @@ namespace Ecommerce.Authorization.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.9")
+                .HasAnnotation("ProductVersion", "7.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Ecommerce.Authorization.Models.CustomIdentityUser", b =>
@@ -53,6 +53,7 @@ namespace Ecommerce.Authorization.Migrations
                         .HasColumnName("lockout_end");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("name");
 
@@ -108,18 +109,35 @@ namespace Ecommerce.Authorization.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3ec3f292-9eb3-4a85-8a4e-2b1504294df2",
+                            ConcurrencyStamp = "51627f21-a82d-4887-ac9a-a26900cf954d",
                             Email = "admin@admin.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             Name = "Admin",
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEGlIfsKQLCVHnIDJhEKp2gvVaqcvh82hn/vKL8/x9Oe3gFzQzKQWSovyTI0EQ4SN5g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBwf6nwFBruL2gVChb1fAHfswwjI+Rnmsza1JRr/qDRmjoqOIrZ0VhcQyhe7/OrOrQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "39c9d82d-5843-4c90-8493-ec1c047ae610",
+                            SecurityStamp = "38d2fad6-6a32-47aa-81cd-b71d1ce86d49",
                             TwoFactorEnabled = false,
                             UserName = "admin"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "cc116b7f-0f4e-4d74-bf6f-dd127f850e71",
+                            Email = "test@test.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            Name = "Tester",
+                            NormalizedEmail = "TEST@TEST.COM",
+                            NormalizedUserName = "TEST",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFaa1eAmR/3Hmll2lAajnRS22FFrQLBcUc/oRsqy4ap9qrfSqDOgbUGVB/pUhWAXUA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "2ddab000-7ea9-4898-a89e-cdb7c110bec2",
+                            TwoFactorEnabled = false,
+                            UserName = "test"
                         });
                 });
 
@@ -158,14 +176,12 @@ namespace Ecommerce.Authorization.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "b392b265-0817-44b7-89ba-c84b03dc4be4",
                             Name = "admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "c78d4a6b-e6e2-488a-aa35-9a9bbe1a191c",
                             Name = "regular",
                             NormalizedName = "REGULAR"
                         });
@@ -277,6 +293,11 @@ namespace Ecommerce.Authorization.Migrations
                         {
                             UserId = 1,
                             RoleId = 1
+                        },
+                        new
+                        {
+                            UserId = 2,
+                            RoleId = 2
                         });
                 });
 

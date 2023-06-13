@@ -4,10 +4,14 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Ecommerce.Authorization.Migrations
 {
+    /// <inheritdoc />
     public partial class Initial : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterDatabase()
@@ -38,7 +42,7 @@ namespace Ecommerce.Authorization.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    name = table.Column<string>(type: "longtext", nullable: true)
+                    name = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     user_name = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -193,22 +197,29 @@ namespace Ecommerce.Authorization.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "id", "concurrency_stamp", "name", "normalized_name" },
-                values: new object[] { 1, "b392b265-0817-44b7-89ba-c84b03dc4be4", "admin", "ADMIN" });
-
-            migrationBuilder.InsertData(
-                table: "AspNetRoles",
-                columns: new[] { "id", "concurrency_stamp", "name", "normalized_name" },
-                values: new object[] { 2, "c78d4a6b-e6e2-488a-aa35-9a9bbe1a191c", "regular", "REGULAR" });
+                values: new object[,]
+                {
+                    { 1, null, "admin", "ADMIN" },
+                    { 2, null, "regular", "REGULAR" }
+                });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "id", "access_failed_count", "concurrency_stamp", "email", "email_confirmed", "lockout_enabled", "lockout_end", "name", "normalized_email", "normalized_user_name", "password_hash", "phone_number", "phone_number_confirmed", "security_stamp", "two_factor_enabled", "user_name" },
-                values: new object[] { 1, 0, "3ec3f292-9eb3-4a85-8a4e-2b1504294df2", "admin@admin.com", true, false, null, "Admin", "ADMIN@ADMIN.COM", "ADMIN", "AQAAAAEAACcQAAAAEGlIfsKQLCVHnIDJhEKp2gvVaqcvh82hn/vKL8/x9Oe3gFzQzKQWSovyTI0EQ4SN5g==", null, false, "39c9d82d-5843-4c90-8493-ec1c047ae610", false, "admin" });
+                values: new object[,]
+                {
+                    { 1, 0, "51627f21-a82d-4887-ac9a-a26900cf954d", "admin@admin.com", true, false, null, "Admin", "ADMIN@ADMIN.COM", "ADMIN", "AQAAAAIAAYagAAAAEBwf6nwFBruL2gVChb1fAHfswwjI+Rnmsza1JRr/qDRmjoqOIrZ0VhcQyhe7/OrOrQ==", null, false, "38d2fad6-6a32-47aa-81cd-b71d1ce86d49", false, "admin" },
+                    { 2, 0, "cc116b7f-0f4e-4d74-bf6f-dd127f850e71", "test@test.com", true, false, null, "Tester", "TEST@TEST.COM", "TEST", "AQAAAAIAAYagAAAAEFaa1eAmR/3Hmll2lAajnRS22FFrQLBcUc/oRsqy4ap9qrfSqDOgbUGVB/pUhWAXUA==", null, false, "2ddab000-7ea9-4898-a89e-cdb7c110bec2", false, "test" }
+                });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "role_id", "user_id" },
-                values: new object[] { 1, 1 });
+                values: new object[,]
+                {
+                    { 1, 1 },
+                    { 2, 2 }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "ix_asp_net_role_claims_role_id",
@@ -248,6 +259,7 @@ namespace Ecommerce.Authorization.Migrations
                 unique: true);
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
