@@ -13,6 +13,8 @@ public class DeleteAddressTests : BaseTestFixture
     public async Task ShouldDeleteAddress_GivenExistingAddress()
     {
         // Arrange
+        RunAsRegularUser();
+
         GetAddressDto createdAddress = await SendAsync(new CreateAddressCommand()
         {
             RecipientFullName = "John Smith",
