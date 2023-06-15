@@ -1,4 +1,4 @@
-﻿namespace Ecommerce.Domain.Interfaces.ProductRepositories;
+﻿namespace Ecommerce.Domain.Repositories.ProductRepositories;
 
 public interface IProductCategoryDiscountRepository
 {

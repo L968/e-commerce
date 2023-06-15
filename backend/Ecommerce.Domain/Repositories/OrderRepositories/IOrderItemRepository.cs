@@ -1,4 +1,4 @@
-﻿namespace Ecommerce.Domain.Interfaces.OrderRepositories;
+﻿namespace Ecommerce.Domain.Repositories.OrderRepositories;
 
 public interface IOrderItemRepository
 {
