@@ -80,7 +80,7 @@ public partial class Testing
         //return await RunAsUserAsync("admin@admin.com", "Admin123!", new[] { "admin" });
     }
 
-    public static async Task<int> RunAsUserAsync(string userName, string password, string[] roles)
+    private static async Task<int> RunAsUserAsync(string userName, string password, string[] roles)
     {
         using var scope = _scopeFactory.CreateScope();
 
