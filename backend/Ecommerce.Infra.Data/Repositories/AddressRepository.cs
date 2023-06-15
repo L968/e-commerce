@@ -1,7 +1,7 @@
 ﻿using Ecommerce.Domain.Entities;
-using Ecommerce.Domain.Interfaces;
+using Ecommerce.Domain.Repositories;
 
-namespace Ecommerce.Infra.Data.Repositories.AddressRepositories;
+namespace Ecommerce.Infra.Data.Repositories;
 
 public class AddressRepository : IAddressRepository
 {
@@ -24,22 +24,19 @@ public class AddressRepository : IAddressRepository
         return await _context.Addresses.FirstOrDefaultAsync(address => address.Id == id && address.UserId == userId);
     }
 
-    public async Task<Address> CreateAsync(Address address)
+    public Address Create(Address address)
     {
-        await _context.Addresses.AddAsync(address);
-        await _context.SaveChangesAsync();
+        _context.Addresses.Add(address);
         return address;
     }
 
-    public async Task UpdateAsync(Address address)
+    public void Update(Address address)
     {
         _context.Addresses.Update(address);
-        await _context.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(Address address)
+    public void Delete(Address address)
     {
         _context.Addresses.Remove(address);
-        await _context.SaveChangesAsync();
     }
 }
