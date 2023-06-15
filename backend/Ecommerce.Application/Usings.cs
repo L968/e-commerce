@@ -8,10 +8,11 @@ global using Ecommerce.Domain.Entities;
 global using Ecommerce.Domain.Entities.CartEntities;
 global using Ecommerce.Domain.Entities.OrderEntities;
 global using Ecommerce.Domain.Entities.ProductEntities;
+global using Ecommerce.Domain.Repositories;
 
-global using Ecommerce.Domain.Interfaces.CartRepositories;
-global using Ecommerce.Domain.Interfaces.OrderRepositories;
-global using Ecommerce.Domain.Interfaces.ProductRepositories;
+global using Ecommerce.Domain.Repositories.CartRepositories;
+global using Ecommerce.Domain.Repositories.OrderRepositories;
+global using Ecommerce.Domain.Repositories.ProductRepositories;
 
 global using Ecommerce.Application.Common.Interfaces;
 

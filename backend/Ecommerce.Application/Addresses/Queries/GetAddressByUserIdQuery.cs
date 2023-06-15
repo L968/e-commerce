@@ -1,4 +1,4 @@
-﻿using Ecommerce.Domain.Interfaces;
+﻿using Ecommerce.Domain.Repositories;
 
 namespace Ecommerce.Application.Addresses.Queries;
 
