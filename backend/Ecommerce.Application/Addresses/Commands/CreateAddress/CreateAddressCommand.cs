@@ -1,5 +1,5 @@
 ﻿using Ecommerce.Application.Addresses.Queries;
-using Ecommerce.Domain.Interfaces;
+using Ecommerce.Domain.Repositories;
 
 namespace Ecommerce.Application.Addresses.Commands.CreateAddress;
 
@@ -18,25 +18,31 @@ public record CreateAddressCommand : IRequest<GetAddressDto>
     public string? AdditionalInformation { get; set; }
 }
 
-public class AddressCreateCommandHandler : IRequestHandler<CreateAddressCommand, GetAddressDto>
+public class CreateAddressCommandHandler : IRequestHandler<CreateAddressCommand, GetAddressDto>
 {
     private readonly IMapper _mapper;
     private readonly ICurrentUserService _currentUserService;
     private readonly IAddressRepository _addressRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public AddressCreateCommandHandler(IMapper mapper, ICurrentUserService currentUserService, IAddressRepository addressRepository)
+    public CreateAddressCommandHandler(IMapper mapper, ICurrentUserService currentUserService, IAddressRepository addressRepository, IUnitOfWork unitOfWork)
     {
         _mapper = mapper;
         _addressRepository = addressRepository;
         _currentUserService = currentUserService;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<GetAddressDto> Handle(CreateAddressCommand request, CancellationToken cancellationToken)
     {
         // TODO: API Cep?
+        if (_currentUserService.UserId is null)
+        {
+            throw new ArgumentNullException(nameof(_currentUserService.UserId));
+        }
 
         var address = new Address(
-            userId: _currentUserService.UserId!.Value,
+            userId: _currentUserService.UserId.Value,
             request.RecipientFullName,
             request.RecipientPhoneNumber,
             request.PostalCode,
@@ -50,7 +56,8 @@ public class AddressCreateCommandHandler : IRequestHandler<CreateAddressCommand,
             request.AdditionalInformation
         );
 
-        await _addressRepository.CreateAsync(address);
+        _addressRepository.Create(address);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<GetAddressDto>(address);
     }

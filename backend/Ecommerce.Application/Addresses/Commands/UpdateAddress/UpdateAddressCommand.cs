@@ -1,4 +1,4 @@
-﻿using Ecommerce.Domain.Interfaces;
+﻿using Ecommerce.Domain.Repositories;
 using System.Text.Json.Serialization;
 
 namespace Ecommerce.Application.Addresses.Commands.UpdateAddress;
@@ -20,15 +20,17 @@ public record UpdateAddressCommand : IRequest<Result>
     public string? AdditionalInformation { get; set; }
 }
 
-public class AddressUpdateCommandHandler : IRequestHandler<UpdateAddressCommand, Result>
+public class UpdateAddressCommandHandler : IRequestHandler<UpdateAddressCommand, Result>
 {
     private readonly IAddressRepository _addressRepository;
     private readonly ICurrentUserService _currentUserService;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public AddressUpdateCommandHandler(IAddressRepository addressRepository, ICurrentUserService currentUserService)
+    public UpdateAddressCommandHandler(IAddressRepository addressRepository, ICurrentUserService currentUserService, IUnitOfWork unitOfWork)
     {
         _addressRepository = addressRepository;
         _currentUserService = currentUserService;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<Result> Handle(UpdateAddressCommand request, CancellationToken cancellationToken)
@@ -57,7 +59,9 @@ public class AddressUpdateCommandHandler : IRequestHandler<UpdateAddressCommand,
             request.AdditionalInformation
         );
 
-        await _addressRepository.UpdateAsync(address);
+        _addressRepository.Update(address);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
         return Result.Ok();
     }
 }
