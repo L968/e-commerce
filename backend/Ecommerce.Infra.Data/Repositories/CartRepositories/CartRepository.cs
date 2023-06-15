@@ -2,28 +2,25 @@
 
 public class CartRepository : ICartRepository
 {
-    public Task<Cart> CreateAsync(Cart cart)
+    private readonly AppDbContext _context;
+
+    public CartRepository(AppDbContext context)
     {
-        throw new NotImplementedException();
+        _context = context;
     }
 
-    public Task DeleteAsync(Cart cart)
+    public async Task<Cart?> GetByUserIdAsync(int userId)
     {
-        throw new NotImplementedException();
+        return await _context.Carts
+            .Include(c => c.CartItems)
+            .ThenInclude(ci => ci.ProductVariant)
+            .ThenInclude(p => p.Product)
+            .FirstOrDefaultAsync(c => c.UserId == userId);
     }
 
-    public Task<IEnumerable<Cart>> GetAllAsync()
+    public Cart Create(Cart cart)
     {
-        throw new NotImplementedException();
-    }
-
-    public Task<Cart?> GetByIdAsync(int id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task UpdateAsync(Cart cart)
-    {
-        throw new NotImplementedException();
+        _context.Carts.Add(cart);
+        return cart;
     }
 }

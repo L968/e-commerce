@@ -1,21 +1,27 @@
 ﻿namespace Ecommerce.Domain.Entities.CartEntities;
 
-public sealed class CartItem
+public sealed class CartItem : AuditableEntity
 {
     public int Id { get; private set; }
     public int CartId { get; private set; }
     public int ProductVariantId { get; private set; }
-    public int Quantity { get; private set; }
 
-    public Cart? Cart { get; set; }
+    private int _quantity;
+    public int Quantity {
+        get => _quantity;
+        private set
+        {
+            DomainExceptionValidation.When(value <= 0,
+                "Quantity must be a positive number");
+
+            _quantity = value;
+        }
+    }
+
     public ProductVariant? ProductVariant { get; set; }
 
     public CartItem(int cartId, int productVariantId, int quantity)
     {
-        ValidateCartId(cartId);
-        ValidateProductVariantId(productVariantId);
-        ValidateQuantity(quantity);
-
         CartId = cartId;
         ProductVariantId = productVariantId;
         Quantity = quantity;
@@ -23,45 +29,14 @@ public sealed class CartItem
 
     public CartItem(int id, int cartId, int productVariantId, int quantity)
     {
-        ValidateId(id);
-        ValidateCartId(cartId);
-        ValidateProductVariantId(productVariantId);
-        ValidateQuantity(quantity);
-
         Id = id;
         CartId = cartId;
         ProductVariantId = productVariantId;
         Quantity = quantity;
     }
 
-    public void Update(int quantity)
+    public void IncrementQuantity(int quantity)
     {
-        ValidateQuantity(quantity);
-
-        Quantity = quantity;
-    }
-
-    private void ValidateId(int id)
-    {
-        DomainExceptionValidation.When(id <= 0,
-            $"Invalid {nameof(id)} value");
-    }
-
-    private void ValidateCartId(int cartId)
-    {
-        DomainExceptionValidation.When(cartId <= 0,
-            $"Invalid {nameof(cartId)} value");
-    }
-
-    private void ValidateProductVariantId(int productVariantId)
-    {
-        DomainExceptionValidation.When(productVariantId <= 0,
-            $"Invalid {nameof(productVariantId)} value");
-    }
-
-    private void ValidateQuantity(int quantity)
-    {
-        DomainExceptionValidation.When(quantity <= 0,
-            $"Invalid {nameof(quantity)} value");
+        Quantity += quantity;
     }
 }

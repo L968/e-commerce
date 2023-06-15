@@ -5,6 +5,9 @@ namespace Ecommerce.Infra.Data.Context;
 
 public class AppDbContext : DbContext
 {
+    public virtual DbSet<Cart> Carts { get; set; }
+    public virtual DbSet<CartItem> CartItems { get; set; }
+
     public virtual DbSet<Product> Products { get; set; }
     public virtual DbSet<ProductCategory> ProductCategories { get; set; }
     public virtual DbSet<ProductInventory> ProductInventories { get; set; }
@@ -37,30 +40,6 @@ public class AppDbContext : DbContext
                     .HasIndex(property.Name)
                     .IsUnique();
             }
-        }
-    }
-
-    public override async Task<int> SaveChangesAsync(CancellationToken token = default)
-    {
-        AddTimestamps();
-        return await base.SaveChangesAsync(token);
-    }
-
-    private void AddTimestamps()
-    {
-        var entities = ChangeTracker.Entries()
-            .Where(x => x.Entity is AuditableEntity && (x.State == EntityState.Added || x.State == EntityState.Modified));
-
-        foreach (var entity in entities)
-        {
-            var now = DateTime.UtcNow;
-
-            if (entity.State == EntityState.Added)
-            {
-                ((AuditableEntity)entity.Entity).CreatedAt = now;
-            }
-
-            ((AuditableEntity)entity.Entity).UpdatedAt = now;
         }
     }
 }

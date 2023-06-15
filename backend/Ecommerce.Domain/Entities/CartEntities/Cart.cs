@@ -5,33 +5,36 @@ public sealed class Cart
     public int Id { get; private set; }
     public int UserId { get; private set; }
 
-    public List<CartItem>? CartItems { get; set; }
+    private readonly List<CartItem> _cartItems = new();
+    public IReadOnlyCollection<CartItem> CartItems => _cartItems;
 
     public Cart(int userId)
     {
-        ValidateUserId(userId);
-
         UserId = userId;
     }
 
     public Cart(int id, int userId)
     {
-        ValidateId(id);
-        ValidateUserId(userId);
-
         Id = id;
         UserId = userId;
     }
 
-    private void ValidateId(int id)
+    public void AddCartItem(CartItem cartItem)
     {
-        DomainExceptionValidation.When(id <= 0,
-            $"Invalid {nameof(id)} value");
-    }
+        if (cartItem.CartId != Id)
+        {
+            throw new DomainExceptionValidation("CartItem does not belong to this cart");
+        }
 
-    private void ValidateUserId(int userId)
-    {
-        DomainExceptionValidation.When(userId <= 0,
-            $"Invalid {nameof(userId)} value");
+        CartItem? existingCartItem = _cartItems.FirstOrDefault(cartItem => cartItem.ProductVariantId == cartItem.ProductVariantId);
+
+        if (existingCartItem != null)
+        {
+            existingCartItem.IncrementQuantity(cartItem.Quantity);
+        }
+        else
+        {
+            _cartItems.Add(cartItem);
+        }
     }
 }
