@@ -2,6 +2,7 @@
 global using AutoMapper;
 global using FluentResults;
 global using FluentValidation;
+global using System.Text.Json.Serialization;
 global using System.ComponentModel.DataAnnotations;
 
 global using Ecommerce.Domain.Entities;
