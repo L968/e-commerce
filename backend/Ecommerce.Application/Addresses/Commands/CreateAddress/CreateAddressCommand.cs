@@ -1,8 +1,8 @@
 ﻿using Ecommerce.Application.Addresses.Queries;
-using Ecommerce.Domain.Repositories;
 
 namespace Ecommerce.Application.Addresses.Commands.CreateAddress;
 
+[Authorize]
 public record CreateAddressCommand : IRequest<GetAddressDto>
 {
     public string RecipientFullName { get; set; } = "";
@@ -36,13 +36,8 @@ public class CreateAddressCommandHandler : IRequestHandler<CreateAddressCommand,
     public async Task<GetAddressDto> Handle(CreateAddressCommand request, CancellationToken cancellationToken)
     {
         // TODO: API Cep?
-        if (_currentUserService.UserId is null)
-        {
-            throw new ArgumentNullException(nameof(_currentUserService.UserId));
-        }
-
         var address = new Address(
-            userId: _currentUserService.UserId.Value,
+            userId: _currentUserService.UserId,
             request.RecipientFullName,
             request.RecipientPhoneNumber,
             request.PostalCode,

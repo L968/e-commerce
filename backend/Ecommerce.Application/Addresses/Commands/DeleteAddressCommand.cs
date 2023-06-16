@@ -1,7 +1,6 @@
-﻿using Ecommerce.Domain.Repositories;
+﻿namespace Ecommerce.Application.Addresses.Commands;
 
-namespace Ecommerce.Application.Addresses.Commands;
-
+[Authorize]
 public record DeleteAddressCommand(int Id) : IRequest<Result>;
 
 public class DeleteAddressCommandHandler : IRequestHandler<DeleteAddressCommand, Result>
@@ -19,8 +18,7 @@ public class DeleteAddressCommandHandler : IRequestHandler<DeleteAddressCommand,
 
     public async Task<Result> Handle(DeleteAddressCommand request, CancellationToken cancellationToken)
     {
-        int userId = _currentUserService.UserId!.Value;
-        Address? address = await _addressRepository.GetByIdAndUserIdAsync(request.Id, userId);
+        Address? address = await _addressRepository.GetByIdAndUserIdAsync(request.Id, _currentUserService.UserId);
 
         if (address == null)
         {

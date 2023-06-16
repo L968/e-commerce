@@ -1,8 +1,6 @@
-﻿using Ecommerce.Domain.Entities;
-using Ecommerce.Domain.Repositories;
+﻿namespace Ecommerce.Application.Addresses.Queries;
 
-namespace Ecommerce.Application.Addresses.Queries;
-
+[Authorize]
 public record GetAddressByIdAndUserIdQuery(int Id) : IRequest<GetAddressDto?>;
 
 public class GetAddressByIdAndUserIdQueryHandler : IRequestHandler<GetAddressByIdAndUserIdQuery, GetAddressDto?>
@@ -20,8 +18,7 @@ public class GetAddressByIdAndUserIdQueryHandler : IRequestHandler<GetAddressByI
 
     public async Task<GetAddressDto?> Handle(GetAddressByIdAndUserIdQuery request, CancellationToken cancellationToken)
     {
-        int userId = _currentUserService.UserId!.Value;
-        Address? address = await _addressRepository.GetByIdAndUserIdAsync(request.Id, userId);
+        Address? address = await _addressRepository.GetByIdAndUserIdAsync(request.Id, _currentUserService.UserId);
         return _mapper.Map<GetAddressDto>(address);
     }
 }

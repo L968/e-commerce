@@ -59,6 +59,7 @@ public static class DependencyInjection
         {
             configuration.RegisterServicesFromAssembly(applicationAssembly);
             configuration.AddBehavior(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
+            configuration.AddBehavior(typeof(IPipelineBehavior<,>), typeof(AuthorizationBehaviour<,>));
         });
 
         services.AddValidatorsFromAssembly(applicationAssembly);

@@ -1,8 +1,8 @@
 ﻿using Ecommerce.Application.Carts.Queries;
-using Ecommerce.Domain.Repositories;
 
 namespace Ecommerce.Application.Carts.Commands;
 
+[Authorize]
 public record CreateCartCommand : IRequest<Result<GetCartDto>>;
 
 public class CreateCartCommandHandler : IRequestHandler<CreateCartCommand, Result<GetCartDto>>
@@ -22,21 +22,16 @@ public class CreateCartCommandHandler : IRequestHandler<CreateCartCommand, Resul
 
     public async Task<Result<GetCartDto>> Handle(CreateCartCommand request, CancellationToken cancellationToken)
     {
-        int? userId = _currentUserService.UserId;
+        int userId = _currentUserService.UserId;
 
-        if (userId is null)
-        {
-            return Result.Fail("UserId is required");
-        }
-
-        Cart? existingCart = await _cartRepository.GetByUserIdAsync(userId.Value);
+        Cart? existingCart = await _cartRepository.GetByUserIdAsync(userId);
 
         if (existingCart is not null)
         {
             return Result.Fail("A cart already exists for the current user");
         }
 
-        var cart = new Cart(userId.Value);
+        var cart = new Cart(userId);
 
         _cartRepository.Create(cart);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

@@ -1,5 +1,6 @@
 ﻿namespace Ecommerce.Application.Carts.Queries;
 
+[Authorize]
 public record GetCartByUserIdQuery() : IRequest<GetCartDto?>;
 
 public class GetCartByUserIdQueryHandler : IRequestHandler<GetCartByUserIdQuery, GetCartDto?>
@@ -17,12 +18,7 @@ public class GetCartByUserIdQueryHandler : IRequestHandler<GetCartByUserIdQuery,
 
     public async Task<GetCartDto?> Handle(GetCartByUserIdQuery request, CancellationToken cancellationToken)
     {
-        if (_currentUserService.UserId is null)
-        {
-            throw new ArgumentNullException(nameof(_currentUserService.UserId));
-        }
-
-        Cart? cart = await _cartRepository.GetByUserIdAsync(_currentUserService.UserId.Value);
+        Cart? cart = await _cartRepository.GetByUserIdAsync(_currentUserService.UserId);
         return _mapper.Map<GetCartDto>(cart);
     }
 }

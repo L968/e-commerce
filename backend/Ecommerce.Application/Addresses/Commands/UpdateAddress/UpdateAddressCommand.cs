@@ -1,8 +1,8 @@
-﻿using Ecommerce.Domain.Repositories;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace Ecommerce.Application.Addresses.Commands.UpdateAddress;
 
+[Authorize]
 public record UpdateAddressCommand : IRequest<Result>
 {
     [JsonIgnore]
@@ -35,8 +35,7 @@ public class UpdateAddressCommandHandler : IRequestHandler<UpdateAddressCommand,
 
     public async Task<Result> Handle(UpdateAddressCommand request, CancellationToken cancellationToken)
     {
-        int userId = _currentUserService.UserId!.Value;
-        Address? address = await _addressRepository.GetByIdAndUserIdAsync(request.Id, userId);
+        Address? address = await _addressRepository.GetByIdAndUserIdAsync(request.Id, _currentUserService.UserId);
 
         if (address == null)
         {

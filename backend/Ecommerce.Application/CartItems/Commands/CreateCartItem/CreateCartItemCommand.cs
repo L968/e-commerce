@@ -1,5 +1,6 @@
 ﻿namespace Ecommerce.Application.CartItems.Commands.CreateCartItem;
 
+[Authorize]
 public record CreateCartItemCommand : IRequest<Result>
 {
     public int ProductVariantId { get; set; }
@@ -23,14 +24,7 @@ public class CreateCartItemCommandHandler : IRequestHandler<CreateCartItemComman
 
     public async Task<Result> Handle(CreateCartItemCommand request, CancellationToken cancellationToken)
     {
-        int? userId = _currentUserService.UserId;
-
-        if (userId is null)
-        {
-            return Result.Fail("UserId is required");
-        }
-
-        Cart? cart = await _cartRepository.GetByUserIdAsync(userId.Value);
+        Cart? cart = await _cartRepository.GetByUserIdAsync(_currentUserService.UserId);
 
         if (cart is null)
         {

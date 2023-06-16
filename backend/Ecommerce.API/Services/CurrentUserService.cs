@@ -6,7 +6,7 @@ public class CurrentUserService : ICurrentUserService
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public int? UserId => int.Parse(_httpContextAccessor.HttpContext?.User?.FindFirst("id")!.Value!);
+    public int UserId => int.Parse(_httpContextAccessor.HttpContext?.User?.FindFirst("id")!.Value!);
 
     public CurrentUserService(IHttpContextAccessor httpContextAccessor)
     {

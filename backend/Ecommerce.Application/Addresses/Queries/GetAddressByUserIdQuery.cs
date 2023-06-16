@@ -1,7 +1,6 @@
-﻿using Ecommerce.Domain.Repositories;
+﻿namespace Ecommerce.Application.Addresses.Queries;
 
-namespace Ecommerce.Application.Addresses.Queries;
-
+[Authorize]
 public record GetAddressByUserIdQuery : IRequest<IEnumerable<GetAddressDto>>;
 
 public class GetAddressByUserIdQueryHandler : IRequestHandler<GetAddressByUserIdQuery, IEnumerable<GetAddressDto>>
@@ -19,8 +18,7 @@ public class GetAddressByUserIdQueryHandler : IRequestHandler<GetAddressByUserId
 
     public async Task<IEnumerable<GetAddressDto>> Handle(GetAddressByUserIdQuery request, CancellationToken cancellationToken)
     {
-        int userId = _currentUserService.UserId!.Value;
-        IEnumerable<Address> addresses = await _addressRepository.GetByUserIdAsync(userId);
+        IEnumerable<Address> addresses = await _addressRepository.GetByUserIdAsync(_currentUserService.UserId);
         return _mapper.Map<IEnumerable<GetAddressDto>>(addresses);
     }
 }
