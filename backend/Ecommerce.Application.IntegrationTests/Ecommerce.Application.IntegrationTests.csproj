@@ -24,4 +24,9 @@
     <ProjectReference Include="..\Ecommerce.Authorization\Ecommerce.Authorization.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Carts\" />
+    <Folder Include="CartItems\" />
+  </ItemGroup>
+
 </Project>

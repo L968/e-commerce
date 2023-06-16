@@ -1,8 +1,7 @@
-﻿using Ecommerce.Application.Addresses.Commands;
-using Ecommerce.Application.Addresses.Commands.CreateAddress;
+﻿using Ecommerce.Application.Addresses.Commands.CreateAddress;
+using Ecommerce.Application.Addresses.Commands.DeleteAddress;
 using Ecommerce.Application.Addresses.Commands.UpdateAddress;
 using Ecommerce.Application.Addresses.Queries;
-using MediatR;
 
 namespace Ecommerce.API.Controllers
 {

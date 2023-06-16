@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Ecommerce.Application.Addresses.Commands.UpdateAddress;
+﻿namespace Ecommerce.Application.Addresses.Commands.UpdateAddress;
 
 [Authorize]
 public record UpdateAddressCommand : IRequest<Result>

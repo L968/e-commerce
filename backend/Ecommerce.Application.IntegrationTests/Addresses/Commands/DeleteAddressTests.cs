@@ -1,5 +1,5 @@
-﻿using Ecommerce.Application.Addresses.Commands;
-using Ecommerce.Application.Addresses.Commands.CreateAddress;
+﻿using Ecommerce.Application.Addresses.Commands.CreateAddress;
+using Ecommerce.Application.Addresses.Commands.DeleteAddress;
 using Ecommerce.Application.Addresses.Queries;
 using FluentResults;
 
