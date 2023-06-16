@@ -28,13 +28,23 @@ public sealed class Cart
 
         CartItem? existingCartItem = _cartItems.FirstOrDefault(cartItem => cartItem.ProductVariantId == cartItem.ProductVariantId);
 
-        if (existingCartItem != null)
+        if (existingCartItem is not null)
         {
             existingCartItem.IncrementQuantity(cartItem.Quantity);
         }
         else
         {
             _cartItems.Add(cartItem);
+        }
+    }
+
+    public void RemoveCartItem(int cartItemId)
+    {
+        CartItem? cartItem = _cartItems.FirstOrDefault(item => item.Id == cartItemId);
+
+        if (cartItem is not null)
+        {
+            _cartItems.Remove(cartItem);
         }
     }
 }
