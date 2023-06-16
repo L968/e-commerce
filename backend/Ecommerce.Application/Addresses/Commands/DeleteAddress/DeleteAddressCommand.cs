@@ -1,4 +1,4 @@
-﻿namespace Ecommerce.Application.Addresses.Commands;
+﻿namespace Ecommerce.Application.Addresses.Commands.DeleteAddress;
 
 [Authorize]
 public record DeleteAddressCommand(int Id) : IRequest<Result>;
@@ -20,10 +20,7 @@ public class DeleteAddressCommandHandler : IRequestHandler<DeleteAddressCommand,
     {
         Address? address = await _addressRepository.GetByIdAndUserIdAsync(request.Id, _currentUserService.UserId);
 
-        if (address == null)
-        {
-            return Result.Fail("Address not found");
-        }
+        if (address == null) return Result.Fail("Address not found");
 
         _addressRepository.Delete(address);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
