@@ -12,7 +12,7 @@ public sealed class CartItem : AuditableEntity
         private set
         {
             DomainExceptionValidation.When(value <= 0,
-                "Quantity must be a positive number");
+                "Quantity must be greater than 0");
 
             _quantity = value;
         }
