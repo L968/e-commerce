@@ -1,5 +1,7 @@
-﻿using Ecommerce.Application.DTO.ProductDto;
-using Ecommerce.Application.Interfaces.ProductServices;
+﻿using Ecommerce.Application.ProductCategories.Commands.CreateProductCategory;
+using Ecommerce.Application.ProductCategories.Commands.DeleteProductCategory;
+using Ecommerce.Application.ProductCategories.Commands.UpdateProductCategory;
+using Ecommerce.Application.ProductCategories.Queries;
 
 namespace Ecommerce.API.Controllers
 {
@@ -7,57 +9,48 @@ namespace Ecommerce.API.Controllers
     [Route("[controller]")]
     public class ProductCategoryController : ControllerBase
     {
-        private readonly IProductCategoryService _productCategoryService;
+        private readonly IMediator _mediator;
 
-        public ProductCategoryController(IProductCategoryService productCategoryService)
+        public ProductCategoryController(IMediator mediator)
         {
-            _productCategoryService = productCategoryService;
+            _mediator = mediator;
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            return Ok();
-        }
-
-        [HttpGet("{guid}")]
-        public IActionResult Get(Guid guid)
-        {
-            return Ok();
+            return Ok(await _mediator.Send(new GetProductCategoryQuery()));
         }
 
         [HttpPost]
         [Authorize(Roles = "admin")]
-        public IActionResult Create([FromBody] CreateProductCategoryDto productCategoryDto)
+        public async Task<IActionResult> Create([FromBody] CreateProductCategoryCommand command)
         {
-            return Ok();
-            //var productCategory = _productCategoryService.Create(productCategoryDto);
-
-            //return CreatedAtAction(nameof(Get), new { productCategory.Guid }, productCategory);
+            GetProductCategoryDto productCategory = await _mediator.Send(command);
+            return CreatedAtAction(nameof(Get), null, productCategory);
         }
 
         [HttpPut("{guid}")]
         [Authorize(Roles = "admin")]
-        public IActionResult Update(Guid guid, [FromBody] UpdateProductCategoryDto productCategoryDto)
+        public async Task<IActionResult> Update(Guid guid, [FromBody] UpdateProductCategoryCommand command)
         {
-            return Ok();
-            //Result result = _productCategoryService.Update(guid, productCategoryDto);
+            command.Guid = guid;
+            Result result = await _mediator.Send(command);
 
-            //if (result.IsFailed) return NotFound();
+            if (result.IsFailed) return NotFound();
 
-            //return NoContent();
+            return NoContent();
         }
 
         [HttpDelete("{guid}")]
         [Authorize(Roles = "admin")]
-        public IActionResult Delete(Guid guid)
+        public async Task<IActionResult> Delete(Guid guid)
         {
-            return Ok();
-            //Result result = _productCategoryService.Delete(guid);
+            Result result = await _mediator.Send(new DeleteProductCategoryCommand(guid));
 
-            //if (result.IsFailed) return NotFound();
+            if (result.IsFailed) return NotFound();
 
-            //return NoContent();
+            return NoContent();
         }
     }
 }

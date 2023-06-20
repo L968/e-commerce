@@ -51,9 +51,9 @@ public class ProductService : IProductService
         using var transaction = new TransactionScope();
 
         Product product = _mapper.Map<Product>(productDto);
-        ProductCategory? productCategory = await _productCategoryRepository.GetByIdAsync(product.ProductCategoryId);
+        //ProductCategory? productCategory = await _productCategoryRepository.GetByIdAsync(product.ProductCategoryId);
 
-        if (productCategory == null) return Result.Fail("Product category not found");
+        //if (productCategory == null) return Result.Fail("Product category not found");
 
         await _productRepository.CreateAsync(product);
 

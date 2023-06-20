@@ -44,7 +44,6 @@ public static class DependencyInjection
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IUploadFileService, UploadFileService>();
         services.AddScoped<IProductImageService, ProductImageService>();
-        services.AddScoped<IProductCategoryService, ProductCategoryService>();
 
         services.AddScoped<IAddressRepository, AddressRepository>();
         services.AddScoped<ICartRepository, CartRepository>();
