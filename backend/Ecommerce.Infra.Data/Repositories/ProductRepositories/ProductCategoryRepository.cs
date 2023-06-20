@@ -2,28 +2,36 @@
 
 public class ProductCategoryRepository : IProductCategoryRepository
 {
-    public Task<ProductCategory> CreateAsync(ProductCategory productCategory)
+    private readonly AppDbContext _context;
+
+    public ProductCategoryRepository(AppDbContext context)
     {
-        throw new NotImplementedException();
+        _context = context;
     }
 
-    public Task DeleteAsync(ProductCategory productCategory)
+    public async Task<IEnumerable<ProductCategory>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        return await _context.ProductCategories.ToListAsync();
     }
 
-    public Task<IEnumerable<ProductCategory>> GetAllAsync()
+    public async Task<ProductCategory?> GetByGuidAsync(Guid guid)
     {
-        throw new NotImplementedException();
+        return await _context.ProductCategories.FirstOrDefaultAsync(pc => pc.Guid == guid);
     }
 
-    public Task<ProductCategory?> GetByIdAsync(int? id)
+    public ProductCategory Create(ProductCategory productCategory)
     {
-        throw new NotImplementedException();
+        _context.ProductCategories.Add(productCategory);
+        return productCategory;
     }
 
-    public Task UpdateAsync(ProductCategory productCategory)
+    public void Update(ProductCategory productCategory)
     {
-        throw new NotImplementedException();
+        _context.ProductCategories.Update(productCategory);
+    }
+
+    public void Delete(ProductCategory productCategory)
+    {
+        _context.ProductCategories.Remove(productCategory);
     }
 }

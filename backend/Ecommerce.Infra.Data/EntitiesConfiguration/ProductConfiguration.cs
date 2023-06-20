@@ -9,9 +9,9 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
             .WithOne(productInventory => productInventory.Product)
             .HasForeignKey<ProductInventory>(productInventory => productInventory.ProductId);
 
-        builder
-            .HasOne(product => product.ProductCategory)
-            .WithMany(productCategory => productCategory.Products)
-            .HasForeignKey(product => product.ProductCategoryId);
+        //builder
+        //    .HasOne(product => product.ProductCategory)
+        //    .WithMany(productCategory => productCategory.Products)
+        //    .HasForeignKey(product => product.ProductCategoryId);
     }
 }
