@@ -60,37 +60,6 @@ public sealed class Address : AuditableEntity
         AdditionalInformation = additionalInformation;
     }
 
-    public Address(
-        int id,
-        int userId,
-        string recipientFullName,
-        string recipientPhoneNumber,
-        string postalCode,
-        string streetName,
-        string buildingNumber,
-        string? complement,
-        string? neighborhood,
-        string city,
-        string state,
-        string country,
-        string? additionalInformation
-    )
-    {
-        Id = id;
-        UserId = userId;
-        RecipientFullName = recipientFullName;
-        RecipientPhoneNumber = recipientPhoneNumber;
-        PostalCode = postalCode;
-        StreetName = streetName;
-        BuildingNumber = buildingNumber;
-        Complement = complement;
-        Neighborhood = neighborhood;
-        City = city;
-        State = state;
-        Country = country;
-        AdditionalInformation = additionalInformation;
-    }
-
     public void Update(
         string recipientFullName,
         string recipientPhoneNumber,
