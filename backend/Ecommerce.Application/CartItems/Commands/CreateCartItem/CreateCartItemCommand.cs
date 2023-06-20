@@ -26,10 +26,7 @@ public class CreateCartItemCommandHandler : IRequestHandler<CreateCartItemComman
     {
         Cart? cart = await _cartRepository.GetByUserIdAsync(_currentUserService.UserId);
 
-        if (cart is null)
-        {
-            return Result.Fail("Cart not found");
-        }
+        if (cart is null) return Result.Fail(DomainErrors.Cart.CartNotFound);
 
         //ProductVariant? productVariant = await _productVariantRepository.GetByIdAsync(request.ProductVariantId);
 
@@ -39,7 +36,9 @@ public class CreateCartItemCommandHandler : IRequestHandler<CreateCartItemComman
         //}
 
         var cartItem = new CartItem(cart.Id, request.ProductVariantId, request.Quantity);
-        cart.AddCartItem(cartItem);
+
+        Result addCartItemResult = cart.AddCartItem(cartItem);
+        if (addCartItemResult.IsFailed) return addCartItemResult;
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

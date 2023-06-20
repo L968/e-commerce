@@ -24,10 +24,10 @@ public class UpdateCartItemQuantityCommandHandler : IRequestHandler<UpdateCartIt
     public async Task<Result> Handle(UpdateCartItemQuantityCommand request, CancellationToken cancellationToken)
     {
         Cart? cart = await _cartRepository.GetByUserIdAsync(_currentUserService.UserId);
-        if (cart is null) return Result.Fail("Cart not found");
+        if (cart is null) return Result.Fail(DomainErrors.Cart.CartNotFound);
 
         CartItem? cartItem = cart.CartItems.FirstOrDefault(ci => ci.Id == request.Id);
-        if (cartItem is null) return Result.Fail("Cart item not found");
+        if (cartItem is null) return Result.Fail(DomainErrors.NotFound("CartItem", request.Id));
 
         cartItem.SetQuantity(request.Quantity);
 

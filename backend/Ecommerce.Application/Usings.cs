@@ -5,12 +5,13 @@ global using FluentValidation;
 global using System.Text.Json.Serialization;
 global using System.ComponentModel.DataAnnotations;
 
+global using Ecommerce.Domain.Errors;
 global using Ecommerce.Domain.Entities;
 global using Ecommerce.Domain.Entities.CartEntities;
 global using Ecommerce.Domain.Entities.OrderEntities;
 global using Ecommerce.Domain.Entities.ProductEntities;
-global using Ecommerce.Domain.Repositories;
 
+global using Ecommerce.Domain.Repositories;
 global using Ecommerce.Domain.Repositories.CartRepositories;
 global using Ecommerce.Domain.Repositories.OrderRepositories;
 global using Ecommerce.Domain.Repositories.ProductRepositories;

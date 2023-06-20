@@ -19,12 +19,9 @@ public sealed class Cart
         UserId = userId;
     }
 
-    public void AddCartItem(CartItem cartItem)
+    public Result AddCartItem(CartItem cartItem)
     {
-        if (cartItem.CartId != Id)
-        {
-            throw new DomainExceptionValidation("CartItem does not belong to this cart");
-        }
+        if (cartItem.CartId != Id) return Result.Fail(DomainErrors.Cart.CartItemNotBelongsToCart);
 
         CartItem? existingCartItem = _cartItems.FirstOrDefault(cartItem => cartItem.ProductVariantId == cartItem.ProductVariantId);
 
@@ -36,6 +33,8 @@ public sealed class Cart
         {
             _cartItems.Add(cartItem);
         }
+
+        return Result.Ok();
     }
 
     public void RemoveCartItem(int cartItemId)

@@ -20,7 +20,7 @@ public class DeleteAddressCommandHandler : IRequestHandler<DeleteAddressCommand,
     {
         Address? address = await _addressRepository.GetByIdAndUserIdAsync(request.Id, _currentUserService.UserId);
 
-        if (address == null) return Result.Fail("Address not found");
+        if (address is null) return Result.Fail(DomainErrors.NotFound("Address", request.Id));
 
         _addressRepository.Delete(address);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

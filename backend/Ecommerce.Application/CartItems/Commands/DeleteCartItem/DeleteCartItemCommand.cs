@@ -20,7 +20,7 @@ public class DeleteCartItemCommandHandler : IRequestHandler<DeleteCartItemComman
     {
         Cart? cart = await _cartRepository.GetByUserIdAsync(_currentUserService.UserId);
 
-        if (cart is null) return Result.Fail("Cart not found");
+        if (cart is null) return Result.Fail(DomainErrors.Cart.CartNotFound);
 
         cart.RemoveCartItem(request.Id);
 
