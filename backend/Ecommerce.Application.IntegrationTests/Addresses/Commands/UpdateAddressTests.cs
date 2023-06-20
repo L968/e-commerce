@@ -53,6 +53,6 @@ public class UpdateAddressTests : BaseTestFixture
         Address? address = await FindAsync<Address>(createdAddress.Id!.Value);
 
         Assert.IsNotNull(address);
-        Assert.AreEqual(address.RecipientFullName, "Spencer Smith");
+        Assert.AreEqual(address!.RecipientFullName, "Spencer Smith");
     }
 }

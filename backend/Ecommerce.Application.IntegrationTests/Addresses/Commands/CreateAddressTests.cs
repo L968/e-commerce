@@ -39,6 +39,17 @@ public class CreateAddressTests : BaseTestFixture
         GetAddressDto? address = await SendAsync(query);
 
         Assert.IsNotNull(address);
-        Assert.True(address!.Id > 0);
+        Assert.True(address.Id > 0);
+        Assert.AreEqual(address.RecipientFullName, command.RecipientFullName);
+        Assert.AreEqual(address.RecipientPhoneNumber, command.RecipientPhoneNumber);
+        Assert.AreEqual(address.PostalCode, command.PostalCode);
+        Assert.AreEqual(address.StreetName, command.StreetName);
+        Assert.AreEqual(address.BuildingNumber, command.BuildingNumber);
+        Assert.AreEqual(address.Complement, command.Complement);
+        Assert.AreEqual(address.Neighborhood, command.Neighborhood);
+        Assert.AreEqual(address.City, command.City);
+        Assert.AreEqual(address.State, command.State);
+        Assert.AreEqual(address.Country, command.Country);
+        Assert.AreEqual(address.AdditionalInformation, command.AdditionalInformation);
     }
 }
