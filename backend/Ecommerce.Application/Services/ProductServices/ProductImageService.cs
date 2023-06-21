@@ -14,7 +14,7 @@ public class ProductImageService : IProductImageService
         _uploadFileService = uploadFileService;
     }
 
-    public async Task<Result<List<ProductImage>>> UploadImages(int productId, IFormFileCollection files)
+    public async Task<Result<List<ProductImage>>> UploadImages(Guid productId, IFormFileCollection files)
     {
         if (files.Count <= 0) return Result.Fail("No images sent");
 

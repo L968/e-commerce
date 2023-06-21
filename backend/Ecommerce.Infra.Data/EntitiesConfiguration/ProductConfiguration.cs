@@ -4,14 +4,13 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
 {
     public void Configure(EntityTypeBuilder<Product> builder)
     {
-        builder
-            .HasOne(product => product.ProductInventory)
-            .WithOne(productInventory => productInventory.Product)
-            .HasForeignKey<ProductInventory>(productInventory => productInventory.ProductId);
+        builder.HasKey(p => p.Id);
+        builder.Property(p => p.Price)
+            .HasPrecision(65, 2);
 
-        //builder
-        //    .HasOne(product => product.ProductCategory)
-        //    .WithMany(productCategory => productCategory.Products)
-        //    .HasForeignKey(product => product.ProductCategoryId);
+        builder
+            .HasOne(p => p.Category)
+            .WithMany()
+            .HasForeignKey(p => p.ProductCategoryId);
     }
 }

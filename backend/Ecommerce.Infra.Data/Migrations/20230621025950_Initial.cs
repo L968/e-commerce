@@ -54,6 +54,20 @@ namespace Ecommerce.Infra.Data.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "cart",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    user_id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_cart", x => x.id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "product_category",
                 columns: table => new
                 {
@@ -77,12 +91,10 @@ namespace Ecommerce.Infra.Data.Migrations
                 name: "product",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    guid = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     name = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    description = table.Column<string>(type: "longtext", nullable: true)
+                    description = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     sku = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -115,7 +127,7 @@ namespace Ecommerce.Infra.Data.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    product_id = table.Column<int>(type: "int", nullable: false),
+                    product_id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     image_path = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
@@ -137,8 +149,8 @@ namespace Ecommerce.Infra.Data.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    product_id = table.Column<int>(type: "int", nullable: false),
-                    quantity = table.Column<int>(type: "int", nullable: false),
+                    product_id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    stock = table.Column<int>(type: "int", nullable: false),
                     created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
@@ -153,6 +165,72 @@ namespace Ecommerce.Infra.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "product_variant",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    guid = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    type = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    value = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    parent_product_id = table.Column<int>(type: "int", nullable: true),
+                    product_id = table.Column<int>(type: "int", nullable: false),
+                    product_id1 = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_product_variant", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_product_variant_products_product_id1",
+                        column: x => x.product_id1,
+                        principalTable: "product",
+                        principalColumn: "id");
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "cart_item",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    cart_id = table.Column<int>(type: "int", nullable: false),
+                    product_variant_id = table.Column<int>(type: "int", nullable: false),
+                    quantity = table.Column<int>(type: "int", nullable: false),
+                    created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_cart_item", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_cart_item_cart_cart_id",
+                        column: x => x.cart_id,
+                        principalTable: "cart",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_cart_item_product_variant_product_variant_id",
+                        column: x => x.product_variant_id,
+                        principalTable: "product_variant",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_cart_item_cart_id",
+                table: "cart_item",
+                column: "cart_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_cart_item_product_variant_id",
+                table: "cart_item",
+                column: "product_variant_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_product_product_category_id",
@@ -169,6 +247,11 @@ namespace Ecommerce.Infra.Data.Migrations
                 table: "product_inventory",
                 column: "product_id",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_product_variant_product_id1",
+                table: "product_variant",
+                column: "product_id1");
         }
 
         /// <inheritdoc />
@@ -178,10 +261,19 @@ namespace Ecommerce.Infra.Data.Migrations
                 name: "address");
 
             migrationBuilder.DropTable(
+                name: "cart_item");
+
+            migrationBuilder.DropTable(
                 name: "product_image");
 
             migrationBuilder.DropTable(
                 name: "product_inventory");
+
+            migrationBuilder.DropTable(
+                name: "cart");
+
+            migrationBuilder.DropTable(
+                name: "product_variant");
 
             migrationBuilder.DropTable(
                 name: "product");

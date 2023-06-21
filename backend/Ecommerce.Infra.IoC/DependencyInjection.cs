@@ -41,7 +41,6 @@ public static class DependencyInjection
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-        services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IUploadFileService, UploadFileService>();
         services.AddScoped<IProductImageService, ProductImageService>();
 

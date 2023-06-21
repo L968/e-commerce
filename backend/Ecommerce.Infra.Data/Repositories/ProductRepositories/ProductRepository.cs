@@ -11,26 +11,33 @@ public class ProductRepository : IProductRepository
 
     public async Task<IEnumerable<Product>> GetAllAsync()
     {
-        return await _context.Products.ToListAsync();
+        return await _context.Products
+            .Include(p => p.Category)
+            .Include(p => p.Images)
+            .ToListAsync();
     }
 
-    public Task<Product?> GetByGuidAsync(Guid guid)
+    public async Task<Product?> GetByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        return await _context.Products
+            .Include(p => p.Category)
+            .Include(p => p.Images)
+            .FirstOrDefaultAsync(p => p.Id == id);
     }
 
-    public Task<Product> CreateAsync(Product product)
+    public Product Create(Product product)
     {
-        throw new NotImplementedException();
+        _context.Products.Add(product);
+        return product;
     }
 
-    public Task UpdateAsync(Product product)
+    public void Update(Product product)
     {
-        throw new NotImplementedException();
+        _context.Products.Update(product);
     }
 
-    public Task DeleteAsync(Product product)
+    public void Delete(Product product)
     {
-        throw new NotImplementedException();
+        _context.Products.Remove(product);
     }
 }

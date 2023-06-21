@@ -2,6 +2,7 @@
 using Ecommerce.Application.CartItems.Queries;
 using Ecommerce.Application.Carts.Queries;
 using Ecommerce.Application.ProductCategories.Queries;
+using Ecommerce.Application.Products.Queries;
 
 namespace Ecommerce.Application.Mappings;
 
@@ -11,9 +12,10 @@ public class DomainToDTOMappingProfile : Profile
 	{
         CreateMap<Address, GetAddressDto>();
 
-        CreateMap<CartItem, GetCartItemDto>();
         CreateMap<Cart, GetCartDto>();
+        CreateMap<CartItem, GetCartItemDto>();
 
+        CreateMap<Product, GetProductDto>();
         CreateMap<ProductCategory, GetProductCategoryDto>();
     }
 }

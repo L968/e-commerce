@@ -1,5 +1,7 @@
-using Ecommerce.Application.DTO.ProductDto;
-using Ecommerce.Application.Interfaces.ProductServices;
+using Ecommerce.Application.Products.Commands.CreateProduct;
+using Ecommerce.Application.Products.Commands.DeleteProduct;
+using Ecommerce.Application.Products.Commands.UpdateProduct;
+using Ecommerce.Application.Products.Queries;
 
 namespace Ecommerce.API.Controllers
 {
@@ -7,23 +9,23 @@ namespace Ecommerce.API.Controllers
     [Route("[controller]")]
     public class ProductController : ControllerBase
     {
-        private readonly IProductService _productService;
+        private readonly IMediator _mediator;
 
-        public ProductController(IProductService productService)
+        public ProductController(IMediator mediator)
         {
-            _productService = productService;
+            _mediator = mediator;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetAll()
         {
-            return Ok(await _productService.GetAllAsync());
+            return Ok(await _mediator.Send(new GetProductQuery()));
         }
 
-        [HttpGet("{guid}")]
-        public async Task<IActionResult> Get(Guid guid)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
         {
-            GetProductDto? product = await _productService.GetByGuidAsync(guid);
+            GetProductDto? product = await _mediator.Send(new GetProductByIdQuery(id));
 
             if (product == null) return NotFound();
 
@@ -31,38 +33,41 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "admin")]
-        public async Task<IActionResult> Create([FromForm] CreateProductDto productDto)
+        //[Authorize(Roles = "admin")]
+        public async Task<IActionResult> Create([FromForm] CreateProductCommand command)
         {
-            Result<GetProductDto> result = await _productService.CreateAsync(productDto);
+            Result<GetProductDto> result = await _mediator.Send(command);
 
-            if (result.IsFailed) return BadRequest(result.Errors[0]);
+            if (result.IsFailed) return BadRequest(result.Reasons);
 
             var product = result.Value;
 
-            return CreatedAtAction(nameof(Get), new { product.Guid }, product);
+            return CreatedAtAction(nameof(GetById), new { guid = product.Id }, product);
         }
 
-        [HttpPut("{guid}")]
+        [HttpPut("{id}")]
         [Authorize(Roles = "admin")]
-        public async Task<IActionResult> Update(Guid guid, [FromBody] UpdateProductDto productDto)
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateProductCommand command)
         {
-            Result result = await _productService.UpdateAsync(guid, productDto);
-
-            if (result.IsFailed) return NotFound();
-
             return NoContent();
+            //command.Guid = guid;
+            //Result result = await _mediator.Send(command);
+
+            //if (result.IsFailed) return NotFound();
+
+            //return NoContent();
         }
 
-        [HttpDelete("{guid}")]
+        [HttpDelete("{id}")]
         [Authorize(Roles = "admin")]
-        public async Task<IActionResult> Delete(Guid guid)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            Result result = await _productService.DeleteAsync(guid);
-
-            if (result.IsFailed) return NotFound();
-
             return NoContent();
+            //Result result = await _mediator.Send(new DeleteProductCommand(guid));
+
+            //if (result.IsFailed) return NotFound();
+
+            //return NoContent();
         }
     }
 }

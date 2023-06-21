@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ecommerce.Infra.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230612230621_Initial")]
+    [Migration("20230621025950_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -99,11 +99,67 @@ namespace Ecommerce.Infra.Data.Migrations
                     b.ToTable("address", (string)null);
                 });
 
-            modelBuilder.Entity("Ecommerce.Domain.Entities.ProductEntities.Product", b =>
+            modelBuilder.Entity("Ecommerce.Domain.Entities.CartEntities.Cart", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_cart");
+
+                    b.ToTable("cart", (string)null);
+                });
+
+            modelBuilder.Entity("Ecommerce.Domain.Entities.CartEntities.CartItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    b.Property<int>("CartId")
+                        .HasColumnType("int")
+                        .HasColumnName("cart_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("ProductVariantId")
+                        .HasColumnType("int")
+                        .HasColumnName("product_variant_id");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int")
+                        .HasColumnName("quantity");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_cart_item");
+
+                    b.HasIndex("CartId")
+                        .HasDatabaseName("ix_cart_item_cart_id");
+
+                    b.HasIndex("ProductVariantId")
+                        .HasDatabaseName("ix_cart_item_product_variant_id");
+
+                    b.ToTable("cart_item", (string)null);
+                });
+
+            modelBuilder.Entity("Ecommerce.Domain.Entities.ProductEntities.Product", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)")
                         .HasColumnName("id");
 
                     b.Property<bool>("Active")
@@ -115,12 +171,9 @@ namespace Ecommerce.Infra.Data.Migrations
                         .HasColumnName("created_at");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("description");
-
-                    b.Property<Guid>("Guid")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("guid");
 
                     b.Property<float>("Height")
                         .HasColumnType("float")
@@ -219,8 +272,8 @@ namespace Ecommerce.Infra.Data.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("image_path");
 
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int")
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("char(36)")
                         .HasColumnName("product_id");
 
                     b.HasKey("Id")
@@ -243,13 +296,13 @@ namespace Ecommerce.Infra.Data.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("created_at");
 
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int")
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("char(36)")
                         .HasColumnName("product_id");
 
-                    b.Property<int>("Quantity")
+                    b.Property<int>("Stock")
                         .HasColumnType("int")
-                        .HasColumnName("quantity");
+                        .HasColumnName("stock");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)")
@@ -265,16 +318,77 @@ namespace Ecommerce.Infra.Data.Migrations
                     b.ToTable("product_inventory", (string)null);
                 });
 
+            modelBuilder.Entity("Ecommerce.Domain.Entities.ProductEntities.ProductVariant", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("guid");
+
+                    b.Property<int?>("ParentProductId")
+                        .HasColumnType("int")
+                        .HasColumnName("parent_product_id");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int")
+                        .HasColumnName("product_id");
+
+                    b.Property<Guid?>("ProductId1")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("product_id1");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("type");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("value");
+
+                    b.HasKey("Id")
+                        .HasName("pk_product_variant");
+
+                    b.HasIndex("ProductId1")
+                        .HasDatabaseName("ix_product_variant_product_id1");
+
+                    b.ToTable("product_variant", (string)null);
+                });
+
+            modelBuilder.Entity("Ecommerce.Domain.Entities.CartEntities.CartItem", b =>
+                {
+                    b.HasOne("Ecommerce.Domain.Entities.CartEntities.Cart", null)
+                        .WithMany("CartItems")
+                        .HasForeignKey("CartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_cart_item_cart_cart_id");
+
+                    b.HasOne("Ecommerce.Domain.Entities.ProductEntities.ProductVariant", "ProductVariant")
+                        .WithMany()
+                        .HasForeignKey("ProductVariantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_cart_item_product_variant_product_variant_id");
+
+                    b.Navigation("ProductVariant");
+                });
+
             modelBuilder.Entity("Ecommerce.Domain.Entities.ProductEntities.Product", b =>
                 {
-                    b.HasOne("Ecommerce.Domain.Entities.ProductEntities.ProductCategory", "ProductCategory")
-                        .WithMany("Products")
+                    b.HasOne("Ecommerce.Domain.Entities.ProductEntities.ProductCategory", "Category")
+                        .WithMany()
                         .HasForeignKey("ProductCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_product_product_categories_product_category_id");
 
-                    b.Navigation("ProductCategory");
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("Ecommerce.Domain.Entities.ProductEntities.ProductImage", b =>
@@ -292,7 +406,7 @@ namespace Ecommerce.Infra.Data.Migrations
             modelBuilder.Entity("Ecommerce.Domain.Entities.ProductEntities.ProductInventory", b =>
                 {
                     b.HasOne("Ecommerce.Domain.Entities.ProductEntities.Product", "Product")
-                        .WithOne("ProductInventory")
+                        .WithOne("Inventory")
                         .HasForeignKey("Ecommerce.Domain.Entities.ProductEntities.ProductInventory", "ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -301,16 +415,27 @@ namespace Ecommerce.Infra.Data.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("Ecommerce.Domain.Entities.ProductEntities.ProductVariant", b =>
+                {
+                    b.HasOne("Ecommerce.Domain.Entities.ProductEntities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId1")
+                        .HasConstraintName("fk_product_variant_products_product_id1");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Ecommerce.Domain.Entities.CartEntities.Cart", b =>
+                {
+                    b.Navigation("CartItems");
+                });
+
             modelBuilder.Entity("Ecommerce.Domain.Entities.ProductEntities.Product", b =>
                 {
                     b.Navigation("Images");
 
-                    b.Navigation("ProductInventory");
-                });
-
-            modelBuilder.Entity("Ecommerce.Domain.Entities.ProductEntities.ProductCategory", b =>
-                {
-                    b.Navigation("Products");
+                    b.Navigation("Inventory")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
