@@ -35,7 +35,7 @@ public class UpdateAddressCommandHandler : IRequestHandler<UpdateAddressCommand,
     {
         Address? address = await _addressRepository.GetByIdAndUserIdAsync(request.Id, _currentUserService.UserId);
 
-        if (address == null)
+        if (address is null)
         {
             return Result.Fail("Address not found");
         }

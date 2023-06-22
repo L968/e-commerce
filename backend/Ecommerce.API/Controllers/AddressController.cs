@@ -28,7 +28,7 @@ namespace Ecommerce.API.Controllers
         {
             GetAddressDto? address = await _mediator.Send(new GetAddressByIdAndUserIdQuery(id));
 
-            if (address == null) return NotFound();
+            if (address is null) return NotFound();
 
             return Ok(address);
         }

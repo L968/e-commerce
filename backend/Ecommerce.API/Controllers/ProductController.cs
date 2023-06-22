@@ -27,7 +27,7 @@ namespace Ecommerce.API.Controllers
         {
             GetProductDto? product = await _mediator.Send(new GetProductByIdQuery(id));
 
-            if (product == null) return NotFound();
+            if (product is null) return NotFound();
 
             return Ok(product);
         }
