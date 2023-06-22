@@ -1,27 +1,29 @@
 ﻿namespace Ecommerce.Application.Products.Commands.DeleteProduct;
 
 [Authorize]
-public record DeleteProductCommand(Guid Id) : IRequest<Result>;
+public record RemoveProductImageCommand(Guid Id, int ProductImageId) : IRequest<Result>;
 
-public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand, Result>
+public class RemoveProductImageCommandHandler : IRequestHandler<RemoveProductImageCommand, Result>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IProductRepository _productRepository;
 
-    public DeleteProductCommandHandler(IUnitOfWork unitOfWork, IProductRepository productRepository)
+    public RemoveProductImageCommandHandler(IUnitOfWork unitOfWork, IProductRepository productRepository)
     {
         _unitOfWork = unitOfWork;
         _productRepository = productRepository;
     }
 
-    public async Task<Result> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(RemoveProductImageCommand request, CancellationToken cancellationToken)
     {
-        // TODO: Block delete if product has orders
         Product? product = await _productRepository.GetByIdAsync(request.Id);
-
         if (product is null) return Result.Fail(DomainErrors.NotFound(nameof(Product), request.Id));
 
-        _productRepository.Delete(product);
+        product.RemoveImage(request.ProductImageId);
+
+        // TODO: Remove from upload system
+
+        _productRepository.Update(product);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Ok();

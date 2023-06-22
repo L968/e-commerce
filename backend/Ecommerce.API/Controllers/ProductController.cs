@@ -42,32 +42,51 @@ namespace Ecommerce.API.Controllers
 
             var product = result.Value;
 
-            return CreatedAtAction(nameof(GetById), new { guid = product.Id }, product);
+            return CreatedAtAction(nameof(GetById), new { product.Id }, product);
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "admin")]
+        //[Authorize(Roles = "admin")]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateProductCommand command)
         {
+            command.Id = id;
+            Result result = await _mediator.Send(command);
+
+            if (result.IsFailed) return NotFound();
+
             return NoContent();
-            //command.Guid = guid;
-            //Result result = await _mediator.Send(command);
+        }
 
-            //if (result.IsFailed) return NotFound();
+        [HttpPatch("{id}/add-image")]
+        public async Task<IActionResult> AddImage(Guid id, [FromForm] AddProductImageCommand command)
+        {
+            command.Id = id;
+            Result result = await _mediator.Send(command);
 
-            //return NoContent();
+            if (result.IsFailed) return BadRequest(result.Reasons);
+
+            return NoContent();
+        }
+
+        [HttpPatch("{id}/remove-image/{productImageId}")]
+        public async Task<IActionResult> RemoveImage(Guid id, int productImageId)
+        {
+            Result result = await _mediator.Send(new RemoveProductImageCommand(id, productImageId));
+
+            if (result.IsFailed) return BadRequest(result.Reasons);
+
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "admin")]
+        //[Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(Guid id)
         {
+            Result result = await _mediator.Send(new DeleteProductCommand(id));
+
+            if (result.IsFailed) return NotFound();
+
             return NoContent();
-            //Result result = await _mediator.Send(new DeleteProductCommand(guid));
-
-            //if (result.IsFailed) return NotFound();
-
-            //return NoContent();
         }
     }
 }
