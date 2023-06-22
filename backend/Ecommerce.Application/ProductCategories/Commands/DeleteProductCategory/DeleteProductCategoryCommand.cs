@@ -18,7 +18,7 @@ public class DeleteProductCategoryCommandHandler : IRequestHandler<DeleteProduct
     {
         ProductCategory? productCategory = await _productCategoryRepository.GetByGuidAsync(request.Guid);
 
-        if (productCategory is null) return Result.Fail(DomainErrors.NotFound("ProductCategory", request.Guid));
+        if (productCategory is null) return Result.Fail(DomainErrors.NotFound(nameof(ProductCategory), request.Guid));
 
         // TODO: Should not delete if category has active products
 

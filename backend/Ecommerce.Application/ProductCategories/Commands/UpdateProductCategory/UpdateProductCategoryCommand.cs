@@ -23,7 +23,7 @@ public class UpdateProductCategoryCommandHandler : IRequestHandler<UpdateProduct
     public async Task<Result> Handle(UpdateProductCategoryCommand request, CancellationToken cancellationToken)
     {
         ProductCategory? productCategory = await _productCategoryRepository.GetByGuidAsync(request.Guid);
-        if (productCategory is null) return Result.Fail(DomainErrors.NotFound("ProductCategory", request.Guid));
+        if (productCategory is null) return Result.Fail(DomainErrors.NotFound(nameof(ProductCategory), request.Guid));
 
         productCategory.Update(request.Name, request.Description);
 

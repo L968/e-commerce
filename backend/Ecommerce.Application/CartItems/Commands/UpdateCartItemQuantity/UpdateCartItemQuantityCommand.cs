@@ -27,7 +27,7 @@ public class UpdateCartItemQuantityCommandHandler : IRequestHandler<UpdateCartIt
         if (cart is null) return Result.Fail(DomainErrors.Cart.CartNotFound);
 
         CartItem? cartItem = cart.CartItems.FirstOrDefault(ci => ci.Id == request.Id);
-        if (cartItem is null) return Result.Fail(DomainErrors.NotFound("CartItem", request.Id));
+        if (cartItem is null) return Result.Fail(DomainErrors.NotFound(nameof(CartItem), request.Id));
 
         cartItem.SetQuantity(request.Quantity);
 
