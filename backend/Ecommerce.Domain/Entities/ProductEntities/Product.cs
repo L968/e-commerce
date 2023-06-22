@@ -14,7 +14,7 @@ public sealed class Product : AuditableEntity
     public float Height { get; private set; }
     public float Weight { get; private set; }
     public int ProductCategoryId { get; private set; }
-    public ProductInventory Inventory { get; private set; }
+    public ProductInventory Inventory { get; private set; } = null!;
 
     private readonly List<ProductImage> _images = new();
     public IReadOnlyCollection<ProductImage> Images => _images;
@@ -39,6 +39,8 @@ public sealed class Product : AuditableEntity
         List<ProductImage> images
     )
     {
+        ValidateDomain(price, length, width, height, weight);
+
         Id = Guid.NewGuid();
         Name = name;
         Description = description;
@@ -69,6 +71,8 @@ public sealed class Product : AuditableEntity
         int productCategoryId
     )
     {
+        ValidateDomain(price, length, width, height, weight);
+
         Name = name;
         Description = description;
         Sku = sku;
@@ -95,5 +99,23 @@ public sealed class Product : AuditableEntity
         {
             _images.Remove(image);
         }
+    }
+
+    private void ValidateDomain(decimal price, float length, float width, float height, float weight)
+    {
+        DomainExceptionValidation.When(price < 0,
+            "Invalid price value");
+
+        DomainExceptionValidation.When(length <= 0,
+            "Invalid length value");
+
+        DomainExceptionValidation.When(width <= 0,
+            "Invalid width value");
+
+        DomainExceptionValidation.When(height <= 0,
+            "Invalid height value");
+
+        DomainExceptionValidation.When(weight <= 0,
+            "Invalid weight value");
     }
 }
