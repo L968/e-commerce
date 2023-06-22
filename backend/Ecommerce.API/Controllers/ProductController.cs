@@ -33,7 +33,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Create([FromForm] CreateProductCommand command)
         {
             Result<GetProductDto> result = await _mediator.Send(command);
@@ -46,7 +46,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpPut("{id}")]
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateProductCommand command)
         {
             command.Id = id;
@@ -58,6 +58,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpPatch("{id}/add-image")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> AddImage(Guid id, [FromForm] AddProductImageCommand command)
         {
             command.Id = id;
@@ -69,6 +70,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpPatch("{id}/remove-image/{productImageId}")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> RemoveImage(Guid id, int productImageId)
         {
             Result result = await _mediator.Send(new RemoveProductImageCommand(id, productImageId));
@@ -79,7 +81,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(Guid id)
         {
             Result result = await _mediator.Send(new DeleteProductCommand(id));
