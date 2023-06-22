@@ -13,9 +13,6 @@
   <ItemGroup>
     <Folder Include="Interfaces\CartServices\" />
     <Folder Include="Interfaces\OrderServices\" />
-    <Folder Include="Services\AddressServices\" />
-    <Folder Include="Services\CartServices\" />
-    <Folder Include="Services\OrderServices\" />
   </ItemGroup>
 
   <ItemGroup>
