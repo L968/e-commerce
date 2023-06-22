@@ -15,7 +15,9 @@ public sealed class Product : AuditableEntity
     public float Weight { get; private set; }
     public int ProductCategoryId { get; private set; }
     public ProductInventory Inventory { get; private set; }
-    public List<ProductImage> Images { get; set; } = new();
+
+    private readonly List<ProductImage> _images = new();
+    public IReadOnlyCollection<ProductImage> Images => _images;
 
     public ProductCategory? Category { get; set; }
 
@@ -50,7 +52,7 @@ public sealed class Product : AuditableEntity
         Weight = weight;
         ProductCategoryId = productCategoryId;
         Inventory = new ProductInventory(Id, stock);
-        Images = images;
+        _images = images;
     }
 
     public void Update(
@@ -78,5 +80,20 @@ public sealed class Product : AuditableEntity
         Height = height;
         Weight = weight;
         ProductCategoryId = productCategoryId;
+    }
+
+    public void AddImage(ProductImage image)
+    {
+        _images.Add(image);
+    }
+
+    public void RemoveImage(int productImageId)
+    {
+        var image = _images.FirstOrDefault(i => i.Id == productImageId);
+
+        if (image is not null)
+        {
+            _images.Remove(image);
+        }
     }
 }
