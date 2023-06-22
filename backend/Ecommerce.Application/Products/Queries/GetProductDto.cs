@@ -1,4 +1,6 @@
-﻿namespace Ecommerce.Application.Products.Queries;
+﻿using Ecommerce.Application.ProductCategories.Queries;
+
+namespace Ecommerce.Application.Products.Queries;
 
 public record GetProductDto
 {
@@ -13,7 +15,6 @@ public record GetProductDto
     public float Width { get; set; }
     public float Height { get; set; }
     public float Weight { get; set; }
-    //public ProductInventory? Inventory { get; set; }
-    //public List<ProductImage> Images { get; set; } = new();
-    //public ProductCategory? Category { get; set; }
+    public List<GetProductImageDto>? Images { get; set; }
+    public GetProductCategoryDto? Category { get; set; }
 }

@@ -16,6 +16,7 @@ public class DomainToDTOMappingProfile : Profile
         CreateMap<CartItem, GetCartItemDto>();
 
         CreateMap<Product, GetProductDto>();
+        CreateMap<ProductImage, GetProductImageDto>();
         CreateMap<ProductCategory, GetProductCategoryDto>();
     }
 }
