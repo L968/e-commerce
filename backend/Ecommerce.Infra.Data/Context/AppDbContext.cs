@@ -12,6 +12,7 @@ public class AppDbContext : DbContext
     public virtual DbSet<ProductCategory> ProductCategories { get; set; }
     public virtual DbSet<ProductInventory> ProductInventories { get; set; }
     public virtual DbSet<ProductImage> ProductImages { get; set; }
+    public virtual DbSet<ProductDiscount> ProductDiscounts { get; set; }
 
     public virtual DbSet<Address> Addresses { get; set; }
 
