@@ -1,5 +1,7 @@
+using Ecommerce.Application.Products.Commands.AddProductImage;
 using Ecommerce.Application.Products.Commands.CreateProduct;
 using Ecommerce.Application.Products.Commands.DeleteProduct;
+using Ecommerce.Application.Products.Commands.RemoveProductImage;
 using Ecommerce.Application.Products.Commands.UpdateProduct;
 using Ecommerce.Application.Products.Queries;
 

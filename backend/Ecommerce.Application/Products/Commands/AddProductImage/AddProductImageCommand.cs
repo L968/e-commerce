@@ -1,7 +1,7 @@
 ﻿using Ecommerce.Utils.Attributes;
 using Microsoft.AspNetCore.Http;
 
-namespace Ecommerce.Application.Products.Commands.DeleteProduct;
+namespace Ecommerce.Application.Products.Commands.AddProductImage;
 
 [Authorize]
 public record AddProductImageCommand : IRequest<Result>
@@ -45,6 +45,6 @@ public class AddProductImageCommandHandler : IRequestHandler<AddProductImageComm
     private async Task<Result<ProductImage>> UploadProductImage(Guid productId, IFormFile image)
     {
         // TODO: Add to upload system
-        return Result.Ok( new ProductImage(productId, "test.png"));
+        return Result.Ok(new ProductImage(productId, "test.png"));
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Ecommerce.Application.Products.Commands.DeleteProduct;
+﻿namespace Ecommerce.Application.Products.Commands.RemoveProductImage;
 
 [Authorize]
 public record RemoveProductImageCommand(Guid Id, int ProductImageId) : IRequest<Result>;
