@@ -36,7 +36,11 @@ namespace Ecommerce.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateAddressCommand command)
         {
-            GetAddressDto address = await _mediator.Send(command);
+            Result<GetAddressDto> result = await _mediator.Send(command);
+
+            if (result.IsFailed) return BadRequest(result.Reasons);
+            var address = result.Value;
+
             return CreatedAtAction(nameof(GetById), new { address.Id }, address);
         }
 
@@ -46,7 +50,7 @@ namespace Ecommerce.API.Controllers
             command.Id = id;
             Result result = await _mediator.Send(command);
 
-            if (result.IsFailed) return NotFound();
+            if (result.IsFailed) return BadRequest(result.Reasons);
 
             return NoContent();
         }

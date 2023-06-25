@@ -3,7 +3,7 @@
 namespace Ecommerce.Application.Addresses.Commands.CreateAddress;
 
 [Authorize]
-public record CreateAddressCommand : IRequest<GetAddressDto>
+public record CreateAddressCommand : IRequest<Result<GetAddressDto>>
 {
     public string RecipientFullName { get; set; } = "";
     public string RecipientPhoneNumber { get; set; } = "";
@@ -18,25 +18,25 @@ public record CreateAddressCommand : IRequest<GetAddressDto>
     public string? AdditionalInformation { get; set; }
 }
 
-public class CreateAddressCommandHandler : IRequestHandler<CreateAddressCommand, GetAddressDto>
+public class CreateAddressCommandHandler : IRequestHandler<CreateAddressCommand, Result<GetAddressDto>>
 {
     private readonly IMapper _mapper;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly ICurrentUserService _currentUserService;
     private readonly IAddressRepository _addressRepository;
-    private readonly IUnitOfWork _unitOfWork;
 
-    public CreateAddressCommandHandler(IMapper mapper, ICurrentUserService currentUserService, IAddressRepository addressRepository, IUnitOfWork unitOfWork)
+    public CreateAddressCommandHandler(IMapper mapper, IUnitOfWork unitOfWork, ICurrentUserService currentUserService, IAddressRepository addressRepository)
     {
         _mapper = mapper;
-        _addressRepository = addressRepository;
-        _currentUserService = currentUserService;
         _unitOfWork = unitOfWork;
+        _currentUserService = currentUserService;
+        _addressRepository = addressRepository;
     }
 
-    public async Task<GetAddressDto> Handle(CreateAddressCommand request, CancellationToken cancellationToken)
+    public async Task<Result<GetAddressDto>> Handle(CreateAddressCommand request, CancellationToken cancellationToken)
     {
         // TODO: API Cep?
-        var address = new Address(
+        Result<Address> createResult = Address.Create(
             userId: _currentUserService.UserId,
             request.RecipientFullName,
             request.RecipientPhoneNumber,
@@ -51,9 +51,13 @@ public class CreateAddressCommandHandler : IRequestHandler<CreateAddressCommand,
             request.AdditionalInformation
         );
 
+        if (createResult.IsFailed) return Result.Fail(createResult.Errors);
+
+        Address address = createResult.Value;
         _addressRepository.Create(address);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return _mapper.Map<GetAddressDto>(address);
+        var dto = _mapper.Map<GetAddressDto>(address);
+        return Result.Ok(dto);
     }
 }

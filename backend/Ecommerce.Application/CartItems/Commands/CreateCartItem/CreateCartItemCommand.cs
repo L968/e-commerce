@@ -9,15 +9,15 @@ public record CreateCartItemCommand : IRequest<Result>
 
 public class CreateCartItemCommandHandler : IRequestHandler<CreateCartItemCommand, Result>
 {
-    private readonly ICurrentUserService _currentUserService;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ICurrentUserService _currentUserService;
     private readonly ICartRepository _cartRepository;
     private readonly IProductVariantRepository _productVariantRepository;
 
-    public CreateCartItemCommandHandler(ICurrentUserService currentUserService, IUnitOfWork unitOfWork, ICartRepository cartRepository, IProductVariantRepository productVariantRepository)
+    public CreateCartItemCommandHandler(IUnitOfWork unitOfWork, ICurrentUserService currentUserService, ICartRepository cartRepository, IProductVariantRepository productVariantRepository)
     {
-        _currentUserService = currentUserService;
         _unitOfWork = unitOfWork;
+        _currentUserService = currentUserService;
         _cartRepository = cartRepository;
         _productVariantRepository = productVariantRepository;
     }
@@ -35,7 +35,10 @@ public class CreateCartItemCommandHandler : IRequestHandler<CreateCartItemComman
         //    return Result.Fail($"Product variant with ID {request.ProductVariantId} not found");
         //}
 
-        var cartItem = new CartItem(cart.Id, request.ProductVariantId, request.Quantity);
+        Result<CartItem> createResult = CartItem.Create(cart.Id, request.ProductVariantId, request.Quantity);
+        if (createResult.IsFailed) return Result.Fail(createResult.Errors);
+
+        CartItem cartItem = createResult.Value;
 
         Result addCartItemResult = cart.AddCartItem(cartItem);
         if (addCartItemResult.IsFailed) return addCartItemResult;

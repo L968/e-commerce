@@ -39,7 +39,7 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
         ProductCategory? productCategory = await _productCategoryRepository.GetByGuidAsync(request.ProductCategoryGuid);
         if (productCategory is null) return Result.Fail(DomainErrors.NotFound(nameof(ProductCategory), request.ProductCategoryGuid));
 
-        product.Update(
+        var updateResult = product.Update(
             request.Name,
             request.Description,
             request.Sku,
@@ -52,6 +52,8 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
             request.Weight,
             productCategory.Id
         );
+
+        if (updateResult.IsFailed) return updateResult;
 
         _productRepository.Update(product);
 

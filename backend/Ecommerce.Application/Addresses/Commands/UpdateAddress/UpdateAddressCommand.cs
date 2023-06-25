@@ -35,14 +35,11 @@ public class UpdateAddressCommandHandler : IRequestHandler<UpdateAddressCommand,
     {
         Address? address = await _addressRepository.GetByIdAndUserIdAsync(request.Id, _currentUserService.UserId);
 
-        if (address is null)
-        {
-            return Result.Fail("Address not found");
-        }
+        if (address is null) return Result.Fail(DomainErrors.NotFound(nameof(Address), request.Id));
 
         // TODO: API Cep?
 
-        address.Update(
+        Result updateResult = address.Update(
             request.RecipientFullName,
             request.RecipientPhoneNumber,
             request.PostalCode,
@@ -55,6 +52,8 @@ public class UpdateAddressCommandHandler : IRequestHandler<UpdateAddressCommand,
             request.Country,
             request.AdditionalInformation
         );
+
+        if (updateResult.IsFailed) return updateResult;
 
         _addressRepository.Update(address);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

@@ -5,34 +5,21 @@ public sealed class CartItem : AuditableEntity
     public int Id { get; private set; }
     public int CartId { get; private set; }
     public int ProductVariantId { get; private set; }
-
-    private int _quantity;
-    public int Quantity {
-        get => _quantity;
-        private set
-        {
-            DomainExceptionValidation.When(value <= 0,
-                "Quantity must be greater than 0");
-
-            _quantity = value;
-        }
-    }
-
+    public int Quantity { get; private set; }
     public ProductVariant? ProductVariant { get; set; }
 
-    public CartItem(int cartId, int productVariantId, int quantity)
+    private CartItem(int cartId, int productVariantId, int quantity)
     {
         CartId = cartId;
         ProductVariantId = productVariantId;
         Quantity = quantity;
     }
 
-    public CartItem(int id, int cartId, int productVariantId, int quantity)
+    public static Result<CartItem> Create(int cartId, int productVariantId, int quantity)
     {
-        Id = id;
-        CartId = cartId;
-        ProductVariantId = productVariantId;
-        Quantity = quantity;
+        if (quantity <= 0) return Result.Fail(DomainErrors.CartItem.InvalidQuantity);
+
+        return Result.Ok(new CartItem(cartId, productVariantId, quantity));
     }
 
     public void IncrementQuantity(int quantity)

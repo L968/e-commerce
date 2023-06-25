@@ -24,7 +24,7 @@ public sealed class Product : AuditableEntity
 
     private Product() { }
 
-    public Product(
+    private Product(
         string name,
         string description,
         string sku,
@@ -40,8 +40,6 @@ public sealed class Product : AuditableEntity
         List<ProductImage> images
     )
     {
-        ValidateDomain(price, length, width, height, weight);
-
         Id = Guid.NewGuid();
         Name = name;
         Description = description;
@@ -58,7 +56,45 @@ public sealed class Product : AuditableEntity
         _images = images;
     }
 
-    public void Update(
+    public static Result<Product> Create(
+        string name,
+        string description,
+        string sku,
+        decimal price,
+        bool active,
+        bool visible,
+        float length,
+        float width,
+        float height,
+        float weight,
+        int productCategoryId,
+        int stock,
+        List<ProductImage> images
+    )
+    {
+        var validationResult = ValidateDomain(price, length, width, height, weight);
+        if (validationResult.IsFailed) return validationResult;
+
+        var product = new Product(
+            name,
+            description,
+            sku,
+            price,
+            active,
+            visible,
+            length,
+            width,
+            height,
+            weight,
+            productCategoryId,
+            stock,
+            images
+        );
+
+        return Result.Ok(product);
+    }
+
+    public Result Update(
         string name,
         string description,
         string sku,
@@ -72,7 +108,8 @@ public sealed class Product : AuditableEntity
         int productCategoryId
     )
     {
-        ValidateDomain(price, length, width, height, weight);
+        var validationResult = ValidateDomain(price, length, width, height, weight);
+        if (validationResult.IsFailed) return validationResult;
 
         Name = name;
         Description = description;
@@ -85,6 +122,7 @@ public sealed class Product : AuditableEntity
         Height = height;
         Weight = weight;
         ProductCategoryId = productCategoryId;
+        return Result.Ok();
     }
 
     public void AddImage(ProductImage image)
@@ -102,21 +140,28 @@ public sealed class Product : AuditableEntity
         }
     }
 
-    private void ValidateDomain(decimal price, float length, float width, float height, float weight)
+    private static Result ValidateDomain(decimal price, float length, float width, float height, float weight)
     {
-        DomainExceptionValidation.When(price < 0,
-            "Invalid price value");
+        var errors = new List<Error>();
 
-        DomainExceptionValidation.When(length <= 0,
-            "Invalid length value");
+        if (price < 0)
+            errors.Add(DomainErrors.Product.InvalidPriceValue);
 
-        DomainExceptionValidation.When(width <= 0,
-            "Invalid width value");
+        if (length <= 0)
+            errors.Add(DomainErrors.Product.InvalidLengthValue);
 
-        DomainExceptionValidation.When(height <= 0,
-            "Invalid height value");
+        if (width <= 0)
+            errors.Add(DomainErrors.Product.InvalidWidthValue);
 
-        DomainExceptionValidation.When(weight <= 0,
-            "Invalid weight value");
+        if (height <= 0)
+            errors.Add(DomainErrors.Product.InvalidHeightValue);
+
+        if (weight <= 0)
+            errors.Add(DomainErrors.Product.InvalidWeightValue);
+
+        if (errors.Any())
+            return Result.Fail(errors);
+
+        return Result.Ok();
     }
 }

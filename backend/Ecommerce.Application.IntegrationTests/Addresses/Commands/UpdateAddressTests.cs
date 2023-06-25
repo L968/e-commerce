@@ -2,6 +2,7 @@
 using Ecommerce.Application.Addresses.Commands.UpdateAddress;
 using Ecommerce.Application.Addresses.Queries;
 using Ecommerce.Domain.Entities;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.Application.IntegrationTests.Addresses.Commands;
 
@@ -15,7 +16,7 @@ public class UpdateAddressTests : BaseTestFixture
         // Arrange
         RunAsRegularUser();
 
-        GetAddressDto createdAddress = await SendAsync(new CreateAddressCommand()
+        Result<GetAddressDto> createResult = await SendAsync(new CreateAddressCommand()
         {
             RecipientFullName = "John Smith",
             RecipientPhoneNumber = "1234567890",
@@ -30,8 +31,10 @@ public class UpdateAddressTests : BaseTestFixture
             AdditionalInformation = "Please deliver to the front desk"
         });
 
+        GetAddressDto createdAddress = createResult.Value;
+
         // Act
-        FluentResults.Result result = await SendAsync(new UpdateAddressCommand()
+        Result result = await SendAsync(new UpdateAddressCommand()
         {
             Id = createdAddress.Id!.Value,
             RecipientFullName = "Spencer Smith",

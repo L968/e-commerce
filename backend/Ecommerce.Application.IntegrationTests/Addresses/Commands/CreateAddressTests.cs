@@ -29,9 +29,11 @@ public class CreateAddressTests : BaseTestFixture
         };
 
         // Act
-        GetAddressDto createdAddress = await SendAsync(command);
+        Result<GetAddressDto> result = await SendAsync(command);
 
         // Assert
+        GetAddressDto createdAddress = result.Value;
+        Assert.True(result.IsSuccess);
         Assert.IsNotNull(createdAddress);
         Assert.True(createdAddress.Id > 0);
 
@@ -39,7 +41,7 @@ public class CreateAddressTests : BaseTestFixture
         GetAddressDto? address = await SendAsync(query);
 
         Assert.IsNotNull(address);
-        Assert.True(address.Id > 0);
+        Assert.True(address!.Id > 0);
         Assert.AreEqual(address.RecipientFullName, command.RecipientFullName);
         Assert.AreEqual(address.RecipientPhoneNumber, command.RecipientPhoneNumber);
         Assert.AreEqual(address.PostalCode, command.PostalCode);

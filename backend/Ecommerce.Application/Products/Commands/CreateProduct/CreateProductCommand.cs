@@ -49,7 +49,7 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
         Result<List<ProductImage>> uploadResult = await UploadProductImages(request.Images);
         if (uploadResult.IsFailed) return Result.Fail(uploadResult.Errors);
 
-        var product = new Product(
+        var createResult = Product.Create(
             request.Name,
             request.Description,
             request.Sku,
@@ -64,6 +64,10 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
             request.Stock,
             images: uploadResult.Value
         );
+
+        if (createResult.IsFailed) return Result.Fail(createResult.Errors);
+
+        Product product = createResult.Value;
 
         _productRepository.Create(product);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

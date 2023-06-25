@@ -2,5 +2,4 @@
 global using Ecommerce.Domain.Entities.OrderEntities;
 global using Ecommerce.Domain.Entities.ProductEntities;
 global using Ecommerce.Domain.Errors;
-global using Ecommerce.Domain.Validation;
 global using FluentResults;
