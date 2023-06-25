@@ -17,6 +17,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Text.Json.Serialization;
 
 namespace Ecommerce.Infra.IoC;
 
@@ -37,6 +38,11 @@ public static class DependencyInjection
                 )
         );
 
+        services.AddControllers().AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        });
+
         services.AddAutoMapper(typeof(DomainToDTOMappingProfile));
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -50,6 +56,7 @@ public static class DependencyInjection
         services.AddScoped<IProductImageRepository, ProductImageRepository>();
         services.AddScoped<IProductVariantRepository, ProductVariantRepository>();
         services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
+        services.AddScoped<IProductDiscountRepository, ProductDiscountRepository>();
 
         var applicationAssembly = AppDomain.CurrentDomain.Load("Ecommerce.Application");
 
