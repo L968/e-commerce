@@ -2,28 +2,43 @@
 
 public class ProductDiscountRepository : IProductDiscountRepository
 {
-    public Task<ProductDiscount> CreateAsync(ProductDiscount productDiscount)
+    private readonly AppDbContext _context;
+
+    public ProductDiscountRepository(AppDbContext context)
     {
-        throw new NotImplementedException();
+        _context = context;
     }
 
-    public Task DeleteAsync(ProductDiscount productDiscount)
+    public async Task<IEnumerable<ProductDiscount>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        return await _context.ProductDiscounts.ToListAsync();
     }
 
-    public Task<IEnumerable<ProductDiscount>> GetAllAsync()
+    public async Task<IEnumerable<ProductDiscount>> GetByProductIdAsync(Guid productId)
     {
-        throw new NotImplementedException();
+        return await _context.ProductDiscounts
+            .Where(pd => pd.ProductId == productId)
+            .ToListAsync();
     }
 
-    public Task<ProductDiscount?> GetByIdAsync(int id)
+    public async Task<ProductDiscount?> GetByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        return await _context.ProductDiscounts.FirstOrDefaultAsync(pd => pd.Id == id);
     }
 
-    public Task UpdateAsync(ProductDiscount productDiscount)
+    public ProductDiscount Create(ProductDiscount productDiscount)
     {
-        throw new NotImplementedException();
+        _context.ProductDiscounts.Add(productDiscount);
+        return productDiscount;
+    }
+
+    public void Update(ProductDiscount productDiscount)
+    {
+        _context.ProductDiscounts.Update(productDiscount);
+    }
+
+    public void Delete(ProductDiscount productDiscount)
+    {
+        _context.ProductDiscounts.Remove(productDiscount);
     }
 }
