@@ -13,8 +13,6 @@
   <ItemGroup>
     <Folder Include="Interfaces\CartServices\" />
     <Folder Include="Interfaces\OrderServices\" />
-    <Folder Include="ProductDiscounts\Commands\" />
-    <Folder Include="ProductDiscounts\Queries\" />
   </ItemGroup>
 
   <ItemGroup>

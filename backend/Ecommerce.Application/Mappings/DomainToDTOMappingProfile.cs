@@ -2,6 +2,7 @@
 using Ecommerce.Application.CartItems.Queries;
 using Ecommerce.Application.Carts.Queries;
 using Ecommerce.Application.ProductCategories.Queries;
+using Ecommerce.Application.ProductDiscounts.Queries;
 using Ecommerce.Application.Products.Queries;
 
 namespace Ecommerce.Application.Mappings;
@@ -18,5 +19,6 @@ public class DomainToDTOMappingProfile : Profile
         CreateMap<Product, GetProductDto>();
         CreateMap<ProductImage, GetProductImageDto>();
         CreateMap<ProductCategory, GetProductCategoryDto>();
+        CreateMap<ProductDiscount, GetProductDiscountDto>();
     }
 }
