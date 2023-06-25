@@ -17,9 +17,9 @@ public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest> where T
     public Task Process(TRequest request, CancellationToken cancellationToken)
     {
         string requestName = typeof(TRequest).Name;
-        int? userId = _currentUserService.UserId;
+        int userId = _currentUserService.UserId;
 
-        _logger.LogInformation("CleanArchitecture Request: {Name} {@UserId} {@Request}",
+        _logger.LogInformation("Ecommerce Request: {Name} {@UserId} {@Request}",
             requestName, userId, request);
 
         return Task.CompletedTask;
