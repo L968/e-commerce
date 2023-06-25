@@ -3,8 +3,9 @@
 public interface IProductDiscountRepository
 {
     Task<IEnumerable<ProductDiscount>> GetAllAsync();
+    Task<IEnumerable<ProductDiscount>> GetByProductIdAsync(Guid productId);
     Task<ProductDiscount?> GetByIdAsync(int id);
-    Task<ProductDiscount> CreateAsync(ProductDiscount productDiscount);
-    Task UpdateAsync(ProductDiscount productDiscount);
-    Task DeleteAsync(ProductDiscount productDiscount);
+    ProductDiscount Create(ProductDiscount productDiscount);
+    void Update(ProductDiscount productDiscount);
+    void Delete(ProductDiscount productDiscount);
 }
