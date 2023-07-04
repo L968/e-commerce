@@ -1,7 +1,7 @@
-﻿using Ecommerce.Application.ProductCategories.Commands.CreateProductCategory;
-using Ecommerce.Application.ProductCategories.Commands.DeleteProductCategory;
-using Ecommerce.Application.ProductCategories.Commands.UpdateProductCategory;
-using Ecommerce.Application.ProductCategories.Queries;
+﻿using Ecommerce.Application.Features.ProductCategories.Commands.CreateProductCategory;
+using Ecommerce.Application.Features.ProductCategories.Commands.UpdateProductCategory;
+using Ecommerce.Application.Features.ProductCategories.Queries;
+using Ecommerce.Application.Features.ProductCategories.Commands.DeleteProductCategory;
 
 namespace Ecommerce.API.Controllers
 {

@@ -1,7 +1,7 @@
-﻿using Ecommerce.Application.Addresses.Commands.CreateAddress;
-using Ecommerce.Application.Addresses.Commands.DeleteAddress;
-using Ecommerce.Application.Addresses.Commands.UpdateAddress;
-using Ecommerce.Application.Addresses.Queries;
+﻿using Ecommerce.Application.Features.Addresses.Commands.DeleteAddress;
+using Ecommerce.Application.Features.Addresses.Commands.CreateAddress;
+using Ecommerce.Application.Features.Addresses.Commands.UpdateAddress;
+using Ecommerce.Application.Features.Addresses.Queries;
 
 namespace Ecommerce.API.Controllers
 {

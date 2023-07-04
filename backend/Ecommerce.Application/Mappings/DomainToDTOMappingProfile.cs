@@ -1,9 +1,9 @@
-﻿using Ecommerce.Application.Addresses.Queries;
-using Ecommerce.Application.CartItems.Queries;
-using Ecommerce.Application.Carts.Queries;
-using Ecommerce.Application.ProductCategories.Queries;
-using Ecommerce.Application.ProductDiscounts.Queries;
-using Ecommerce.Application.Products.Queries;
+﻿using Ecommerce.Application.Features.Addresses.Queries;
+using Ecommerce.Application.Features.CartItems.Queries;
+using Ecommerce.Application.Features.Carts.Queries;
+using Ecommerce.Application.Features.ProductCategories.Queries;
+using Ecommerce.Application.Features.ProductDiscounts.Queries;
+using Ecommerce.Application.Features.Products.Queries;
 
 namespace Ecommerce.Application.Mappings;
 

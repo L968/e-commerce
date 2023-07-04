@@ -1,4 +1,4 @@
-﻿using Ecommerce.Application.Addresses.Commands.CreateAddress;
+﻿using Ecommerce.Application.Features.Addresses.Commands.CreateAddress;
 
 namespace Ecommerce.Application.UnitTests.Addresses.Commands;
 

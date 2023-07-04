@@ -1,5 +1,6 @@
-﻿using Ecommerce.Application.ProductDiscounts.Commands.CreateProductDiscount;
-using Ecommerce.Application.ProductDiscounts.Queries;
+﻿using Ecommerce.Application.Features.ProductDiscounts.Commands.CreateProductDiscount;
+using Ecommerce.Application.Features.ProductDiscounts.Queries;
+using Ecommerce.Application.Features.ProductDiscounts.Queries;
 
 namespace Ecommerce.API.Controllers
 {

@@ -1,9 +1,10 @@
-using Ecommerce.Application.Products.Commands.AddProductImage;
-using Ecommerce.Application.Products.Commands.CreateProduct;
-using Ecommerce.Application.Products.Commands.DeleteProduct;
-using Ecommerce.Application.Products.Commands.RemoveProductImage;
-using Ecommerce.Application.Products.Commands.UpdateProduct;
-using Ecommerce.Application.Products.Queries;
+using Ecommerce.Application.Features.Products.Commands.AddProductImage;
+using Ecommerce.Application.Features.Products.Commands.CreateProduct;
+using Ecommerce.Application.Features.Products.Commands.UpdateProduct;
+using Ecommerce.Application.Features.Products.Queries;
+using Ecommerce.Application.Features.Products.Commands.DeleteProduct;
+using Ecommerce.Application.Features.Products.Commands.RemoveProductImage;
+using Ecommerce.Application.Features.Products.Queries;
 
 namespace Ecommerce.API.Controllers
 {

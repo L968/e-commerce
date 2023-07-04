@@ -1,5 +1,5 @@
-﻿using Ecommerce.Application.Addresses.Commands.CreateAddress;
-using Ecommerce.Application.Addresses.Queries;
+﻿using Ecommerce.Application.Features.Addresses.Commands.CreateAddress;
+using Ecommerce.Application.Features.Addresses.Queries;
 
 namespace Ecommerce.Application.IntegrationTests.Addresses.Commands;
 
