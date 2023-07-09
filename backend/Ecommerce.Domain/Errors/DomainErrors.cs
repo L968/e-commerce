@@ -30,7 +30,6 @@ public static class DomainErrors
 
     public static class ProductDiscount
     {
-        public static readonly Error DiscountAlreadyExists = new("An active discount already exists for this product");
         public static readonly Error DiscountStartDateInPast = new("Discount start date cannot be in the past");
         public static readonly Error DiscountEndDateMustBeAfterStartDate = new("Discount end date must be later than start date");
         public static readonly Error InvalidDiscountValue = new("Invalid discount value");
@@ -38,6 +37,23 @@ public static class DomainErrors
         public static readonly Error MaximumDiscountAmountExceedsValue = new("Maximum discount amount cannot be greater than or equal to the discount value");
         public static readonly Error DiscountDurationTooShort = new("Discount duration must be at least 5 minutes");
         public static readonly Error DiscountPercentageExceedsLimit = new("Discount percentage exceeds the limit of 80%");
+        public static readonly Error DiscountHasOverlap = new("This discount conflicts with other existing discounts");
+        public static readonly Error MaximumFixedDiscountExceeded = new ("Maximum discount amount for fixed discount exceeded (80% of original price)");
+    }
+
+    public static class ProductInventory
+    {
+        public static readonly Error InvalidQuantity = new("Invalid quantity value");
+        public static readonly Error InsufficientStock = new("Insufficient stock");
+    }
+
+    public static class Order
+    {
+        public static readonly Error InvalidUserId = new("Invalid User Id");
+        public static readonly Error EmptyProductList = new("Product list cannot be empty");
+        public static readonly Error InsufficientStock = new("Insufficient stock for some products");
+        public static readonly Error InactiveProduct = new("Inactive product cannot be added to the order");
+        public static readonly Error DiscountUnitNotImplemented = new("Discount unit is not implemented");
     }
 
     public static Error NotFound(string entityName, int id)
