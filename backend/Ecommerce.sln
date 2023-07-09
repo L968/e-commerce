@@ -37,14 +37,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecommerce.Domain.UnitTests"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecommerce.Order.API", "Ecommerce.Order.API\Ecommerce.Order.API.csproj", "{9D8A5B2C-46BB-43FE-94CB-FA7622A0E0B0}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker-compose", "docker-compose", "{2A84C4E5-6ED1-4B2C-B707-0D6465B1CFCF}"
-	ProjectSection(SolutionItems) = preProject
-		docker-compose.yml = docker-compose.yml
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Consumers", "Consumers", "{B5E8036C-95E8-46CC-9B9A-9545558ECD07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecommerce.Consumers.OrderCheckout", "Ecommerce.Consumers.OrderCheckout\Ecommerce.Consumers.OrderCheckout.csproj", "{EEF5578D-E05C-4EAC-9C28-CAB2EEE95378}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecommerce.Consumers.OrderCheckout", "Ecommerce.Consumers.OrderCheckout\Ecommerce.Consumers.OrderCheckout.csproj", "{EEF5578D-E05C-4EAC-9C28-CAB2EEE95378}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker-compose", "docker-compose", "{D4088664-B8CD-4EA0-82F8-5E15BDF4EEEF}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yaml = docker-compose.yaml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

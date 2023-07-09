@@ -1,0 +1,19 @@
+version: "3.9"
+services:
+  rabbitmq:
+    image: rabbitmq:3.12.1-management
+    container_name: rabbitmq-service
+    networks:
+    - ecommerce-bridge
+    ports:
+      - 5672:5672
+      - 15672:15672
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      retries: 5
+      interval: 5s
+      timeout: 30s
+
+networks:
+  ecommerce-bridge:
+    driver: bridge
