@@ -16,7 +16,8 @@ namespace Ecommerce.Domain.UnitTests
                 discountUnit: DiscountUnit.Percentage,
                 maximumDiscountAmount: null,
                 validFrom: DateTime.UtcNow.AddDays(-1),
-                validUntil: DateTime.UtcNow.AddDays(2)
+                validUntil: DateTime.UtcNow.AddDays(2),
+                productPrice: 100
             );
 
             // Assert
@@ -35,7 +36,8 @@ namespace Ecommerce.Domain.UnitTests
                 discountUnit: DiscountUnit.Percentage,
                 maximumDiscountAmount: null,
                 validFrom: DateTime.UtcNow.AddDays(2),
-                validUntil: DateTime.UtcNow.AddDays(1)
+                validUntil: DateTime.UtcNow.AddDays(1),
+                productPrice: 100
             );
 
             // Assert
@@ -54,7 +56,8 @@ namespace Ecommerce.Domain.UnitTests
                 discountUnit: DiscountUnit.Percentage,
                 maximumDiscountAmount: null,
                 validFrom: DateTime.Today.AddDays(1).Date.AddHours(12),
-                validUntil: DateTime.Today.AddDays(1).Date.AddHours(12).AddMinutes(1)
+                validUntil: DateTime.Today.AddDays(1).Date.AddHours(12).AddMinutes(1),
+                productPrice: 100
             );
 
             // Assert
@@ -73,7 +76,8 @@ namespace Ecommerce.Domain.UnitTests
                 discountUnit: DiscountUnit.FixedAmount,
                 maximumDiscountAmount: 60,
                 validFrom: DateTime.UtcNow.AddDays(1),
-                validUntil: DateTime.UtcNow.AddDays(2)
+                validUntil: DateTime.UtcNow.AddDays(2),
+                productPrice: 100
             );
 
             // Assert
@@ -92,7 +96,8 @@ namespace Ecommerce.Domain.UnitTests
                 discountUnit: DiscountUnit.Percentage,
                 maximumDiscountAmount: null,
                 validFrom: DateTime.UtcNow.AddDays(1),
-                validUntil: DateTime.UtcNow.AddDays(2)
+                validUntil: DateTime.UtcNow.AddDays(2),
+                productPrice: 100
             );
 
             // Assert
