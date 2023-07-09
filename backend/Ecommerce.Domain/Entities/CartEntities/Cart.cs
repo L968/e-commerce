@@ -13,17 +13,11 @@ public sealed class Cart
         UserId = userId;
     }
 
-    public Cart(int id, int userId)
-    {
-        Id = id;
-        UserId = userId;
-    }
-
     public Result AddCartItem(CartItem cartItem)
     {
         if (cartItem.CartId != Id) return Result.Fail(DomainErrors.Cart.CartItemNotBelongsToCart);
 
-        CartItem? existingCartItem = _cartItems.FirstOrDefault(cartItem => cartItem.ProductVariantId == cartItem.ProductVariantId);
+        CartItem? existingCartItem = _cartItems.FirstOrDefault(ci => ci.ProductId == cartItem.ProductId);
 
         if (existingCartItem is not null)
         {
