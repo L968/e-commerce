@@ -20,7 +20,7 @@ public sealed class Product : AuditableEntity
     public IReadOnlyCollection<ProductImage> Images => _images;
 
     public ProductCategory? Category { get; set; }
-    public ICollection<ProductDiscount>? Discounts { get; set; }
+    public List<ProductDiscount> Discounts { get; set; } = new();
 
     private Product() { }
 
