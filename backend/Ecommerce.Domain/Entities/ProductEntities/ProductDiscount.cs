@@ -40,10 +40,11 @@ public sealed class ProductDiscount : AuditableEntity
         DiscountUnit discountUnit,
         decimal? maximumDiscountAmount,
         DateTime validFrom,
-        DateTime? validUntil
+        DateTime? validUntil,
+        decimal productPrice
     )
     {
-        var validationResult = ValidateDomain(discountValue, discountUnit, maximumDiscountAmount, validFrom, validUntil);
+        var validationResult = ValidateDomain(discountValue, discountUnit, maximumDiscountAmount, validFrom, validUntil, productPrice);
         if (validationResult.IsFailed) return validationResult;
 
         return Result.Ok(new ProductDiscount(
@@ -63,12 +64,13 @@ public sealed class ProductDiscount : AuditableEntity
         DiscountUnit discountUnit,
         decimal? maximumDiscountAmount,
         DateTime validFrom,
-        DateTime? validUntil
+        DateTime? validUntil,
+        decimal productPrice
     )
     {
         if (HasExpired()) return Result.Fail(DomainErrors.ProductDiscount.CannotUpdateExpiredDiscount);
 
-        var validationResult = ValidateDomain(discountValue, discountUnit, maximumDiscountAmount, validFrom, validUntil);
+        var validationResult = ValidateDomain(discountValue, discountUnit, maximumDiscountAmount, validFrom, validUntil, productPrice);
         if (validationResult.IsFailed) return validationResult;
 
         Name = name;
@@ -83,15 +85,49 @@ public sealed class ProductDiscount : AuditableEntity
     public bool IsCurrentlyActive()
     {
         var currentDate = DateTime.UtcNow;
-        return ValidFrom <= currentDate && (ValidUntil == null || ValidUntil >= currentDate);
+        return ValidFrom <= currentDate && (ValidUntil is null || ValidUntil >= currentDate);
     }
 
     public bool HasExpired()
     {
-        return ValidUntil.HasValue && ValidUntil.Value < DateTime.UtcNow;
+        return ValidUntil is not null && ValidUntil.Value < DateTime.UtcNow;
     }
 
-    private static Result ValidateDomain(decimal discountValue, DiscountUnit discountUnit, decimal? maximumDiscountAmount, DateTime validFrom, DateTime? validUntil)
+    public static bool HasOverlap(DateTime validFrom, DateTime? validUntil, IEnumerable<ProductDiscount> discounts)
+    {
+        foreach (ProductDiscount discount in discounts)
+        {
+            if (validUntil is not null && discount.ValidUntil is not null)
+            {
+                if (validFrom <= discount.ValidUntil.Value && validUntil >= discount.ValidFrom)
+                {
+                    return true;
+                }
+            }
+            else if (validUntil is null && discount.ValidUntil is null)
+            {
+                return true;
+            }
+            else if (validUntil is null && discount.ValidUntil is not null)
+            {
+                if (validFrom < discount.ValidUntil.Value)
+                {
+                    return true;
+                }
+            }
+            else if (validUntil is not null && discount.ValidUntil is null)
+            {
+                if (validUntil.Value > discount.ValidFrom)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private static Result ValidateDomain(decimal discountValue, DiscountUnit discountUnit, decimal? maximumDiscountAmount, DateTime validFrom, DateTime? validUntil, decimal productPrice)
     {
         if (validFrom < DateTime.UtcNow) return Result.Fail(DomainErrors.ProductDiscount.DiscountStartDateInPast);
 
@@ -102,6 +138,12 @@ public sealed class ProductDiscount : AuditableEntity
         if (validUntil is not null && validUntil <= validFrom.AddMinutes(5)) return Result.Fail(DomainErrors.ProductDiscount.DiscountDurationTooShort);
 
         if (discountUnit == DiscountUnit.Percentage && discountValue >= 80) return Result.Fail(DomainErrors.ProductDiscount.DiscountPercentageExceedsLimit);
+
+        if (discountUnit == DiscountUnit.FixedAmount)
+        {
+            decimal maxDiscountAmount = productPrice * 0.8m;
+            if (discountValue >= maxDiscountAmount) return Result.Fail(DomainErrors.ProductDiscount.MaximumFixedDiscountExceeded);
+        }
 
         if (maximumDiscountAmount is not null &&
             discountUnit == DiscountUnit.FixedAmount &&
