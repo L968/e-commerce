@@ -1,8 +1,8 @@
-﻿namespace Ecommerce.Application.Features.Orders.Commands.OrderCheckout;
+﻿namespace Ecommerce.Application.DTOs.OrderCheckout;
 
-public class OrderCheckoutCommandValidator : AbstractValidator<OrderCheckoutCommand>
+public class OrderCheckoutDtoValidator : AbstractValidator<OrderCheckoutDto>
 {
-    public OrderCheckoutCommandValidator()
+    public OrderCheckoutDtoValidator()
     {
         RuleFor(oc => oc.UserId).NotEmpty().GreaterThan(0);
         RuleFor(oc => oc.CartItems).NotEmpty();

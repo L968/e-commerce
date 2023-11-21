@@ -9,10 +9,15 @@ public class AppDbContext : DbContext
     public virtual DbSet<CartItem> CartItems { get; set; }
 
     public virtual DbSet<Product> Products { get; set; }
+    public virtual DbSet<ProductCombination> ProductsCombination { get; set; }
     public virtual DbSet<ProductCategory> ProductCategories { get; set; }
     public virtual DbSet<ProductInventory> ProductInventories { get; set; }
     public virtual DbSet<ProductImage> ProductImages { get; set; }
     public virtual DbSet<ProductDiscount> ProductDiscounts { get; set; }
+    public virtual DbSet<Variant> Variants { get; set; }
+    public virtual DbSet<VariantOption> VariantOptions { get; set; }
+    public virtual DbSet<ProductVariation> ProductVariants { get; set; }
+    public virtual DbSet<ProductVariantOption> ProductVariantOptions { get; set; }
 
     public virtual DbSet<Address> Addresses { get; set; }
 

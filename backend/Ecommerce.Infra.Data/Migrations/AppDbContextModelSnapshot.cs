@@ -16,7 +16,7 @@ namespace Ecommerce.Infra.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.5")
+                .HasAnnotation("ProductVersion", "7.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Ecommerce.Domain.Entities.Address", b =>
@@ -128,9 +128,13 @@ namespace Ecommerce.Infra.Data.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("created_at");
 
-                    b.Property<int>("ProductVariantId")
-                        .HasColumnType("int")
-                        .HasColumnName("product_variant_id");
+                    b.Property<bool>("IsSelectedForCheckout")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("is_selected_for_checkout");
+
+                    b.Property<Guid>("ProductCombinationId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("product_combination_id");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int")
@@ -146,8 +150,8 @@ namespace Ecommerce.Infra.Data.Migrations
                     b.HasIndex("CartId")
                         .HasDatabaseName("ix_cart_item_cart_id");
 
-                    b.HasIndex("ProductVariantId")
-                        .HasDatabaseName("ix_cart_item_product_variant_id");
+                    b.HasIndex("ProductCombinationId")
+                        .HasDatabaseName("ix_cart_item_product_combination_id");
 
                     b.ToTable("cart_item", (string)null);
                 });
@@ -172,32 +176,14 @@ namespace Ecommerce.Infra.Data.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("description");
 
-                    b.Property<float>("Height")
-                        .HasColumnType("float")
-                        .HasColumnName("height");
-
-                    b.Property<float>("Length")
-                        .HasColumnType("float")
-                        .HasColumnName("length");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("name");
 
-                    b.Property<decimal>("Price")
-                        .HasPrecision(65, 2)
-                        .HasColumnType("decimal(65,2)")
-                        .HasColumnName("price");
-
                     b.Property<int>("ProductCategoryId")
                         .HasColumnType("int")
                         .HasColumnName("product_category_id");
-
-                    b.Property<string>("Sku")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("sku");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)")
@@ -206,14 +192,6 @@ namespace Ecommerce.Infra.Data.Migrations
                     b.Property<bool>("Visible")
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("visible");
-
-                    b.Property<float>("Weight")
-                        .HasColumnType("float")
-                        .HasColumnName("weight");
-
-                    b.Property<float>("Width")
-                        .HasColumnType("float")
-                        .HasColumnName("width");
 
                     b.HasKey("Id")
                         .HasName("pk_product");
@@ -256,6 +234,65 @@ namespace Ecommerce.Infra.Data.Migrations
                         .HasName("pk_product_category");
 
                     b.ToTable("product_category", (string)null);
+                });
+
+            modelBuilder.Entity("Ecommerce.Domain.Entities.ProductEntities.ProductCombination", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)")
+                        .HasColumnName("id");
+
+                    b.Property<string>("CombinationString")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("combination_string");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_at");
+
+                    b.Property<float>("Height")
+                        .HasColumnType("float")
+                        .HasColumnName("height");
+
+                    b.Property<float>("Length")
+                        .HasColumnType("float")
+                        .HasColumnName("length");
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(65, 2)
+                        .HasColumnType("decimal(65,2)")
+                        .HasColumnName("price");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("product_id");
+
+                    b.Property<string>("Sku")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("sku");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("updated_at");
+
+                    b.Property<float>("Weight")
+                        .HasColumnType("float")
+                        .HasColumnName("weight");
+
+                    b.Property<float>("Width")
+                        .HasColumnType("float")
+                        .HasColumnName("width");
+
+                    b.HasKey("Id")
+                        .HasName("pk_product_combination");
+
+                    b.HasIndex("ProductId")
+                        .HasDatabaseName("ix_product_combination_product_id");
+
+                    b.ToTable("product_combination", (string)null);
                 });
 
             modelBuilder.Entity("Ecommerce.Domain.Entities.ProductEntities.ProductDiscount", b =>
@@ -323,15 +360,15 @@ namespace Ecommerce.Infra.Data.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("image_path");
 
-                    b.Property<Guid>("ProductId")
+                    b.Property<Guid>("ProductCombinationId")
                         .HasColumnType("char(36)")
-                        .HasColumnName("product_id");
+                        .HasColumnName("product_combination_id");
 
                     b.HasKey("Id")
                         .HasName("pk_product_image");
 
-                    b.HasIndex("ProductId")
-                        .HasDatabaseName("ix_product_image_product_id");
+                    b.HasIndex("ProductCombinationId")
+                        .HasDatabaseName("ix_product_image_product_combination_id");
 
                     b.ToTable("product_image", (string)null);
                 });
@@ -347,9 +384,9 @@ namespace Ecommerce.Infra.Data.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("created_at");
 
-                    b.Property<Guid>("ProductId")
+                    b.Property<Guid>("ProductCombinationId")
                         .HasColumnType("char(36)")
-                        .HasColumnName("product_id");
+                        .HasColumnName("product_combination_id");
 
                     b.Property<int>("Stock")
                         .HasColumnType("int")
@@ -362,49 +399,93 @@ namespace Ecommerce.Infra.Data.Migrations
                     b.HasKey("Id")
                         .HasName("pk_product_inventory");
 
-                    b.HasIndex("ProductId")
+                    b.HasIndex("ProductCombinationId")
                         .IsUnique()
-                        .HasDatabaseName("ix_product_inventory_product_id");
+                        .HasDatabaseName("ix_product_inventory_product_combination_id");
 
                     b.ToTable("product_inventory", (string)null);
                 });
 
-            modelBuilder.Entity("Ecommerce.Domain.Entities.ProductEntities.ProductVariant", b =>
+            modelBuilder.Entity("Ecommerce.Domain.Entities.ProductEntities.ProductVariantOption", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    b.Property<int?>("ParentProductId")
+                    b.Property<int>("ProductVariationId")
                         .HasColumnType("int")
-                        .HasColumnName("parent_product_id");
+                        .HasColumnName("product_variation_id");
 
-                    b.Property<int>("ProductId")
+                    b.Property<int>("VariantOptionId")
                         .HasColumnType("int")
-                        .HasColumnName("product_id");
-
-                    b.Property<Guid?>("ProductId1")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("product_id1");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("type");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("value");
+                        .HasColumnName("variant_option_id");
 
                     b.HasKey("Id")
-                        .HasName("pk_product_variant");
+                        .HasName("pk_product_variant_option");
 
-                    b.HasIndex("ProductId1")
-                        .HasDatabaseName("ix_product_variant_product_id1");
+                    b.ToTable("product_variant_option", (string)null);
+                });
 
-                    b.ToTable("product_variant", (string)null);
+            modelBuilder.Entity("Ecommerce.Domain.Entities.ProductEntities.ProductVariation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("product_id");
+
+                    b.Property<int>("VariantId")
+                        .HasColumnType("int")
+                        .HasColumnName("variant_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_product_variation");
+
+                    b.ToTable("product_variation", (string)null);
+                });
+
+            modelBuilder.Entity("Ecommerce.Domain.Entities.ProductEntities.Variant", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id")
+                        .HasName("pk_variant");
+
+                    b.ToTable("variant", (string)null);
+                });
+
+            modelBuilder.Entity("Ecommerce.Domain.Entities.ProductEntities.VariantOption", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("name");
+
+                    b.Property<int>("VariantId")
+                        .HasColumnType("int")
+                        .HasColumnName("variant_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_variant_option");
+
+                    b.ToTable("variant_option", (string)null);
                 });
 
             modelBuilder.Entity("Ecommerce.Domain.Entities.CartEntities.CartItem", b =>
@@ -416,14 +497,14 @@ namespace Ecommerce.Infra.Data.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_cart_item_cart_cart_id");
 
-                    b.HasOne("Ecommerce.Domain.Entities.ProductEntities.ProductVariant", "ProductVariant")
+                    b.HasOne("Ecommerce.Domain.Entities.ProductEntities.ProductCombination", "ProductCombination")
                         .WithMany()
-                        .HasForeignKey("ProductVariantId")
+                        .HasForeignKey("ProductCombinationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_cart_item_product_variant_product_variant_id");
+                        .HasConstraintName("fk_cart_item_products_combination_product_combination_id");
 
-                    b.Navigation("ProductVariant");
+                    b.Navigation("ProductCombination");
                 });
 
             modelBuilder.Entity("Ecommerce.Domain.Entities.ProductEntities.Product", b =>
@@ -436,6 +517,18 @@ namespace Ecommerce.Infra.Data.Migrations
                         .HasConstraintName("fk_product_product_categories_product_category_id");
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Ecommerce.Domain.Entities.ProductEntities.ProductCombination", b =>
+                {
+                    b.HasOne("Ecommerce.Domain.Entities.ProductEntities.Product", "Product")
+                        .WithMany("Combinations")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_product_combination_product_product_id");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Ecommerce.Domain.Entities.ProductEntities.ProductDiscount", b =>
@@ -452,36 +545,26 @@ namespace Ecommerce.Infra.Data.Migrations
 
             modelBuilder.Entity("Ecommerce.Domain.Entities.ProductEntities.ProductImage", b =>
                 {
-                    b.HasOne("Ecommerce.Domain.Entities.ProductEntities.Product", "Product")
+                    b.HasOne("Ecommerce.Domain.Entities.ProductEntities.ProductCombination", "ProductCombination")
                         .WithMany("Images")
-                        .HasForeignKey("ProductId")
+                        .HasForeignKey("ProductCombinationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_product_image_product_product_id");
+                        .HasConstraintName("fk_product_image_product_combination_product_combination_id");
 
-                    b.Navigation("Product");
+                    b.Navigation("ProductCombination");
                 });
 
             modelBuilder.Entity("Ecommerce.Domain.Entities.ProductEntities.ProductInventory", b =>
                 {
-                    b.HasOne("Ecommerce.Domain.Entities.ProductEntities.Product", "Product")
+                    b.HasOne("Ecommerce.Domain.Entities.ProductEntities.ProductCombination", "ProductCombination")
                         .WithOne("Inventory")
-                        .HasForeignKey("Ecommerce.Domain.Entities.ProductEntities.ProductInventory", "ProductId")
+                        .HasForeignKey("Ecommerce.Domain.Entities.ProductEntities.ProductInventory", "ProductCombinationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_product_inventory_product_product_id");
+                        .HasConstraintName("fk_product_inventory_product_combination_product_combination_id");
 
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("Ecommerce.Domain.Entities.ProductEntities.ProductVariant", b =>
-                {
-                    b.HasOne("Ecommerce.Domain.Entities.ProductEntities.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId1")
-                        .HasConstraintName("fk_product_variant_products_product_id1");
-
-                    b.Navigation("Product");
+                    b.Navigation("ProductCombination");
                 });
 
             modelBuilder.Entity("Ecommerce.Domain.Entities.CartEntities.Cart", b =>
@@ -491,8 +574,13 @@ namespace Ecommerce.Infra.Data.Migrations
 
             modelBuilder.Entity("Ecommerce.Domain.Entities.ProductEntities.Product", b =>
                 {
-                    b.Navigation("Discounts");
+                    b.Navigation("Combinations");
 
+                    b.Navigation("Discounts");
+                });
+
+            modelBuilder.Entity("Ecommerce.Domain.Entities.ProductEntities.ProductCombination", b =>
+                {
                     b.Navigation("Images");
 
                     b.Navigation("Inventory")

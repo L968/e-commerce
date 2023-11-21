@@ -5,7 +5,7 @@ public class ProductInventoryConfiguration : IEntityTypeConfiguration<ProductInv
     public void Configure(EntityTypeBuilder<ProductInventory> builder)
     {
         builder
-            .HasOne(pi => pi.Product)
+            .HasOne(pi => pi.ProductCombination)
             .WithOne(p => p.Inventory)
             .HasForeignKey<ProductInventory>();
     }

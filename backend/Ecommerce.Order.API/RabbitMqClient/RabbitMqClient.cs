@@ -1,4 +1,4 @@
-﻿using Ecommerce.Application.Features.Orders.Commands.OrderCheckout;
+﻿using Ecommerce.Application.DTOs.OrderCheckout;
 using RabbitMQ.Client;
 using System.Text;
 using System.Text.Json;
@@ -33,7 +33,7 @@ public class RabbitMqClient : IRabbitMqClient
         );
     }
 
-    public void PublishOrder(OrderCheckoutCommand order)
+    public void PublishOrder(OrderCheckoutDto order)
     {
         string message = JsonSerializer.Serialize(order);
         byte[] body = Encoding.UTF8.GetBytes(message);

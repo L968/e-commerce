@@ -17,7 +17,7 @@ public sealed class Cart
     {
         if (cartItem.CartId != Id) return Result.Fail(DomainErrors.Cart.CartItemNotBelongsToCart);
 
-        CartItem? existingCartItem = _cartItems.FirstOrDefault(ci => ci.ProductId == cartItem.ProductId);
+        CartItem? existingCartItem = _cartItems.FirstOrDefault(ci => ci.ProductCombinationId == cartItem.ProductCombinationId);
 
         if (existingCartItem is not null)
         {

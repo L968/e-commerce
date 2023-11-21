@@ -78,18 +78,18 @@ public sealed class Order : AuditableEntity
         var selectedCartItems = cartItems.Where(ci => ci.IsSelectedForCheckout);
         if (!selectedCartItems.Any()) return Result.Fail(DomainErrors.Order.EmptyProductList);
 
-
         decimal total = 0;
         decimal discount = 0;
 
         foreach (CartItem cartItem in selectedCartItems)
         {
-            Product product = cartItem.Product;
-            decimal productPrice = product.Price;
+            ProductCombination productCombination = cartItem.ProductCombination;
+            Product product = productCombination.Product;
+            decimal productPrice = productCombination.Price;
 
             if (!product.Active) return Result.Fail(DomainErrors.Order.InactiveProduct);
 
-            if (product.Inventory.Stock < cartItem.Quantity) return Result.Fail(DomainErrors.Order.InsufficientStock);
+            if (productCombination.Inventory.Stock < cartItem.Quantity) return Result.Fail(DomainErrors.Order.InsufficientStock);
 
             ProductDiscount? activeProductDiscount = product.Discounts.Where(d => d.IsCurrentlyActive()).FirstOrDefault();
 
@@ -99,7 +99,7 @@ public sealed class Order : AuditableEntity
                 {
                     case DiscountUnit.Percentage:
                         productPrice = productPrice * activeProductDiscount.DiscountValue / 100;
-                        discount += product.Price - productPrice;
+                        discount += productCombination.Price - productPrice;
                         break;
                     case DiscountUnit.FixedAmount:
                         productPrice -= activeProductDiscount.DiscountValue;
@@ -110,7 +110,7 @@ public sealed class Order : AuditableEntity
                 }
             }
 
-            var result = product.Inventory.ReduceStock(cartItem.Quantity);
+            var result = productCombination.Inventory.ReduceStock(cartItem.Quantity);
             if (result.IsFailed) return result;
 
             total += productPrice;

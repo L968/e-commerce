@@ -7,7 +7,7 @@ namespace Ecommerce.Application.Features.Products.Commands.AddProductImage;
 public record AddProductImageCommand : IRequest<Result>
 {
     [JsonIgnore]
-    public Guid Id { get; set; }
+    public Guid ProductCombinationId { get; set; }
 
     [DataType(DataType.Upload)]
     [MaxFileSize(5 * 1024 * 1024)]
@@ -18,25 +18,25 @@ public record AddProductImageCommand : IRequest<Result>
 public class AddProductImageCommandHandler : IRequestHandler<AddProductImageCommand, Result>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IProductRepository _productRepository;
+    private readonly IProductCombinationRepository _productCombinationRepository;
 
-    public AddProductImageCommandHandler(IUnitOfWork unitOfWork, IProductRepository productRepository)
+    public AddProductImageCommandHandler(IUnitOfWork unitOfWork, IProductCombinationRepository productCombinationRepository)
     {
         _unitOfWork = unitOfWork;
-        _productRepository = productRepository;
+        _productCombinationRepository = productCombinationRepository;
     }
 
     public async Task<Result> Handle(AddProductImageCommand request, CancellationToken cancellationToken)
     {
-        Product? product = await _productRepository.GetByIdAsync(request.Id);
-        if (product is null) return Result.Fail(DomainErrors.NotFound(nameof(Product), request.Id));
+        ProductCombination? productCombination = await _productCombinationRepository.GetByIdAsync(request.ProductCombinationId);
+        if (productCombination is null) return Result.Fail(DomainErrors.NotFound(nameof(Product), request.ProductCombinationId));
 
-        var uploadResult = await UploadProductImage(product.Id, request.Image);
+        var uploadResult = await UploadProductImage(productCombination.Id, request.Image);
         if (uploadResult.IsFailed) return Result.Fail(uploadResult.Errors);
 
-        product.AddImage(image: uploadResult.Value);
+        productCombination.AddImage(image: uploadResult.Value);
 
-        _productRepository.Update(product);
+        _productCombinationRepository.Update(productCombination);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Ok();

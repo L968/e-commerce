@@ -48,7 +48,7 @@ public class CreateProductDiscountCommandHandler : IRequestHandler<CreateProduct
             request.MaximumDiscountAmount,
             request.ValidFrom,
             request.ValidUntil,
-            productPrice: product.Price
+            productPrice: 0 // TODO: PASS ALL THE VARIANTS PRICES
         );
 
         if (createResult.IsFailed) return Result.Fail(createResult.Errors);

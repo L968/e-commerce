@@ -1,9 +1,9 @@
+using Ecommerce.Application.Features.Products.Commands.AddProductCombination;
 using Ecommerce.Application.Features.Products.Commands.AddProductImage;
 using Ecommerce.Application.Features.Products.Commands.CreateProduct;
-using Ecommerce.Application.Features.Products.Commands.UpdateProduct;
-using Ecommerce.Application.Features.Products.Queries;
 using Ecommerce.Application.Features.Products.Commands.DeleteProduct;
 using Ecommerce.Application.Features.Products.Commands.RemoveProductImage;
+using Ecommerce.Application.Features.Products.Commands.UpdateProduct;
 using Ecommerce.Application.Features.Products.Queries;
 
 namespace Ecommerce.API.Controllers
@@ -37,7 +37,7 @@ namespace Ecommerce.API.Controllers
 
         [HttpPost]
         [Authorize(Roles = "admin")]
-        public async Task<IActionResult> Create([FromForm] CreateProductCommand command)
+        public async Task<IActionResult> Create([FromBody] CreateProductCommand command)
         {
             Result<GetProductDto> result = await _mediator.Send(command);
 
@@ -60,11 +60,23 @@ namespace Ecommerce.API.Controllers
             return NoContent();
         }
 
-        [HttpPatch("{id}/add-image")]
+        [HttpPatch("{id}/add-combination")]
         [Authorize(Roles = "admin")]
-        public async Task<IActionResult> AddImage(Guid id, [FromForm] AddProductImageCommand command)
+        public async Task<IActionResult> AddCombination(Guid id, [FromForm] AddProductCombinationCommand command)
         {
-            command.Id = id;
+            command.ProductId = id;
+            Result<GetProductCombinationDto> result = await _mediator.Send(command);
+
+            if (result.IsFailed) return BadRequest(result.Reasons);
+
+            return NoContent();
+        }
+
+        [HttpPatch("{productCombinationid}/add-image")]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> AddImage(Guid productCombinationid, [FromForm] AddProductImageCommand command)
+        {
+            command.ProductCombinationId = productCombinationid;
             Result result = await _mediator.Send(command);
 
             if (result.IsFailed) return BadRequest(result.Reasons);
@@ -72,11 +84,11 @@ namespace Ecommerce.API.Controllers
             return NoContent();
         }
 
-        [HttpPatch("{id}/remove-image/{productImageId}")]
+        [HttpPatch("{productCombinationid}/remove-image/{productImageId}")]
         [Authorize(Roles = "admin")]
-        public async Task<IActionResult> RemoveImage(Guid id, int productImageId)
+        public async Task<IActionResult> RemoveImage(Guid productCombinationid, int productImageId)
         {
-            Result result = await _mediator.Send(new RemoveProductImageCommand(id, productImageId));
+            Result result = await _mediator.Send(new RemoveProductImageCommand(productCombinationid, productImageId));
 
             if (result.IsFailed) return BadRequest(result.Reasons);
 

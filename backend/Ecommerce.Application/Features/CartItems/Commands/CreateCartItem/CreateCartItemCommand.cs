@@ -12,9 +12,9 @@ public class CreateCartItemCommandHandler : IRequestHandler<CreateCartItemComman
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICurrentUserService _currentUserService;
     private readonly ICartRepository _cartRepository;
-    private readonly IProductVariantRepository _productVariantRepository;
+    private readonly IProductVariationRepository _productVariantRepository;
 
-    public CreateCartItemCommandHandler(IUnitOfWork unitOfWork, ICurrentUserService currentUserService, ICartRepository cartRepository, IProductVariantRepository productVariantRepository)
+    public CreateCartItemCommandHandler(IUnitOfWork unitOfWork, ICurrentUserService currentUserService, ICartRepository cartRepository, IProductVariationRepository productVariantRepository)
     {
         _unitOfWork = unitOfWork;
         _currentUserService = currentUserService;
@@ -35,7 +35,7 @@ public class CreateCartItemCommandHandler : IRequestHandler<CreateCartItemComman
         //    return Result.Fail($"Product variant with ID {request.ProductVariantId} not found");
         //}
 
-        Result<CartItem> createResult = CartItem.Create(cart.Id, request.ProductId, request.Quantity);
+        Result<CartItem> createResult = CartItem.Create(cart.Id, request.ProductId, request.Quantity, false);
         if (createResult.IsFailed) return Result.Fail(createResult.Errors);
 
         CartItem cartItem = createResult.Value;

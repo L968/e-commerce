@@ -7,14 +7,8 @@ public record UpdateProductCommand : IRequest<Result>
     public Guid Id { get; set; }
     public string Name { get; set; } = "";
     public string Description { get; set; } = "";
-    public string Sku { get; set; } = "";
-    public decimal Price { get; set; }
     public bool Active { get; set; }
     public bool Visible { get; set; }
-    public float Length { get; set; }
-    public float Width { get; set; }
-    public float Height { get; set; }
-    public float Weight { get; set; }
     public Guid ProductCategoryGuid { get; set; }
 }
 
@@ -42,14 +36,8 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
         var updateResult = product.Update(
             request.Name,
             request.Description,
-            request.Sku,
-            request.Price,
             request.Active,
             request.Visible,
-            request.Length,
-            request.Width,
-            request.Height,
-            request.Weight,
             productCategory.Id
         );
 

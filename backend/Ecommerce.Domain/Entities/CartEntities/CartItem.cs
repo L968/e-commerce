@@ -4,23 +4,27 @@ public sealed class CartItem : AuditableEntity
 {
     public int Id { get; private set; }
     public int CartId { get; private set; }
-    public Guid ProductId { get; private set; }
+    public Guid ProductCombinationId { get; private set; }
     public int Quantity { get; private set; }
     public bool IsSelectedForCheckout { get; private set; }
-    public Product Product { get; set; }
 
-    private CartItem(int cartId, Guid productId, int quantity)
+    public ProductCombination? ProductCombination { get; set; }
+
+    private CartItem() { }
+
+    private CartItem(int cartId, Guid productCombinationId, int quantity, bool isSelectedForCheckout)
     {
         CartId = cartId;
-        ProductId = productId;
+        ProductCombinationId = productCombinationId;
         Quantity = quantity;
+        IsSelectedForCheckout = isSelectedForCheckout;
     }
 
-    public static Result<CartItem> Create(int cartId, Guid productId, int quantity)
+    public static Result<CartItem> Create(int cartId, Guid productCombinationId, int quantity, bool isSelectedForCheckout)
     {
         if (quantity <= 0) return Result.Fail(DomainErrors.CartItem.InvalidQuantity);
 
-        return Result.Ok(new CartItem(cartId, productId, quantity));
+        return Result.Ok(new CartItem(cartId, productCombinationId, quantity, isSelectedForCheckout));
     }
 
     public void IncrementQuantity(int quantity)

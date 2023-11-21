@@ -1,8 +1,8 @@
-﻿using Ecommerce.Application.Features.Orders.Commands.OrderCheckout;
+﻿using Ecommerce.Application.DTOs.OrderCheckout;
 
 namespace Ecommerce.Order.API.RabbitMqClient;
 
 public interface IRabbitMqClient
 {
-    void PublishOrder(OrderCheckoutCommand order);
+    void PublishOrder(OrderCheckoutDto order);
 }

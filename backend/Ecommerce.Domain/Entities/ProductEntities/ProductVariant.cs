@@ -1,12 +1,8 @@
 ﻿namespace Ecommerce.Domain.Entities.ProductEntities;
 
-public sealed class ProductVariant
+public sealed class ProductVariation
 {
     public int Id { get; private set; }
-    public string Type { get; private set; }
-    public string Value { get; private set; }
-    public int? ParentProductId { get; private set; }
-    public int ProductId { get; private set; }
-
-    public Product? Product { get; set; }
+    public Guid ProductId { get; private set; }
+    public int VariantId { get; private set; }
 }

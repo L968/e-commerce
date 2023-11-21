@@ -3,14 +3,16 @@
 public sealed class ProductInventory : AuditableEntity
 {
     public int Id { get; private set; }
-    public Guid ProductId { get; private set; }
+    public Guid ProductCombinationId { get; private set; }
     public int Stock { get; private set; }
 
-    public Product? Product { get; set; }
+    public ProductCombination? ProductCombination { get; set; }
+
+    private ProductInventory() { }
 
     public ProductInventory(Guid productId, int stock)
     {
-        ProductId = productId;
+        ProductCombinationId = productId;
         Stock = stock;
     }
 
