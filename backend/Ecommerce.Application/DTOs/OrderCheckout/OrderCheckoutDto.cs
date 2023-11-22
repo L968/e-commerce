@@ -2,8 +2,8 @@
 
 public record OrderCheckoutDto
 {
-    public int UserId { get; set; }
-    public List<OrderCheckoutCartItemDto> CartItems { get; set; } = null!;
+    public int UserId { get; init; }
+    public List<OrderCheckoutCartItemDto> CartItems { get; init; } = null!;
     public string ShippingPostalCode { get; set; } = "";
     public string ShippingStreetName { get; set; } = "";
     public string ShippingBuildingNumber { get; set; } = "";
