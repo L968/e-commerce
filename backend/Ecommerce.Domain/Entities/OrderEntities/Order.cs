@@ -1,15 +1,13 @@
-﻿using Ecommerce.Domain.Enums;
-
-namespace Ecommerce.Domain.Entities.OrderEntities;
+﻿namespace Ecommerce.Domain.Entities.OrderEntities;
 
 public sealed class Order : AuditableEntity
 {
     public Guid Id { get; private set; }
     public int UserId { get; private set; }
-    public decimal TotalProducts { get; private set; }
+    public OrderStatus Status { get; set; }
     public decimal ShippingCost { get; private set; }
     public decimal? Discount { get; private set; }
-    public decimal Total { get; private set; }
+    public decimal TotalAmount { get; private set; }
     public string ShippingPostalCode { get; private set; } = "";
     public string ShippingStreetName { get; private set; } = "";
     public string ShippingBuildingNumber { get; private set; } = "";
@@ -18,16 +16,17 @@ public sealed class Order : AuditableEntity
     public string? ShippingCity { get; private set; }
     public string? ShippingState { get; private set; }
     public string? ShippingCountry { get; private set; }
-    public ICollection<OrderHistory> OrderHistory { get; private set; }
 
-    private readonly List<OrderItem> _orderItems = new();
-    public IReadOnlyCollection<OrderItem> OrderItems => _orderItems;
+    private readonly List<OrderHistory> _history = new();
+    public IReadOnlyCollection<OrderHistory> History => _history;
+
+    private readonly List<OrderItem> _items = new();
+    public IReadOnlyCollection<OrderItem> Items => _items;
 
     private Order() { }
 
     private Order(
         int userId,
-        decimal totalProducts,
         decimal shippingCost,
         decimal? discount,
         decimal total,
@@ -43,10 +42,10 @@ public sealed class Order : AuditableEntity
     {
         Id = Guid.NewGuid();
         UserId = userId;
-        TotalProducts = totalProducts;
+        Status = OrderStatus.PendingPayment;
         ShippingCost = shippingCost;
         Discount = discount;
-        Total = total;
+        TotalAmount = total;
         ShippingPostalCode = shippingPostalCode;
         ShippingStreetName = shippingStreetName;
         ShippingBuildingNumber = shippingBuildingNumber;
@@ -78,52 +77,47 @@ public sealed class Order : AuditableEntity
         var selectedCartItems = cartItems.Where(ci => ci.IsSelectedForCheckout);
         if (!selectedCartItems.Any()) return Result.Fail(DomainErrors.Order.EmptyProductList);
 
-        decimal total = 0;
-        decimal discount = 0;
+        decimal totalAmount = 0;
+        decimal totalDiscount = 0;
+        var orderItems = new List<OrderItem>();
 
         foreach (CartItem cartItem in selectedCartItems)
         {
-            ProductCombination productCombination = cartItem.ProductCombination;
+            ProductCombination productCombination = cartItem.ProductCombination!;
             Product product = productCombination.Product;
             decimal productPrice = productCombination.Price;
 
             if (!product.Active) return Result.Fail(DomainErrors.Order.InactiveProduct);
 
-            if (productCombination.Inventory.Stock < cartItem.Quantity) return Result.Fail(DomainErrors.Order.InsufficientStock);
+            var reduceStockResult = productCombination.Inventory.ReduceStock(cartItem.Quantity);
+            if (reduceStockResult.IsFailed) return reduceStockResult;
 
-            ProductDiscount? activeProductDiscount = product.Discounts.Where(d => d.IsCurrentlyActive()).FirstOrDefault();
+            var discountResult = productCombination.GetDiscount();
+            if (discountResult.IsFailed) return Result.Fail(discountResult.Errors);
 
-            if (activeProductDiscount is not null)
-            {
-                switch (activeProductDiscount.DiscountUnit)
-                {
-                    case DiscountUnit.Percentage:
-                        productPrice = productPrice * activeProductDiscount.DiscountValue / 100;
-                        discount += productCombination.Price - productPrice;
-                        break;
-                    case DiscountUnit.FixedAmount:
-                        productPrice -= activeProductDiscount.DiscountValue;
-                        discount += activeProductDiscount.DiscountValue;
-                        break;
-                    default:
-                        return Result.Fail(DomainErrors.Order.DiscountUnitNotImplemented);
-                }
-            }
+            decimal productDiscount = discountResult.Value;
+            productPrice -= productDiscount;
+            totalDiscount += productDiscount;
+            totalAmount += productPrice;
 
-            var result = productCombination.Inventory.ReduceStock(cartItem.Quantity);
-            if (result.IsFailed) return result;
-
-            total += productPrice;
+            orderItems.Add(new OrderItem(
+                orderId: Guid.Empty,
+                productCombinationId: cartItem.ProductCombinationId,
+                productName: cartItem.ProductCombination!.Product.Name,
+                productSku: cartItem.ProductCombination.Sku,
+                productImagePath: cartItem.ProductCombination.Images.ElementAt(0).ImagePath,
+                productUnitPrice: productPrice,
+                productDiscount: productDiscount == 0 ? null : productDiscount
+            ));
         }
 
         decimal shippingCost = CalculateShippingCost(selectedCartItems.Count());
 
         var order = new Order(
             userId,
-            totalProducts: selectedCartItems.Count(),
             shippingCost,
-            discount,
-            total,
+            totalDiscount,
+            totalAmount,
             shippingPostalCode,
             shippingStreetName,
             shippingBuildingNumber,
@@ -134,16 +128,29 @@ public sealed class Order : AuditableEntity
             shippingCountry
         );
 
-        // insere historico
-        // insere pedido
-        // limpar carrinho
-        return order;
+        foreach (OrderItem orderItem in orderItems)
+        {
+            order.AddItem(orderItem);
+        }
+
+        order.AddHistory(OrderStatus.PendingPayment, "Order created, awaiting payment");
+
+        return Result.Ok(order);
+    }
+
+    public void AddHistory(OrderStatus status, string? notes = null)
+    {
+        _history.Add(new OrderHistory(Id, status, notes));
+    }
+
+    public void AddItem(OrderItem orderItem)
+    {
+        orderItem.SetOrderId(Id);
+        _items.Add(orderItem);
     }
 
     private static decimal CalculateShippingCost(int orderItems)
     {
         return orderItems * 10;
     }
-
-    // (Application) Verifica se produto existe
 }
