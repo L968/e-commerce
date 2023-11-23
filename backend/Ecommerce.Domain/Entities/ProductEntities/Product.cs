@@ -63,7 +63,6 @@ public sealed class Product : AuditableEntity
         Active = active;
         Visible = visible;
         ProductCategoryId = productCategoryId;
-
         return Result.Ok();
     }
 }
