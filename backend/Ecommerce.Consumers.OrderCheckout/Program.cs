@@ -4,6 +4,7 @@ using Ecommerce.Domain.Entities.CartEntities;
 using Ecommerce.Domain.Entities.OrderEntities;
 using Ecommerce.Domain.Entities.ProductEntities;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -49,7 +50,6 @@ async void Process(object? model, BasicDeliverEventArgs ea)
         string message = Encoding.UTF8.GetString(body);
         Console.WriteLine($"\n [x] Received {message}");
 
-
         OrderCheckoutDto orderCheckout = JsonSerializer.Deserialize<OrderCheckoutDto>(message)!;
 
         var validator = new OrderCheckoutDtoValidator();
@@ -75,10 +75,11 @@ async void Process(object? model, BasicDeliverEventArgs ea)
             }
 
             var createResult = CartItem.Create(
-                cartId: cartItemDto.Id,
+                cartId: cartItemDto.CartId,
                 productCombinationId: cartItemDto.ProductCombinationId,
                 quantity: cartItemDto.Quantity,
-                isSelectedForCheckout: cartItemDto.IsSelectedForCheckout
+                isSelectedForCheckout: true,
+                productCombination
             );
 
             if (createResult.IsFailed)
@@ -128,5 +129,11 @@ async void Process(object? model, BasicDeliverEventArgs ea)
 async Task<ProductCombination?> GetProductCombinationById(Guid id)
 {
     using var db = new AppDbContext();
-    return await db.FindAsync<ProductCombination>(id);
+    return await db
+        .ProductCombinations
+        .Include(p => p.Product)
+        .ThenInclude(p => p.Discounts)
+        .Include(p => p.Inventory)
+        .Include(p => p.Images)
+        .FirstOrDefaultAsync(p => p.Id == id);
 }
