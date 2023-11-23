@@ -1,4 +1,6 @@
-﻿namespace Ecommerce.Domain.Entities.ProductEntities;
+﻿using Ecommerce.Domain.Enums;
+
+namespace Ecommerce.Domain.Entities.ProductEntities;
 
 public sealed class ProductCombination : AuditableEntity
 {
@@ -108,6 +110,30 @@ public sealed class ProductCombination : AuditableEntity
         {
             _images.Remove(image);
         }
+    }
+
+    public Result<decimal> GetDiscount()
+    {
+        decimal productDiscount = 0;
+        ProductDiscount? activeProductDiscount = Product.Discounts.FirstOrDefault(d => d.IsCurrentlyActive());
+
+        if (activeProductDiscount is not null)
+        {
+            switch (activeProductDiscount.DiscountUnit)
+            {
+                case DiscountUnit.Percentage:
+                    decimal discountedProductPrice = Price * activeProductDiscount.DiscountValue / 100;
+                    productDiscount = Price - discountedProductPrice;
+                    break;
+                case DiscountUnit.FixedAmount:
+                    productDiscount = activeProductDiscount.DiscountValue;
+                    break;
+                default:
+                    return Result.Fail(DomainErrors.Order.DiscountUnitNotImplemented);
+            }
+        }
+
+        return Result.Ok(productDiscount);
     }
 
     private static Result ValidateDomain(decimal price, float length, float width, float height, float weight)
