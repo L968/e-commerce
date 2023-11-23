@@ -1,5 +1,9 @@
+using Ecommerce.Order.API.Context;
 using Ecommerce.Order.API.RabbitMqClient;
+using Ecommerce.Order.API.Repositories;
+using Ecommerce.Order.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -10,6 +14,21 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<IRabbitMqClient, RabbitMqClient>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+
+var connectionString = builder.Configuration.GetConnectionString("Connection");
+var serverVersion = ServerVersion.AutoDetect(connectionString);
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options
+        .UseSnakeCaseNamingConvention()
+        .UseMySql(
+            connectionString,
+            serverVersion,
+            mysqlOptions => mysqlOptions.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)
+        )
+);
 
 builder.Services.AddAuthentication(auth =>
 {

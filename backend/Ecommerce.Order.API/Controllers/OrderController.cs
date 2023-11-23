@@ -1,5 +1,6 @@
 using Ecommerce.Application.DTOs.OrderCheckout;
 using Ecommerce.Order.API.RabbitMqClient;
+using Ecommerce.Order.API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -11,11 +12,19 @@ namespace Ecommerce.Order.API.Controllers;
 [Authorize(Roles = "regular")]
 public class OrderController : ControllerBase
 {
+    private readonly IOrderService _orderService;
     private readonly IRabbitMqClient _publisher;
 
-    public OrderController(IRabbitMqClient publisher)
+    public OrderController(IOrderService orderService, IRabbitMqClient publisher)
     {
+        _orderService = orderService;
         _publisher = publisher;
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetPendingOrders()
+    {
+        return Ok(await _orderService.GetPendingOrdersAsync());
     }
 
     [HttpPost]
