@@ -4,6 +4,7 @@ public class AddProductCombinationCommandValidator : AbstractValidator<AddProduc
 {
     public AddProductCombinationCommandValidator()
     {
+        RuleFor(p => p.VariantOptionIds).NotEmpty();
         RuleFor(p => p.Sku).NotEmpty();
         RuleFor(p => p.Price).NotEmpty().GreaterThan(0);
         RuleFor(p => p.Stock).NotEmpty().GreaterThanOrEqualTo(0);
