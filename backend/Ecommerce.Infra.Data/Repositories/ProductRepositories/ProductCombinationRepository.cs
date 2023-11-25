@@ -11,31 +11,31 @@ public class ProductCombinationRepository : IProductCombinationRepository
 
     public async Task<IEnumerable<ProductCombination>> GetAllAsync()
     {
-        return await _context.ProductsCombination
+        return await _context.ProductCombinations
             .Include(p => p.Images)
             .ToListAsync();
     }
 
     public async Task<ProductCombination?> GetByIdAsync(Guid id)
     {
-        return await _context.ProductsCombination
+        return await _context.ProductCombinations
             .Include(p => p.Images)
             .FirstOrDefaultAsync(p => p.Id == id);
     }
 
     public ProductCombination Create(ProductCombination productCombination)
     {
-        _context.ProductsCombination.Add(productCombination);
+        _context.ProductCombinations.Add(productCombination);
         return productCombination;
     }
 
     public void Update(ProductCombination productCombination)
     {
-        _context.ProductsCombination.Update(productCombination);
+        _context.ProductCombinations.Update(productCombination);
     }
 
     public void Delete(ProductCombination productCombination)
     {
-        _context.ProductsCombination.Remove(productCombination);
+        _context.ProductCombinations.Remove(productCombination);
     }
 }
