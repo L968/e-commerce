@@ -3,6 +3,7 @@ using System;
 using Ecommerce.Infra.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ecommerce.Infra.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231123192205_product-discount-type")]
+    partial class productdiscounttype
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -408,11 +411,32 @@ namespace Ecommerce.Infra.Data.Migrations
                     b.ToTable("product_inventory", (string)null);
                 });
 
-            modelBuilder.Entity("Ecommerce.Domain.Entities.VariantEntities.ProductVariation", b =>
+            modelBuilder.Entity("Ecommerce.Domain.Entities.ProductEntities.ProductVariantOption", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)")
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    b.Property<int>("ProductVariationId")
+                        .HasColumnType("int")
+                        .HasColumnName("product_variation_id");
+
+                    b.Property<int>("VariantOptionId")
+                        .HasColumnType("int")
+                        .HasColumnName("variant_option_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_product_variant_option");
+
+                    b.ToTable("product_variant_option", (string)null);
+                });
+
+            modelBuilder.Entity("Ecommerce.Domain.Entities.ProductEntities.ProductVariation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
                     b.Property<Guid>("ProductId")
@@ -426,37 +450,10 @@ namespace Ecommerce.Infra.Data.Migrations
                     b.HasKey("Id")
                         .HasName("pk_product_variation");
 
-                    b.HasIndex("ProductId")
-                        .HasDatabaseName("ix_product_variation_product_id");
-
                     b.ToTable("product_variation", (string)null);
                 });
 
-            modelBuilder.Entity("Ecommerce.Domain.Entities.VariantEntities.ProductVariationOption", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    b.Property<Guid>("ProductVariationId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("product_variation_id");
-
-                    b.Property<int>("VariantOptionId")
-                        .HasColumnType("int")
-                        .HasColumnName("variant_option_id");
-
-                    b.HasKey("Id")
-                        .HasName("pk_product_variation_option");
-
-                    b.HasIndex("ProductVariationId")
-                        .HasDatabaseName("ix_product_variation_option_product_variation_id");
-
-                    b.ToTable("product_variation_option", (string)null);
-                });
-
-            modelBuilder.Entity("Ecommerce.Domain.Entities.VariantEntities.Variant", b =>
+            modelBuilder.Entity("Ecommerce.Domain.Entities.ProductEntities.Variant", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -474,7 +471,7 @@ namespace Ecommerce.Infra.Data.Migrations
                     b.ToTable("variant", (string)null);
                 });
 
-            modelBuilder.Entity("Ecommerce.Domain.Entities.VariantEntities.VariantOption", b =>
+            modelBuilder.Entity("Ecommerce.Domain.Entities.ProductEntities.VariantOption", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -493,9 +490,6 @@ namespace Ecommerce.Infra.Data.Migrations
                     b.HasKey("Id")
                         .HasName("pk_variant_option");
 
-                    b.HasIndex("VariantId")
-                        .HasDatabaseName("ix_variant_option_variant_id");
-
                     b.ToTable("variant_option", (string)null);
                 });
 
@@ -513,7 +507,7 @@ namespace Ecommerce.Infra.Data.Migrations
                         .HasForeignKey("ProductCombinationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_cart_item_product_combinations_product_combination_id");
+                        .HasConstraintName("fk_cart_item_products_combination_product_combination_id");
 
                     b.Navigation("ProductCombination");
                 });
@@ -578,38 +572,6 @@ namespace Ecommerce.Infra.Data.Migrations
                     b.Navigation("ProductCombination");
                 });
 
-            modelBuilder.Entity("Ecommerce.Domain.Entities.VariantEntities.ProductVariation", b =>
-                {
-                    b.HasOne("Ecommerce.Domain.Entities.ProductEntities.Product", null)
-                        .WithMany("Variations")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_product_variation_product_product_id");
-                });
-
-            modelBuilder.Entity("Ecommerce.Domain.Entities.VariantEntities.ProductVariationOption", b =>
-                {
-                    b.HasOne("Ecommerce.Domain.Entities.VariantEntities.ProductVariation", null)
-                        .WithMany("VariationOptions")
-                        .HasForeignKey("ProductVariationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_product_variation_option_product_variation_product_variation");
-                });
-
-            modelBuilder.Entity("Ecommerce.Domain.Entities.VariantEntities.VariantOption", b =>
-                {
-                    b.HasOne("Ecommerce.Domain.Entities.VariantEntities.Variant", "Variant")
-                        .WithMany()
-                        .HasForeignKey("VariantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_variant_option_variant_variant_id");
-
-                    b.Navigation("Variant");
-                });
-
             modelBuilder.Entity("Ecommerce.Domain.Entities.CartEntities.Cart", b =>
                 {
                     b.Navigation("CartItems");
@@ -620,8 +582,6 @@ namespace Ecommerce.Infra.Data.Migrations
                     b.Navigation("Combinations");
 
                     b.Navigation("Discounts");
-
-                    b.Navigation("Variations");
                 });
 
             modelBuilder.Entity("Ecommerce.Domain.Entities.ProductEntities.ProductCombination", b =>
@@ -630,11 +590,6 @@ namespace Ecommerce.Infra.Data.Migrations
 
                     b.Navigation("Inventory")
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Ecommerce.Domain.Entities.VariantEntities.ProductVariation", b =>
-                {
-                    b.Navigation("VariationOptions");
                 });
 #pragma warning restore 612, 618
         }
