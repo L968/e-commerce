@@ -1,4 +1,6 @@
-﻿namespace Ecommerce.Application.Features.CartItems.Queries;
+﻿using Ecommerce.Domain.Entities.VariantEntities;
+
+namespace Ecommerce.Application.Features.CartItems.Queries;
 
 public record GetCartItemDto
 {
