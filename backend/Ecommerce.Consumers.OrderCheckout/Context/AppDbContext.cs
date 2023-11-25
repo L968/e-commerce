@@ -1,4 +1,5 @@
 ﻿using Ecommerce.Consumers.OrderCheckout.Utils;
+using Ecommerce.Domain.Entities;
 using Ecommerce.Domain.Entities.OrderEntities;
 using Ecommerce.Domain.Entities.ProductEntities;
 using Microsoft.EntityFrameworkCore;
@@ -39,6 +40,32 @@ public class AppDbContext : DbContext
         foreach (var entity in builder.Model.GetEntityTypes())
         {
             builder.Entity(entity.ClrType).ToTable(entity.ClrType.Name.ToSnakeCase());
+        }
+    }
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        AddTimestamps();
+        return base.SaveChangesAsync(cancellationToken);
+    }
+
+    private void AddTimestamps()
+    {
+        var entities =
+             ChangeTracker
+            .Entries()
+            .Where(x => x.Entity is AuditableEntity && (x.State == EntityState.Added || x.State == EntityState.Modified));
+
+        foreach (var entity in entities)
+        {
+            var now = DateTime.UtcNow;
+
+            if (entity.State == EntityState.Added)
+            {
+                ((AuditableEntity)entity.Entity).CreatedAt = now;
+            }
+
+            ((AuditableEntity)entity.Entity).UpdatedAt = now;
         }
     }
 }
