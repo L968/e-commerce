@@ -14,8 +14,8 @@ public sealed class ProductCombination : AuditableEntity
     public float Height { get; private set; }
     public float Weight { get; private set; }
 
-    public ProductInventory Inventory { get; private set; } = null!;
     public Product Product { get; private set; } = null!;
+    public ProductInventory Inventory { get; private set; } = null!;
 
     private readonly List<ProductImage> _images = new();
     public IReadOnlyCollection<ProductImage> Images => _images;
@@ -23,6 +23,7 @@ public sealed class ProductCombination : AuditableEntity
     private ProductCombination() { }
 
     private ProductCombination(
+        Guid productId,
         string combinationString,
         string sku,
         decimal price,
@@ -31,10 +32,11 @@ public sealed class ProductCombination : AuditableEntity
         float width,
         float height,
         float weight,
-        List<ProductImage> images
+        List<string> imagePaths
     )
     {
         Id = Guid.NewGuid();
+        ProductId = productId;
         CombinationString = combinationString;
         Sku = sku;
         Price = price;
@@ -43,10 +45,11 @@ public sealed class ProductCombination : AuditableEntity
         Height = height;
         Weight = weight;
         Inventory = new ProductInventory(Id, stock);
-        _images = images;
+        _images = imagePaths.Select(i => new ProductImage(Id, i)).ToList();
     }
 
     public static Result<ProductCombination> Create(
+        Guid productId,
         string combinationString,
         string sku,
         decimal price,
@@ -55,13 +58,14 @@ public sealed class ProductCombination : AuditableEntity
         float width,
         float height,
         float weight,
-        List<ProductImage> images
+        List<string> imagePaths
     )
     {
         var validationResult = ValidateDomain(price, length, width, height, weight);
         if (validationResult.IsFailed) return validationResult;
 
         var productCombination = new ProductCombination(
+            productId,
             combinationString,
             sku,
             price,
@@ -70,7 +74,7 @@ public sealed class ProductCombination : AuditableEntity
             width,
             height,
             weight,
-            images
+            imagePaths
         );
 
         return Result.Ok(productCombination);
@@ -97,9 +101,9 @@ public sealed class ProductCombination : AuditableEntity
         return Result.Ok();
     }
 
-    public void AddImage(ProductImage image)
+    public void AddImage(string imagePath)
     {
-        _images.Add(image);
+        _images.Add(new ProductImage(Id, imagePath));
     }
 
     public void RemoveImage(int productImageId)
@@ -122,8 +126,7 @@ public sealed class ProductCombination : AuditableEntity
             switch (activeProductDiscount.DiscountUnit)
             {
                 case DiscountUnit.Percentage:
-                    decimal discountedProductPrice = Price * activeProductDiscount.DiscountValue / 100;
-                    productDiscount = Price - discountedProductPrice;
+                    productDiscount = Price * activeProductDiscount.DiscountValue / 100;
                     break;
                 case DiscountUnit.FixedAmount:
                     productDiscount = activeProductDiscount.DiscountValue;
