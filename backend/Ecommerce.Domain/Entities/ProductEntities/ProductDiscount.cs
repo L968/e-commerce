@@ -12,7 +12,8 @@ public sealed class ProductDiscount : AuditableEntity
     public decimal? MaximumDiscountAmount { get; private set; }
     public DateTime ValidFrom { get; private set; }
     public DateTime? ValidUntil { get; private set; }
-    public Product? Product { get; set; }
+
+    public Product? Product { get; private set; }
 
     private ProductDiscount(
         Guid productId,

@@ -129,6 +129,7 @@ async void Process(object? model, BasicDeliverEventArgs ea)
 async Task<ProductCombination?> GetProductCombinationById(Guid id)
 {
     using var db = new AppDbContext();
+
     return await db
         .ProductCombinations
         .Include(p => p.Product)

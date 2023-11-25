@@ -8,7 +8,7 @@ public sealed class CartItem : AuditableEntity
     public int Quantity { get; private set; }
     public bool IsSelectedForCheckout { get; private set; }
 
-    public ProductCombination? ProductCombination { get; set; } = null!;
+    public ProductCombination? ProductCombination { get; private set; } = null!;
 
     private CartItem() { }
 

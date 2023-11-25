@@ -6,7 +6,7 @@ public sealed class ProductInventory : AuditableEntity
     public Guid ProductCombinationId { get; private set; }
     public int Stock { get; private set; }
 
-    public ProductCombination? ProductCombination { get; set; }
+    public ProductCombination? ProductCombination { get; private set; }
 
     private ProductInventory() { }
 

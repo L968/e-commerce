@@ -11,5 +11,5 @@ public sealed class ProductCategoryDiscount : AuditableEntity
     public DateTime? ValidUntil { get; private set; }
     public int ProductCategoryId { get; private set; }
 
-    public ProductCategory? ProductCategory { get; set; }
+    public ProductCategory? ProductCategory { get; private set; }
 }

@@ -6,7 +6,7 @@ public sealed class ProductImage
     public Guid ProductCombinationId { get; private set; }
     public string ImagePath { get; private set; }
 
-    public ProductCombination? ProductCombination { get; set; }
+    public ProductCombination? ProductCombination { get; private set; }
 
     public ProductImage(Guid productCombinationId, string imagePath)
     {
