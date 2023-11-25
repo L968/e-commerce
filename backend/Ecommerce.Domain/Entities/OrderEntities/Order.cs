@@ -98,7 +98,7 @@ public sealed class Order : AuditableEntity
             decimal productDiscount = discountResult.Value;
             productPrice -= productDiscount;
             totalDiscount += productDiscount;
-            totalAmount += productPrice;
+            totalAmount += (productPrice * cartItem.Quantity);
 
             orderItems.Add(new OrderItem(
                 orderId: Guid.Empty,
@@ -151,6 +151,7 @@ public sealed class Order : AuditableEntity
 
     private static decimal CalculateShippingCost(int orderItems)
     {
+        // TODO: Calculate Shipping
         return orderItems * 10;
     }
 }
