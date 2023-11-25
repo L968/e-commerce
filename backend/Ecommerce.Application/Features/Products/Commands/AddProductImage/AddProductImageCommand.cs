@@ -31,10 +31,10 @@ public class AddProductImageCommandHandler : IRequestHandler<AddProductImageComm
         ProductCombination? productCombination = await _productCombinationRepository.GetByIdAsync(request.ProductCombinationId);
         if (productCombination is null) return Result.Fail(DomainErrors.NotFound(nameof(Product), request.ProductCombinationId));
 
-        var uploadResult = await UploadProductImage(productCombination.Id, request.Image);
+        var uploadResult = await UploadProductImage(request.Image);
         if (uploadResult.IsFailed) return Result.Fail(uploadResult.Errors);
 
-        productCombination.AddImage(image: uploadResult.Value);
+        productCombination.AddImage(uploadResult.Value);
 
         _productCombinationRepository.Update(productCombination);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -42,9 +42,9 @@ public class AddProductImageCommandHandler : IRequestHandler<AddProductImageComm
         return Result.Ok();
     }
 
-    private async Task<Result<ProductImage>> UploadProductImage(Guid productId, IFormFile image)
+    private async Task<Result<string>> UploadProductImage(IFormFile image)
     {
         // TODO: Add to upload system
-        return Result.Ok(new ProductImage(productId, "test.png"));
+        return Result.Ok("test.png");
     }
 }
