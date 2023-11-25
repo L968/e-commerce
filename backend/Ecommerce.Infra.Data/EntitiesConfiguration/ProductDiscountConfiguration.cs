@@ -8,5 +8,8 @@ public class ProductDiscountConfiguration : IEntityTypeConfiguration<ProductDisc
             .HasOne(productDiscount => productDiscount.Product)
             .WithMany(product => product.Discounts)
             .HasForeignKey(productDiscount => productDiscount.ProductId);
+
+        builder.Property(pd => pd.DiscountValue).HasPrecision(65, 2);
+        builder.Property(pd => pd.MaximumDiscountAmount).HasPrecision(65, 2);
     }
 }
