@@ -4,7 +4,7 @@ public class CreateCartItemCommandValidator : AbstractValidator<CreateCartItemCo
 {
     public CreateCartItemCommandValidator()
     {
-        RuleFor(cartItem => cartItem.ProductId)
+        RuleFor(cartItem => cartItem.ProductCombinationId)
             .NotEmpty();
 
         RuleFor(cartItem => cartItem.Quantity)

@@ -3,7 +3,7 @@
 [Authorize]
 public record CreateCartItemCommand : IRequest<Result>
 {
-    public Guid ProductId { get; set; }
+    public Guid ProductCombinationId { get; set; }
     public int Quantity { get; set; }
 }
 
@@ -12,30 +12,29 @@ public class CreateCartItemCommandHandler : IRequestHandler<CreateCartItemComman
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICurrentUserService _currentUserService;
     private readonly ICartRepository _cartRepository;
-    private readonly IProductVariationRepository _productVariantRepository;
+    private readonly IProductCombinationRepository _productCombinationRepository;
 
-    public CreateCartItemCommandHandler(IUnitOfWork unitOfWork, ICurrentUserService currentUserService, ICartRepository cartRepository, IProductVariationRepository productVariantRepository)
+    public CreateCartItemCommandHandler(IUnitOfWork unitOfWork, ICurrentUserService currentUserService, ICartRepository cartRepository, IProductCombinationRepository productCombinationRepository)
     {
         _unitOfWork = unitOfWork;
         _currentUserService = currentUserService;
         _cartRepository = cartRepository;
-        _productVariantRepository = productVariantRepository;
+        _productCombinationRepository = productCombinationRepository;
     }
 
     public async Task<Result> Handle(CreateCartItemCommand request, CancellationToken cancellationToken)
     {
         Cart? cart = await _cartRepository.GetByUserIdAsync(_currentUserService.UserId);
 
-        if (cart is null) return Result.Fail(DomainErrors.Cart.CartNotFound);
+        if (cart is null)
+            return Result.Fail(DomainErrors.Cart.CartNotFound);
 
-        //ProductVariant? productVariant = await _productVariantRepository.GetByIdAsync(request.ProductVariantId);
+        ProductCombination? productCombination = await _productCombinationRepository.GetByIdAsync(request.ProductCombinationId);
 
-        //if (productVariant is null)
-        //{
-        //    return Result.Fail($"Product variant with ID {request.ProductVariantId} not found");
-        //}
+        if (productCombination is null)
+            return DomainErrors.NotFound(nameof(ProductCombination), request.ProductCombinationId);
 
-        Result<CartItem> createResult = CartItem.Create(cart.Id, request.ProductId, request.Quantity, false);
+        Result<CartItem> createResult = CartItem.Create(cart.Id, request.ProductCombinationId, request.Quantity, false);
         if (createResult.IsFailed) return Result.Fail(createResult.Errors);
 
         CartItem cartItem = createResult.Value;
