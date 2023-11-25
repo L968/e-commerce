@@ -1,4 +1,6 @@
-﻿namespace Ecommerce.Domain.Entities.ProductEntities;
+﻿using Ecommerce.Domain.Entities.VariantEntities;
+
+namespace Ecommerce.Domain.Entities.ProductEntities;
 
 public sealed class Product : AuditableEntity
 {
@@ -12,6 +14,9 @@ public sealed class Product : AuditableEntity
     public ProductCategory? Category { get; private set; }
     public List<ProductDiscount> Discounts { get; private set; } = new();
     public List<ProductCombination> Combinations { get; private set; } = new();
+
+    private readonly List<ProductVariation> _variations = new();
+    public IReadOnlyCollection<ProductVariation> Variations => _variations;
 
     private Product() { }
 
@@ -64,5 +69,21 @@ public sealed class Product : AuditableEntity
         Visible = visible;
         ProductCategoryId = productCategoryId;
         return Result.Ok();
+    }
+
+    public void AddVariation(VariantOption variantOption)
+    {
+        ProductVariation? productVariation = _variations.FirstOrDefault(pv => pv.VariantId == variantOption.VariantId);
+
+        if (productVariation is not null)
+        {
+            productVariation.AddVariantOption(variantOption.Id);
+        }
+        else
+        {
+            productVariation = new ProductVariation(Id, variantOption.VariantId);
+            productVariation.AddVariantOption(variantOption.Id);
+            _variations.Add(productVariation);
+        }
     }
 }
