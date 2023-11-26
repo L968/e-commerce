@@ -20,9 +20,4 @@ public class OrderService : IOrderService
     {
         return await _repository.GetPendingOrdersAsync();
     }
-
-    public void Update(Domain.Entities.OrderEntities.Order order)
-    {
-        throw new NotImplementedException();
-    }
 }

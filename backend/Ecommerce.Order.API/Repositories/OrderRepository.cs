@@ -24,9 +24,4 @@ public class OrderRepository : IOrderRepository
     {
         return await _context.Orders.FirstOrDefaultAsync(o => o.Id == id);
     }
-
-    public void Update(Domain.Entities.OrderEntities.Order order)
-    {
-        _context.Orders.Update(order);
-    }
 }
