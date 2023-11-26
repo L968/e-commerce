@@ -7,10 +7,12 @@ using Ecommerce.Application.Services.ProductServices;
 using Ecommerce.Domain.Repositories;
 using Ecommerce.Domain.Repositories.CartRepositories;
 using Ecommerce.Domain.Repositories.ProductRepositories;
+using Ecommerce.Domain.Repositories.VariantRepositories;
 using Ecommerce.Infra.Data.Context;
 using Ecommerce.Infra.Data.Repositories;
 using Ecommerce.Infra.Data.Repositories.CartRepositories;
 using Ecommerce.Infra.Data.Repositories.ProductRepositories;
+using Ecommerce.Infra.Data.Repositories.VariantRepositories;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using MediatR;
@@ -55,9 +57,10 @@ public static class DependencyInjection
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IProductCombinationRepository, ProductCombinationRepository>();
         services.AddScoped<IProductImageRepository, ProductImageRepository>();
-        services.AddScoped<IProductVariationRepository, ProductVariationRepository>();
         services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
         services.AddScoped<IProductDiscountRepository, ProductDiscountRepository>();
+
+        services.AddScoped<IVariantOptionRepository, VariantOptionRepository>();
 
         var applicationAssembly = AppDomain.CurrentDomain.Load("Ecommerce.Application");
 
