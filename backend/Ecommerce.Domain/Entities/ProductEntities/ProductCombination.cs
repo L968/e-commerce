@@ -139,6 +139,12 @@ public sealed class ProductCombination : AuditableEntity
         return Result.Ok(productDiscount);
     }
 
+    public decimal GetDiscountedPrice()
+    {
+        decimal discountedPrice = Price - GetDiscount().Value;
+        return Math.Round(discountedPrice, 2, MidpointRounding.AwayFromZero);
+    }
+
     private static Result ValidateDomain(decimal price, float length, float width, float height, float weight)
     {
         var errors = new List<Error>();
