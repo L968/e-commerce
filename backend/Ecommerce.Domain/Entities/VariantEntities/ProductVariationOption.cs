@@ -6,6 +6,9 @@ public sealed class ProductVariationOption
     public Guid ProductVariationId { get; private set; }
     public int VariantOptionId { get; private set; }
 
+    public ProductVariation? ProductVariation { get; private set; }
+    public VariantOption? VariantOption { get; private set; }
+
     private ProductVariationOption() { }
 
     public ProductVariationOption(Guid productVariationId, int variantOptionId)

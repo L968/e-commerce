@@ -6,6 +6,9 @@ public sealed class ProductVariation
     public Guid ProductId { get; private set; }
     public int VariantId { get; private set; }
 
+    public Product? Product { get; private set; }
+    public Variant? Variant { get; private set; }
+
     private readonly List<ProductVariationOption> _variationOptions = new();
     public IReadOnlyCollection<ProductVariationOption> VariationOptions => _variationOptions;
 

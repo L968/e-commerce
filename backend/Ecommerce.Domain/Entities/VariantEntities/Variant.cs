@@ -5,6 +5,8 @@ public sealed class Variant
     public int Id { get; private set; }
     public string Name { get; private set; }
 
+    public List<ProductVariation>? ProductVariations{ get; private set; }
+
     public Variant(string name)
     {
         Name = name;
