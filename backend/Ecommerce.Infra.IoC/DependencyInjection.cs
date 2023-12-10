@@ -1,9 +1,8 @@
-﻿using Ecommerce.Application.Common.Behaviours;
+﻿using Ecommerce.Application;
+using Ecommerce.Application.Common.Behaviours;
 using Ecommerce.Application.Interfaces;
-using Ecommerce.Application.Interfaces.ProductServices;
 using Ecommerce.Application.Mappings;
 using Ecommerce.Application.Services;
-using Ecommerce.Application.Services.ProductServices;
 using Ecommerce.Domain.Repositories;
 using Ecommerce.Domain.Repositories.CartRepositories;
 using Ecommerce.Domain.Repositories.ProductRepositories;
@@ -40,6 +39,8 @@ public static class DependencyInjection
                 )
         );
 
+        new Config(configuration).Init();
+
         services.AddControllers().AddJsonOptions(options =>
         {
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -48,9 +49,7 @@ public static class DependencyInjection
         services.AddAutoMapper(typeof(DomainToDTOMappingProfile));
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-        services.AddScoped<IUploadFileService, UploadFileService>();
-        services.AddScoped<IProductImageService, ProductImageService>();
+        services.AddScoped<IBlobStorageService, BlobStorageService>();
 
         services.AddScoped<IAddressRepository, AddressRepository>();
         services.AddScoped<ICartRepository, CartRepository>();
@@ -59,7 +58,6 @@ public static class DependencyInjection
         services.AddScoped<IProductImageRepository, ProductImageRepository>();
         services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
         services.AddScoped<IProductDiscountRepository, ProductDiscountRepository>();
-
         services.AddScoped<IVariantOptionRepository, VariantOptionRepository>();
 
         var applicationAssembly = AppDomain.CurrentDomain.Load("Ecommerce.Application");
