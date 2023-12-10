@@ -1,6 +1,6 @@
 import { styled } from '@mui/system';
+import Button from '../Button';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
 export const FooterHeader = styled(Box)({
@@ -51,17 +51,12 @@ export const EmailTextField = styled(TextField)({
     },
 })
 
-export const SubscribeButton = styled(Button)(({ theme }) => ({
-    color: '#FFF',
+export const SubscribeButton = styled(Button)({
+    height: '56px',
     marginTop: '20px',
     borderTopLeftRadius: 0,
     borderBottomLeftRadius: 0,
-    backgroundColor: theme.palette.primary.main,
-    height: '56px',
-    '&:hover': {
-        backgroundColor: theme.palette.primary.main,
-    },
-}))
+})
 
 export const FooterCredits = styled(Box)({
     backgroundColor: '#FAFAFA',
