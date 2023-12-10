@@ -1,4 +1,5 @@
-﻿using Ecommerce.Utils.Attributes;
+﻿using Ecommerce.Application.Interfaces;
+using Ecommerce.Utils.Attributes;
 using Microsoft.AspNetCore.Http;
 
 namespace Ecommerce.Application.Features.Products.Commands.AddProductImage;
@@ -18,11 +19,13 @@ public record AddProductImageCommand : IRequest<Result>
 public class AddProductImageCommandHandler : IRequestHandler<AddProductImageCommand, Result>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IBlobStorageService _blobStorageService;
     private readonly IProductCombinationRepository _productCombinationRepository;
 
-    public AddProductImageCommandHandler(IUnitOfWork unitOfWork, IProductCombinationRepository productCombinationRepository)
+    public AddProductImageCommandHandler(IUnitOfWork unitOfWork, IBlobStorageService blobStorageService, IProductCombinationRepository productCombinationRepository)
     {
         _unitOfWork = unitOfWork;
+        _blobStorageService = blobStorageService;
         _productCombinationRepository = productCombinationRepository;
     }
 
@@ -31,20 +34,13 @@ public class AddProductImageCommandHandler : IRequestHandler<AddProductImageComm
         ProductCombination? productCombination = await _productCombinationRepository.GetByIdAsync(request.ProductCombinationId);
         if (productCombination is null) return Result.Fail(DomainErrors.NotFound(nameof(Product), request.ProductCombinationId));
 
-        var uploadResult = await UploadProductImage(request.Image);
-        if (uploadResult.IsFailed) return Result.Fail(uploadResult.Errors);
+        var imagePath = await _blobStorageService.UploadImage(request.Image);
 
-        productCombination.AddImage(uploadResult.Value);
+        productCombination.AddImage(imagePath);
 
         _productCombinationRepository.Update(productCombination);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Ok();
-    }
-
-    private async Task<Result<string>> UploadProductImage(IFormFile image)
-    {
-        // TODO: Add to upload system
-        return Result.Ok("test.png");
     }
 }
