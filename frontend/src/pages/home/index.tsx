@@ -6,8 +6,8 @@ export default function Home() {
         <main>
             <Banner>
                 <BannerContent>
-                    <BannerHeader>SUMMER 2024</BannerHeader>
-                    <BannerTitle>NEW COLLECTION</BannerTitle>
+                    <BannerHeader variant='h5'>SUMMER 2024</BannerHeader>
+                    <BannerTitle variant='h1'>NEW COLLECTION</BannerTitle>
                     <BannerText>We know how large objects will act,<br />but things on a small scale.<br/></BannerText>
                     <ShopButton variant='contained'>
                         SHOP NOW
@@ -17,8 +17,9 @@ export default function Home() {
                 <Image
                     alt='banner'
                     src='/assets/banner.png'
-                    width={697}
+                    width={700}
                     height={619}
+                    quality={100}
                 />
             </Banner>
             <Clients>
