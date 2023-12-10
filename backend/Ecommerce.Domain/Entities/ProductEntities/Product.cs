@@ -14,6 +14,7 @@ public sealed class Product : AuditableEntity
     public ProductCategory? Category { get; private set; }
     public List<ProductDiscount> Discounts { get; private set; } = new();
     public List<ProductCombination> Combinations { get; private set; } = new();
+    public List<ProductReview> Reviews { get; private set; } = new();
 
     private readonly List<ProductVariation> _variations = new();
     public IReadOnlyCollection<ProductVariation> Variations => _variations;
@@ -85,5 +86,15 @@ public sealed class Product : AuditableEntity
             productVariation.AddVariantOption(variantOption.Id);
             _variations.Add(productVariation);
         }
+    }
+
+    public float GetRating()
+    {
+        if (Reviews.Count == 0) return 0;
+
+        int totalRating = Reviews.Sum(r => r.Rating);
+        float averageRating = (float) totalRating / Reviews.Count;
+
+        return averageRating;
     }
 }
