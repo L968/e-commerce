@@ -1,7 +1,8 @@
 import { createTheme } from '@mui/material/styles';
-import { green, purple } from '@mui/material/colors';
+import { green } from '@mui/material/colors';
 
 export const theme = createTheme({
+  spacing: 5,
   palette: {
     primary: {
       main: '#23A6F0',
@@ -10,4 +11,7 @@ export const theme = createTheme({
       main: green[500],
     },
   },
+  typography: {
+    fontFamily: 'Montserrat, Roboto, Helvetica, Arial, sans-serif',
+  }
 });
