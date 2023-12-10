@@ -1,4 +1,6 @@
-﻿namespace Ecommerce.Application.Features.Products.Queries;
+﻿using Ecommerce.Application.DTOs.Products;
+
+namespace Ecommerce.Application.Features.Products.Queries;
 
 public record GetProductByIdQuery(Guid Id) : IRequest<GetProductDto?>;
 

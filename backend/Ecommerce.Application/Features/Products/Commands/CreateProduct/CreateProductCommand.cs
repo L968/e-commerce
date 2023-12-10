@@ -1,4 +1,4 @@
-﻿using Ecommerce.Application.Features.Products.Queries;
+﻿using Ecommerce.Application.DTOs.Products;
 
 namespace Ecommerce.Application.Features.Products.Commands.CreateProduct;
 

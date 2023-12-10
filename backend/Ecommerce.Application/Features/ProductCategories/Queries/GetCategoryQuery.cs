@@ -1,4 +1,6 @@
-﻿namespace Ecommerce.Application.Features.ProductCategories.Queries;
+﻿using Ecommerce.Application.DTOs.Products;
+
+namespace Ecommerce.Application.Features.ProductCategories.Queries;
 
 public record GetProductCategoryQuery() : IRequest<IEnumerable<GetProductCategoryDto>>;
 

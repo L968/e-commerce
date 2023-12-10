@@ -1,4 +1,4 @@
-﻿using Ecommerce.Application.Features.Products.Queries;
+﻿using Ecommerce.Application.DTOs.Products;
 using Ecommerce.Domain.Entities.VariantEntities;
 using Ecommerce.Domain.Repositories.VariantRepositories;
 using Ecommerce.Utils.Attributes;

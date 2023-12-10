@@ -1,4 +1,6 @@
-﻿namespace Ecommerce.Application.Features.ProductDiscounts.Queries;
+﻿using Ecommerce.Application.DTOs.Products;
+
+namespace Ecommerce.Application.Features.ProductDiscounts.Queries;
 
 [Authorize]
 public record GetProductDiscountsQuery() : IRequest<IEnumerable<GetProductDiscountDto>>;
