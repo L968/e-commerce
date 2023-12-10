@@ -2,6 +2,7 @@
 using Ecommerce.Application.Features.ProductCategories.Commands.UpdateProductCategory;
 using Ecommerce.Application.Features.ProductCategories.Queries;
 using Ecommerce.Application.Features.ProductCategories.Commands.DeleteProductCategory;
+using Ecommerce.Application.DTOs.Products;
 
 namespace Ecommerce.API.Controllers
 {

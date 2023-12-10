@@ -1,3 +1,4 @@
+using Ecommerce.Application.DTOs.Products;
 using Ecommerce.Application.Features.Products.Commands.AddProductCombination;
 using Ecommerce.Application.Features.Products.Commands.AddProductImage;
 using Ecommerce.Application.Features.Products.Commands.CreateProduct;
