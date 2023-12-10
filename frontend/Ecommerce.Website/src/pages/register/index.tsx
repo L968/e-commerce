@@ -11,11 +11,11 @@ import { Container, LoginArea, LoginFrame, Form, Main, BrandName } from "./style
 export default function Register() {
     const router = useRouter();
 
-    const [name, setName] = useState<string>('Test');
-    const [email, setEmail] = useState<string>('lucas.c968@gmail.com');
-    const [phoneNumber, setPhoneNumber] = useState<string>('123456789');
-    const [password, setPassword] = useState<string>('Mudar123*');
-    const [repassword, setRepassword] = useState<string>('Mudar123*');
+    const [name, setName] = useState<string>('');
+    const [email, setEmail] = useState<string>('');
+    const [phoneNumber, setPhoneNumber] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [repassword, setRepassword] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
 
     function handleSubmit(e: FormEvent<HTMLFormElement>): void {

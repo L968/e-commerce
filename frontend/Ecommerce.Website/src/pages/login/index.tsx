@@ -11,8 +11,8 @@ import { Container, LoginArea, LoginFrame, Form, Main, Paragraph, WelcomeLabel, 
 export default function Login() {
     const router = useRouter();
 
-    const [emailOrPhoneNumber, setEmailOrPhoneNumber] = useState<string>('lucas.c968@gmail.com');
-    const [password, setPassword] = useState<string>('Change123*');
+    const [emailOrPhoneNumber, setEmailOrPhoneNumber] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
 
     function handleSubmit(e: FormEvent<HTMLFormElement>): void {
