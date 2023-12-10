@@ -13,13 +13,32 @@ public class ProductRepository : IProductRepository
     {
         return await _context.Products
             .Include(p => p.Category)
+            .Include(p => p.Combinations)
+                .ThenInclude(pc => pc.Images)
+            .Include(p => p.Reviews)
+            .Include(p => p.Discounts)
+            .Include(p => p.Variations)
+                .ThenInclude(pv => pv.Variant)
+            .Include(p => p.Variations)
+                .ThenInclude(pv => pv.VariationOptions)
+                .ThenInclude(pvo => pvo.VariantOption)
             .ToListAsync();
     }
 
     public async Task<Product?> GetByIdAsync(Guid id)
     {
         return await _context.Products
-            .Include(p => p.Category)
+            .Include(p => p.Reviews)
+            .Include(p => p.Discounts)
+            .Include(p => p.Combinations)
+                .ThenInclude(pc => pc.Inventory)
+            .Include(p => p.Combinations)
+                .ThenInclude(pc => pc.Images)
+            .Include(p => p.Variations)
+                .ThenInclude(pv => pv.Variant)
+            .Include(p => p.Variations)
+                .ThenInclude(pv => pv.VariationOptions)
+                .ThenInclude(pvo => pvo.VariantOption)
             .FirstOrDefaultAsync(p => p.Id == id);
     }
 
