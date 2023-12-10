@@ -1,8 +1,10 @@
-﻿namespace Ecommerce.Application.Features.Products.Queries;
+﻿using Ecommerce.Application.DTOs.Products;
 
-public record GetProductQuery() : IRequest<IEnumerable<GetProductDto>>;
+namespace Ecommerce.Application.Features.Products.Queries;
 
-public class GetProductQueryHandler : IRequestHandler<GetProductQuery, IEnumerable<GetProductDto>>
+public record GetProductQuery() : IRequest<IEnumerable<GetProductListDto>>;
+
+public class GetProductQueryHandler : IRequestHandler<GetProductQuery, IEnumerable<GetProductListDto>>
 {
     private readonly IMapper _mapper;
     private readonly IProductRepository _productRepository;
@@ -13,9 +15,9 @@ public class GetProductQueryHandler : IRequestHandler<GetProductQuery, IEnumerab
         _productRepository = productRepository;
     }
 
-    public async Task<IEnumerable<GetProductDto>> Handle(GetProductQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<GetProductListDto>> Handle(GetProductQuery request, CancellationToken cancellationToken)
     {
-        var product = await _productRepository.GetAllAsync();
-        return _mapper.Map<IEnumerable<GetProductDto>>(product);
+        var products = await _productRepository.GetAllAsync();
+        return _mapper.Map<IEnumerable<GetProductListDto>>(products);
     }
 }
