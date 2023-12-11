@@ -6,8 +6,8 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
     {
         RuleFor(p => p.Name).NotEmpty();
         RuleFor(p => p.Description).NotEmpty();
+        RuleFor(p => p.ProductCategoryId).NotEmpty();
         RuleFor(p => p.Active).NotEmpty();
         RuleFor(p => p.Visible).NotEmpty();
-        RuleFor(p => p.ProductCategoryGuid).NotEmpty();
     }
 }

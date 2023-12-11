@@ -9,8 +9,8 @@ public class ProductCombinationConfiguration : IEntityTypeConfiguration<ProductC
             .HasPrecision(65, 2);
 
         builder
-            .HasOne(productCombination => productCombination.Product)
-            .WithMany(product => product.Combinations)
-            .HasForeignKey(productCombination => productCombination.ProductId);
+            .HasOne(pc => pc.Product)
+            .WithMany(p => p.Combinations)
+            .HasForeignKey(pc => pc.ProductId);
     }
 }

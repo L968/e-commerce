@@ -7,9 +7,9 @@ public record CreateProductCommand : IRequest<Result<GetProductDto>>
 {
     public string Name { get; set; } = "";
     public string Description { get; set; } = "";
+    public Guid ProductCategoryId { get; set; }
     public bool Active { get; set; }
     public bool Visible { get; set; }
-    public Guid ProductCategoryGuid { get; set; }
 }
 
 public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Result<GetProductDto>>
@@ -29,8 +29,8 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
 
     public async Task<Result<GetProductDto>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
-        ProductCategory? productCategory = await _productCategoryRepository.GetByGuidAsync(request.ProductCategoryGuid);
-        if (productCategory is null) return Result.Fail(DomainErrors.NotFound(nameof(ProductCategory), request.ProductCategoryGuid));
+        ProductCategory? productCategory = await _productCategoryRepository.GetByGuidAsync(request.ProductCategoryId);
+        if (productCategory is null) return Result.Fail(DomainErrors.NotFound(nameof(ProductCategory), request.ProductCategoryId));
 
         var createResult = Product.Create(
             request.Name,
