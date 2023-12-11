@@ -133,7 +133,7 @@ async Task<ProductCombination?> GetProductCombinationById(Guid id)
     return await db
         .ProductCombinations
         .Include(p => p.Product)
-        .ThenInclude(p => p.Discounts)
+            .ThenInclude(p => p.Discounts)
         .Include(p => p.Inventory)
         .Include(p => p.Images)
         .FirstOrDefaultAsync(p => p.Id == id);
