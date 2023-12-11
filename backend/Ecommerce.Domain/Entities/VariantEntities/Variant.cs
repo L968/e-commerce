@@ -5,7 +5,10 @@ public sealed class Variant
     public int Id { get; private set; }
     public string Name { get; private set; }
 
-    public List<ProductVariation>? ProductVariations{ get; private set; }
+    public List<VariantOption>? Options { get; private set; }
+    public List<ProductVariation>? ProductVariations { get; private set; }
+
+    private Variant() { }
 
     public Variant(string name)
     {

@@ -1,5 +1,4 @@
 ﻿using Ecommerce.Domain.Entities;
-using Ecommerce.Domain.Entities.VariantEntities;
 using Ecommerce.Infra.Data.Utils;
 
 namespace Ecommerce.Infra.Data.Context;

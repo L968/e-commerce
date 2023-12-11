@@ -58,6 +58,7 @@ public static class DependencyInjection
         services.AddScoped<IProductImageRepository, ProductImageRepository>();
         services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
         services.AddScoped<IProductDiscountRepository, ProductDiscountRepository>();
+        services.AddScoped<IVariantRepository, VariantRepository>();
         services.AddScoped<IVariantOptionRepository, VariantOptionRepository>();
 
         var applicationAssembly = AppDomain.CurrentDomain.Load("Ecommerce.Application");

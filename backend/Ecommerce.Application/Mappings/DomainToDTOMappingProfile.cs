@@ -1,8 +1,8 @@
 ﻿using Ecommerce.Application.DTOs.Products;
+using Ecommerce.Application.DTOs.Variants;
 using Ecommerce.Application.Features.Addresses.Queries;
 using Ecommerce.Application.Features.CartItems.Queries;
 using Ecommerce.Application.Features.Carts.Queries;
-using Ecommerce.Domain.Entities.VariantEntities;
 
 namespace Ecommerce.Application.Mappings;
 
@@ -27,7 +27,9 @@ public class DomainToDTOMappingProfile : Profile
             .ForMember(dto => dto.ReviewsCount, opt => opt.MapFrom(p => p.Reviews.Count));
 
         CreateMap<ProductImage, GetProductImageDto>();
-        CreateMap<ProductCategory, GetProductCategoryDto>();
+        CreateMap<ProductCategory, GetProductCategoryDto>()
+            .ForMember(dto => dto.Id, opt => opt.MapFrom(c => c.Guid));
+
         CreateMap<ProductDiscount, GetProductDiscountDto>();
         CreateMap<ProductCombination, GetProductCombinationDto>()
             .ForMember(dto => dto.OriginalPrice, opt => opt.MapFrom(pc => pc.Price))
@@ -40,5 +42,7 @@ public class DomainToDTOMappingProfile : Profile
             .ForMember(dto => dto.Options, opt => opt.MapFrom(pv => pv.VariationOptions.Select(vo => vo.VariantOption.Name)));
 
         CreateMap<ProductReview, GetProductReviewDto>();
+        CreateMap<Variant, GetVariantDto>();
+        CreateMap<VariantOption, GetVariantOptionDto>();
     }
 }
