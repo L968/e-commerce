@@ -11,9 +11,9 @@ public class TokenService
     {
         var claims = new Claim[]
         {
-            new Claim("id", user.Id.ToString()),
-            new Claim("username", user.UserName),
-            new Claim(ClaimTypes.Role, role),
+            new("id", user.Id.ToString()),
+            new("username", user.UserName),
+            new(ClaimTypes.Role, role),
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Config.JwtKey));
