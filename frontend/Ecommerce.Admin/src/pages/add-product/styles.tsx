@@ -1,5 +1,5 @@
 import { styled } from '@mui/system';
-import { Box, Paper, Typography } from '@mui/material';
+import { Paper, Typography } from '@mui/material';
 
 export const Main = styled('main')({
     padding: '30px'

@@ -1,10 +1,10 @@
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
+import { Main, Form } from './styles';
+import { LoadingButton } from '@mui/lab';
 import { useRouter } from 'next/navigation';
-import { useState, FormEvent } from "react";
-import TextField from "@mui/material/TextField";
+import { useState, FormEvent } from 'react';
+import TextField from '@mui/material/TextField';
 import api from '../../services/apiAuthorization';
-import LoadingButton from "@/components/Button/LoadingButton";
-import { Main, Form } from "./styles";
 
 export default function Login() {
     const router = useRouter();
@@ -23,10 +23,10 @@ export default function Login() {
         api.post('/login', data)
             .then(response => {
                 localStorage.setItem('SESSIONJWT', response.data.message);
-                router.push('/home');
+                router.push('/');
             })
             .catch(error => {
-                if (error.response.status === 401) {
+                if (error.response?.status === 401) {
                     toast.warning(error.response.data.message);
                     return;
                 }

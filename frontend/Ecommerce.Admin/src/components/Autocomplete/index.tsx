@@ -2,10 +2,11 @@ import { CircularProgress, TextField } from '@mui/material';
 import MuiAutocomplete, { AutocompleteProps } from '@mui/material/Autocomplete';
 
 export interface CustomAutocompleteProps extends Omit<AutocompleteProps<any, boolean, boolean, boolean, any>, 'renderInput'> {
-    label: string;
+    label: string
+    required?: boolean
 }
 
-export default function Autocomplete({ label, value, loading, ...rest }: CustomAutocompleteProps) {
+export default function Autocomplete({ label, required, value, loading, ...rest }: CustomAutocompleteProps) {
     return (
         <MuiAutocomplete
             {...rest}
@@ -15,8 +16,7 @@ export default function Autocomplete({ label, value, loading, ...rest }: CustomA
                 <TextField
                     {...params}
                     label={label}
-                    size='small'
-                    required
+                    required={required}
                     InputProps={{
                         ...params.InputProps,
                         endAdornment: (

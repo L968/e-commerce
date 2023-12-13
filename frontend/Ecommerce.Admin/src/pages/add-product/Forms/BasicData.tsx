@@ -1,13 +1,17 @@
 import { Form } from '../styles';
-import { toast } from 'react-toastify';
 import { BaseFormProps } from ".."
+import { toast } from 'react-toastify';
 import api from '../../../services/api';
 import { LoadingButton } from '@mui/lab';
-import { FormEvent, useEffect, useState } from 'react';
+import Autocomplete from '@/components/Autocomplete';
+import { TextField, FormControlLabel, Checkbox } from '@mui/material';
+import { Dispatch, FormEvent, SetStateAction, useEffect, useState } from 'react';
 import CreateProductRequest from '@/interfaces/api/requests/CreateProductRequest';
 import GetCategoryResponse from '@/interfaces/api/responses/GetCategoriesResponse';
-import { TextField, FormControlLabel, Checkbox } from '@mui/material';
-import Autocomplete from '@/components/Autocomplete';
+
+interface BasicDataProps extends BaseFormProps {
+    setProductId: Dispatch<SetStateAction<string>>
+}
 
 interface ProductFormData {
     name: string
@@ -17,7 +21,7 @@ interface ProductFormData {
     visible: boolean
 }
 
-export default function BasicData({ next }: BaseFormProps) {
+export default function BasicData({ next, setProductId }: BasicDataProps) {
     const [categories, setCategories] = useState<GetCategoryResponse[]>([]);
     const [loadingCategories, setLoadingCategories] = useState<boolean>(false);
     const [loadingCreateProduct, setLoadingCreatingProduct] = useState<boolean>(false);
@@ -53,7 +57,8 @@ export default function BasicData({ next }: BaseFormProps) {
         setLoadingCreatingProduct(true);
 
         api.post('/product', data)
-            .then(_ => {
+            .then(response => {
+                setProductId(response.data.id);
                 toast.success('Product created succesfully');
                 next();
             })
@@ -88,6 +93,7 @@ export default function BasicData({ next }: BaseFormProps) {
 
             <Autocomplete
                 label='Category'
+                required
                 options={categories}
                 getOptionLabel={option => option.name}
                 loading={loadingCategories}

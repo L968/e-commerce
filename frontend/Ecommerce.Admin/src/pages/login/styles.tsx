@@ -2,7 +2,8 @@ import { styled } from '@mui/system';
 
 export const Main = styled('main')(({ theme }) => ({
     height: '100vh',
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: theme.palette.background.main,
+    flexGrow: 1,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
