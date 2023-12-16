@@ -6,8 +6,8 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { Collapse, List, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 
-import { Fragment, useState } from 'react';
 import { useRouter } from 'next/router';
+import { Fragment, useState } from 'react';
 import { ChildListItemButton, Drawer } from './styles';
 
 interface MenuItem {
@@ -30,6 +30,7 @@ const menuItems: MenuItem[] = [
             { text: 'Add Product', src: '/add-product' },
             { text: 'Product List', src: '/products' },
             { text: 'Categories', src: '/categories' },
+            { text: 'Variants', src: '/variants' },
         ]
     },
     {

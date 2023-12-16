@@ -25,7 +25,7 @@ export default function BasicData({ next, setProductId }: BasicDataProps) {
     const [categories, setCategories] = useState<GetCategoryResponse[]>([]);
     const [loadingCategories, setLoadingCategories] = useState<boolean>(false);
     const [loadingCreateProduct, setLoadingCreatingProduct] = useState<boolean>(false);
-    const [productData, setProductData] = useState<ProductFormData>({ name: '', description: '', category: { id: '', name: '', description: '' }, active: false, visible: false });
+    const [productData, setProductData] = useState<ProductFormData>({ name: '', description: '', category: { id: '', name: '', description: '', variants: [] }, active: false, visible: false });
 
     useEffect(() => {
         setLoadingCategories(true);
@@ -43,7 +43,7 @@ export default function BasicData({ next, setProductId }: BasicDataProps) {
         }));
     }
 
-    async function handleCreateProduct(e: FormEvent<HTMLFormElement>): Promise<void> {
+    function handleCreateProduct(e: FormEvent<HTMLFormElement>): void {
         e.preventDefault();
 
         const data: CreateProductRequest = {

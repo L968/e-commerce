@@ -6,20 +6,19 @@ import EditIcon from '@mui/icons-material/Edit';
 import { Container, Main, Title } from './styles';
 import { Chip, IconButton, Stack } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import GetVariantsResponse from '@/interfaces/api/responses/GetVariantsResponse';
-import GetCategoryResponse from '@/interfaces/api/responses/GetCategoriesResponse';
+import GetVariantsResponse, { Option } from '@/interfaces/api/responses/GetVariantsResponse';
 
-export default function Categories() {
+export default function Variants() {
     const router = useRouter();
 
     const [loading, setLoading] = useState<boolean>(false);
-    const [categories, setCategories] = useState<GetCategoryResponse[]>([]);
+    const [variants, setVariants] = useState<GetVariantsResponse[]>([]);
 
     useEffect(() => {
         setLoading(true);
 
-        api.get<GetCategoryResponse[]>('/productCategory')
-            .then(response => setCategories(response.data))
+        api.get<GetVariantsResponse[]>('/variant')
+            .then(response => setVariants(response.data))
             .catch(error => toast.error('Error 500'))
             .finally(() => setLoading(false));
     }, []);
@@ -33,20 +32,19 @@ export default function Categories() {
             disableColumnMenu: true,
             sortable: false,
             renderCell: params =>
-                <IconButton onClick={() => router.push(`/categories/${params.row.id}/edit`)}>
+                <IconButton onClick={() => router.push(`/variants/${params.row.id}/edit`)}>
                     <EditIcon />
                 </IconButton>
         },
-        { field: 'name', headerName: 'Name', flex: 1 },
-        { field: 'description', headerName: 'Description', flex: 1 },
+        { field: 'name', headerName: 'Name', flex: .5 },
         {
-            field: 'variants',
-            headerName: 'Variants',
-            flex: 1,
+            field: 'options',
+            headerName: 'Options',
+            flex: 2,
             renderCell: params =>
                 <Stack direction='row' spacing={1}>
-                    {params.value.map((variant: GetVariantsResponse) =>
-                        <Chip key={variant.id} label={variant.name} />
+                    {params.value.map((option: Option) =>
+                        <Chip key={option.id} label={option.name} />
                     )}
                 </Stack>
         },
@@ -54,11 +52,11 @@ export default function Categories() {
 
     return (
         <Main>
-            <Title variant='h1'>Product Categories</Title>
+            <Title variant='h1'>Variants</Title>
 
             <Container>
                 <DataGrid
-                    rows={categories}
+                    rows={variants}
                     columns={columns}
                     loading={loading}
                     disableRowSelectionOnClick

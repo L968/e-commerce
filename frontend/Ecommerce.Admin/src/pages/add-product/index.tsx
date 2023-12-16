@@ -13,7 +13,7 @@ export interface BaseFormProps {
 export default function AddProduct() {
     const [activeStep, setActiveStep] = useState<number>(1);
     const [productId, setProductId] = useState<string>('REMOVE');
-    const [productCategoryId, setProductCategoryId] = useState<string>('7e85c5ac-d0a1-4bb2-b619-33a8d4d58852');
+    const [productCategoryId, setProductCategoryId] = useState<string>('5eaf50c6-8a04-42cc-8eae-3b2edea165d1');
 
     function next(): void {
         setActiveStep(activeStep + 1);
