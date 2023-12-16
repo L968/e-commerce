@@ -1,22 +1,22 @@
 import { ChipsBox } from "./styles";
-import { FormControl, Select, OutlinedInput, Chip, MenuItem, SelectProps, InputLabel } from "@mui/material";
+import { FormControl, Select, OutlinedInput, Chip, MenuItem, SelectProps, InputLabel, SelectChangeEvent } from "@mui/material";
 
 export interface SelectChipProps extends Omit<SelectProps, 'onChange'> {
     labelProperty: string
     options: any[]
-    selectedValues: any[]
-    onChange: (values: any[]) => void;
+    selectedValues: any
+    onChange: (e: SelectChangeEvent<unknown>) => void;
 }
 
 export default function SelectChip({ label, labelProperty, options, selectedValues, onChange, ...rest }: SelectChipProps) {
     return (
-        <FormControl>
+        <FormControl fullWidth>
             <InputLabel>{label}</InputLabel>
             <Select
                 {...rest}
                 multiple
                 value={selectedValues}
-                onChange={e => onChange(e.target.value as any[])}
+                onChange={onChange}
                 input={<OutlinedInput label={label} />}
                 renderValue={(selected) => (
                     <ChipsBox>

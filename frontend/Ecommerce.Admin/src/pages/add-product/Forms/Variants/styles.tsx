@@ -1,7 +1,13 @@
 import { Box } from '@mui/material';
 import { styled } from '@mui/system';
 
-export const VariantsContainer = styled(Box)({
+export const Form = styled('form')({
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '20px'
+})
+
+export const CombinationsContainer = styled(Box)({
     display: 'flex',
     flexDirection: 'column',
     gap: '20px'

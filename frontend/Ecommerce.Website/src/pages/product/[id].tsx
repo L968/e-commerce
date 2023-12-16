@@ -12,7 +12,7 @@ import api from '../../services/api';
 import ColorOption from "@/components/ColorOption";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ProductCarousel from "@/components/ProductCarousel";
-import ProductResponse, { ProductCombination } from "@/interfaces/ProductResponse";
+import ProductResponse, { ProductCombination } from "@/interfaces/api/responses/ProductResponse";
 import { Availability, AvailabilityValue, ButtonsContainer, CarouselIndicators, Colors, Header, ImageContainer, ProductContainer, ProductDescription, ProductInfo, ProductName, ProductPrice, RatingContainer, RatingSpan, SelectOptionButton } from "./styles";
 import currencyFormat from "@/utils/currencyFormat";
 

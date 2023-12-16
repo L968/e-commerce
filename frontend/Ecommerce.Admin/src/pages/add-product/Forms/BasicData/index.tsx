@@ -1,7 +1,7 @@
-import { Form } from '../styles';
-import { BaseFormProps } from ".."
+import api from '@/services/api';
+import { Form } from '../../styles';
+import { BaseFormProps } from '../..';
 import { toast } from 'react-toastify';
-import api from '../../../services/api';
 import { LoadingButton } from '@mui/lab';
 import Autocomplete from '@/components/Autocomplete';
 import { TextField, FormControlLabel, Checkbox } from '@mui/material';
@@ -30,7 +30,7 @@ export default function BasicData({ next, setProductId }: BasicDataProps) {
     useEffect(() => {
         setLoadingCategories(true);
 
-        api.get<GetCategoryResponse[]>('/productcategory')
+        api.get<GetCategoryResponse[]>('/productCategory')
             .then(response => setCategories(response.data))
             .catch(error => toast.error('Error 500'))
             .finally(() => setLoadingCategories(false));

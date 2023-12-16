@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import Variants from './Forms/Variants';
 import BasicData from './Forms/BasicData';
+import Variants from './Forms/Variants';
 import { Container, Main, Title } from './styles';
 import { Step, StepLabel, Stepper } from '@mui/material';
 
@@ -11,8 +11,9 @@ export interface BaseFormProps {
 }
 
 export default function AddProduct() {
-    const [activeStep, setActiveStep] = useState<number>(0);
-    const [productId, setProductId] = useState<string>('');
+    const [activeStep, setActiveStep] = useState<number>(1);
+    const [productId, setProductId] = useState<string>('REMOVE');
+    const [productCategoryId, setProductCategoryId] = useState<string>('7e85c5ac-d0a1-4bb2-b619-33a8d4d58852');
 
     function next(): void {
         setActiveStep(activeStep + 1);
@@ -24,7 +25,7 @@ export default function AddProduct() {
                 return <BasicData next={next} setProductId={setProductId} />
             case 1:
                 if (!productId) return <div>Product Id not found</div>;
-                return <Variants productId={productId} />
+                return <Variants productId={productId} productCategoryId={productCategoryId} />
             default:
                 return <div>Not Found</div>
         }

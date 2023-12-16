@@ -11,7 +11,7 @@ import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import api from '../../services/api';
 import Pagination from "@/components/Pagination";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import ProductListResponse from "@/interfaces/ProductListResponse";
+import ProductListResponse from "@/interfaces/api/responses/ProductListResponse";
 import ProductCard, { ProductCardProps } from "@/components/ProductCard";
 import { Card, CategoriesCardsArea, CardQuantity, CardTextContainer, CardTitle, Header, Title, FilterArea, FilterResultsText, FilterContainer, FilterSort, FilterIconContainer, FilterInputContainer, PopularitySelect, FilterButton, FilterViewsText, ProductCardsArea, ProductCardsContainer, ProductCardsRow } from "./styles";
 

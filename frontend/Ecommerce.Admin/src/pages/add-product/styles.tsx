@@ -2,7 +2,11 @@ import { styled } from '@mui/system';
 import { Paper, Typography } from '@mui/material';
 
 export const Main = styled('main')({
-    padding: '30px'
+    padding: '30px',
+    minWidth: '600px',
+    '& h1': {
+        fontSize: '20px'
+    }
 })
 
 export const Title = styled(Typography)({
