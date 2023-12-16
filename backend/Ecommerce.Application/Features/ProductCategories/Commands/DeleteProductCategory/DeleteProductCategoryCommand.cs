@@ -16,7 +16,7 @@ public class DeleteProductCategoryCommandHandler : IRequestHandler<DeleteProduct
 
     public async Task<Result> Handle(DeleteProductCategoryCommand request, CancellationToken cancellationToken)
     {
-        ProductCategory? productCategory = await _productCategoryRepository.GetByGuidAsync(request.Guid);
+        ProductCategory? productCategory = await _productCategoryRepository.GetByIdAsync(request.Guid);
 
         if (productCategory is null) return Result.Fail(DomainErrors.NotFound(nameof(ProductCategory), request.Guid));
 

@@ -30,8 +30,8 @@ public class DomainToDTOMappingProfile : Profile
 
         CreateMap<ProductImage, GetProductImageDto>();
         CreateMap<ProductCategory, GetProductCategoryDto>()
-            .ForMember(dto => dto.Id, opt => opt.MapFrom(c => c.Guid))
-            .ForMember(dto => dto.Variants, opt => opt.MapFrom(c => c.Variants.Select(v => v.Variant.Name)));
+            .ForMember(dto => dto.Id, opt => opt.MapFrom(c => c.Id))
+            .ForMember(dto => dto.Variants, opt => opt.MapFrom(c => c.Variants.Select(v => v.Variant)));
 
         CreateMap<ProductDiscount, GetProductDiscountDto>();
         CreateMap<ProductCombination, GetProductCombinationDto>()

@@ -28,6 +28,11 @@ public static class DomainErrors
         public static readonly Error InvalidWeightValue = new("Invalid weight value");
     }
 
+    public static class ProductCategory
+    {
+        public static readonly Error EmptyVariantList = new("Empty variant list");
+    }
+
     public static class ProductDiscount
     {
         public static readonly Error DiscountStartDateInPast = new("Discount start date cannot be in the past");
@@ -45,6 +50,11 @@ public static class DomainErrors
     {
         public static readonly Error InvalidQuantity = new("Invalid quantity value");
         public static readonly Error InsufficientStock = new("Insufficient stock");
+    }
+
+    public static class Variant
+    {
+        public static readonly Error EmptyOptionList = new("Empty option list");
     }
 
     public static class Order

@@ -13,7 +13,7 @@ public sealed class VariantOption
 
     public VariantOption(int variantId, string name)
     {
-        Id = variantId;
+        VariantId = variantId;
         Name = name;
     }
 }

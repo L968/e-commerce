@@ -3,7 +3,7 @@
 public interface IProductCategoryRepository
 {
     Task<IEnumerable<ProductCategory>> GetAllAsync();
-    Task<ProductCategory?> GetByGuidAsync(Guid guid);
+    Task<ProductCategory?> GetByIdAsync(Guid id);
     ProductCategory Create(ProductCategory productCategory);
     void Update(ProductCategory productCategory);
     void Delete(ProductCategory productCategory);

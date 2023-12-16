@@ -29,7 +29,7 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
 
     public async Task<Result<GetProductDto>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
-        ProductCategory? productCategory = await _productCategoryRepository.GetByGuidAsync(request.ProductCategoryId);
+        ProductCategory? productCategory = await _productCategoryRepository.GetByIdAsync(request.ProductCategoryId);
         if (productCategory is null) return Result.Fail(DomainErrors.NotFound(nameof(ProductCategory), request.ProductCategoryId));
 
         var createResult = Product.Create(

@@ -71,9 +71,7 @@ namespace Ecommerce.Infra.Data.Migrations
                 name: "product_category",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    guid = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     name = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     description = table.Column<string>(type: "longtext", nullable: true)
@@ -113,7 +111,7 @@ namespace Ecommerce.Infra.Data.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     active = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     visible = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    product_category_id = table.Column<int>(type: "int", nullable: false),
+                    product_category_id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
@@ -134,7 +132,7 @@ namespace Ecommerce.Infra.Data.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    product_category_id = table.Column<int>(type: "int", nullable: false),
+                    product_category_id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     variant_id = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>

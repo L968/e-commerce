@@ -13,7 +13,7 @@ public class ProductTests
             description: "Brand new T-Shirt",
             active: true,
             visible: true,
-            productCategoryId: 1
+            productCategoryId: Guid.NewGuid()
         );
 
         // Assert

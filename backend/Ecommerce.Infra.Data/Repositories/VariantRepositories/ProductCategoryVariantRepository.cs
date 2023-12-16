@@ -11,7 +11,7 @@ public class ProductCategoryVariantRepository : IProductCategoryVariantRepositor
         _context = context;
     }
 
-    public async Task<IEnumerable<ProductCategoryVariant>> GetByProductCategoryIdAsync(int id)
+    public async Task<IEnumerable<ProductCategoryVariant>> GetByProductCategoryIdAsync(Guid id)
     {
         return await _context.ProductCategoryVariants
             .Include(pcv => pcv.Variant)

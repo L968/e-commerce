@@ -20,7 +20,7 @@ public class GetVariantsByProductCategoryIdQueryHandler : IRequestHandler<GetVar
 
     public async Task<Result<IEnumerable<GetVariantDto>>> Handle(GetVariantsByProductCategoryIdQuery request, CancellationToken cancellationToken)
     {
-        ProductCategory? productCategory = await _productCategoryRepository.GetByGuidAsync(request.Id);
+        ProductCategory? productCategory = await _productCategoryRepository.GetByIdAsync(request.Id);
         if (productCategory is null) return Result.Fail(DomainErrors.NotFound(nameof(ProductCategory), request.Id));
 
         var productCategoryVariants = await _productCategoryVariantRepository.GetByProductCategoryIdAsync(productCategory.Id);

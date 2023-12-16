@@ -7,5 +7,8 @@ public class UpdateProductCategoryCommandValidator : AbstractValidator<UpdatePro
         RuleFor(pc => pc.Name)
             .NotEmpty()
             .MinimumLength(2);
+
+        RuleFor(pc => pc.VariantIds)
+            .NotEmpty();
     }
 }

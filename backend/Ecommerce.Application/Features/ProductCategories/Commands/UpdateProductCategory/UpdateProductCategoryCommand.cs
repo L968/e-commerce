@@ -4,9 +4,10 @@
 public record UpdateProductCategoryCommand : IRequest<Result>
 {
     [JsonIgnore]
-    public Guid Guid { get; set; }
+    public Guid Id { get; set; }
     public string Name { get; set; } = "";
     public string? Description { get; set; }
+    public IEnumerable<int> VariantIds { get; set; }
 }
 
 public class UpdateProductCategoryCommandHandler : IRequestHandler<UpdateProductCategoryCommand, Result>
@@ -22,10 +23,11 @@ public class UpdateProductCategoryCommandHandler : IRequestHandler<UpdateProduct
 
     public async Task<Result> Handle(UpdateProductCategoryCommand request, CancellationToken cancellationToken)
     {
-        ProductCategory? productCategory = await _productCategoryRepository.GetByGuidAsync(request.Guid);
-        if (productCategory is null) return Result.Fail(DomainErrors.NotFound(nameof(ProductCategory), request.Guid));
+        ProductCategory? productCategory = await _productCategoryRepository.GetByIdAsync(request.Id);
+        if (productCategory is null) return Result.Fail(DomainErrors.NotFound(nameof(ProductCategory), request.Id));
 
-        productCategory.Update(request.Name, request.Description);
+        var result = productCategory.Update(request.Name, request.Description, request.VariantIds);
+        if (result.IsFailed) return result;
 
         _productCategoryRepository.Update(productCategory);
 

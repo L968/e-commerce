@@ -9,7 +9,7 @@ public sealed class Product : AuditableEntity
     public string Description { get; private set; } = "";
     public bool Active { get; private set; }
     public bool Visible { get; private set; }
-    public int ProductCategoryId { get; private set; }
+    public Guid ProductCategoryId { get; private set; }
 
     public ProductCategory? Category { get; private set; }
     public List<ProductCombination> Combinations { get; private set; } = new();
@@ -24,7 +24,7 @@ public sealed class Product : AuditableEntity
         string description,
         bool active,
         bool visible,
-        int productCategoryId
+        Guid productCategoryId
     )
     {
         Id = Guid.NewGuid();
@@ -40,7 +40,7 @@ public sealed class Product : AuditableEntity
         string description,
         bool active,
         bool visible,
-        int productCategoryId
+        Guid productCategoryId
     )
     {
         var product = new Product(
@@ -59,7 +59,7 @@ public sealed class Product : AuditableEntity
         string description,
         bool active,
         bool visible,
-        int productCategoryId
+        Guid productCategoryId
     )
     {
         Name = name;

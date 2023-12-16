@@ -17,11 +17,12 @@ public class ProductCategoryRepository : IProductCategoryRepository
             .ToListAsync();
     }
 
-    public async Task<ProductCategory?> GetByGuidAsync(Guid guid)
+    public async Task<ProductCategory?> GetByIdAsync(Guid id)
     {
         return await _context.ProductCategories
             .Include(pc => pc.Variants)
-            .FirstOrDefaultAsync(pc => pc.Guid == guid);
+                .ThenInclude(pcv => pcv.Variant)
+            .FirstOrDefaultAsync(pc => pc.Id == id);
     }
 
     public ProductCategory Create(ProductCategory productCategory)

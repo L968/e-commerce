@@ -3,7 +3,6 @@ using Ecommerce.Application.Features.ProductCategories.Commands.CreateProductCat
 using Ecommerce.Application.Features.ProductCategories.Commands.DeleteProductCategory;
 using Ecommerce.Application.Features.ProductCategories.Commands.UpdateProductCategory;
 using Ecommerce.Application.Features.ProductCategories.Queries;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Ecommerce.API.Controllers
 {
@@ -22,6 +21,16 @@ namespace Ecommerce.API.Controllers
         public async Task<IActionResult> Get()
         {
             return Ok(await _mediator.Send(new GetProductCategoryQuery()));
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            GetProductCategoryDto? productCategory = await _mediator.Send(new GetProductCategoryByIdQuery(id));
+
+            if (productCategory is null) return NotFound();
+
+            return Ok(productCategory);
         }
 
         [HttpGet("{id}/variants")]
@@ -47,10 +56,18 @@ namespace Ecommerce.API.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateProductCategoryCommand command)
         {
-            command.Guid = id;
+            command.Id = id;
             Result result = await _mediator.Send(command);
 
-            if (result.IsFailed) return NotFound();
+            if (result.IsFailed)
+            {
+                if (result.Reasons[0].Message.Contains("not found"))
+                {
+                    return NotFound();
+                }
+
+                return BadRequest(result.Reasons);
+            }
 
             return NoContent();
         }

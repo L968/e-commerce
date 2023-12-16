@@ -181,8 +181,8 @@ namespace Ecommerce.Infra.Data.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("name");
 
-                    b.Property<int>("ProductCategoryId")
-                        .HasColumnType("int")
+                    b.Property<Guid>("ProductCategoryId")
+                        .HasColumnType("char(36)")
                         .HasColumnName("product_category_id");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -204,9 +204,9 @@ namespace Ecommerce.Infra.Data.Migrations
 
             modelBuilder.Entity("Ecommerce.Domain.Entities.ProductEntities.ProductCategory", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("char(36)")
                         .HasColumnName("id");
 
                     b.Property<DateTime>("CreatedAt")
@@ -216,10 +216,6 @@ namespace Ecommerce.Infra.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("longtext")
                         .HasColumnName("description");
-
-                    b.Property<Guid>("Guid")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("guid");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -455,8 +451,8 @@ namespace Ecommerce.Infra.Data.Migrations
                         .HasColumnType("char(36)")
                         .HasColumnName("id");
 
-                    b.Property<int>("ProductCategoryId")
-                        .HasColumnType("int")
+                    b.Property<Guid>("ProductCategoryId")
+                        .HasColumnType("char(36)")
                         .HasColumnName("product_category_id");
 
                     b.Property<int>("VariantId")
