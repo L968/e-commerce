@@ -2,7 +2,6 @@
 
 public record GetVariantDto
 {
-    public int Id { get; private set; }
-    public string Name { get; private set; } = "";
-    public List<GetVariantOptionDto> Options { get; private set; } = new();
+    public string Name { get; set; } = "";
+    public List<GetVariantOptionDto> Options { get; set; } = new();
 }

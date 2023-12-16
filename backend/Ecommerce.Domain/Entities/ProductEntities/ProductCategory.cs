@@ -1,4 +1,6 @@
-﻿namespace Ecommerce.Domain.Entities.ProductEntities;
+﻿using Ecommerce.Domain.Entities.VariantEntities;
+
+namespace Ecommerce.Domain.Entities.ProductEntities;
 
 public sealed class ProductCategory : AuditableEntity
 {
@@ -6,6 +8,9 @@ public sealed class ProductCategory : AuditableEntity
     public Guid Guid { get; private init; }
     public string Name { get; private set; } = "";
     public string? Description { get; private set; }
+
+    private readonly List<ProductCategoryVariant> _variants = new();
+    public IReadOnlyCollection<ProductCategoryVariant> Variants => _variants;
 
     private ProductCategory() {}
 

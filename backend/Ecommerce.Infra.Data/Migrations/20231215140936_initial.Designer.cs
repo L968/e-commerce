@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ecommerce.Infra.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231211001608_variant-fk")]
-    partial class variantfk
+    [Migration("20231215140936_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -451,58 +451,58 @@ namespace Ecommerce.Infra.Data.Migrations
                     b.ToTable("product_review", (string)null);
                 });
 
-            modelBuilder.Entity("Ecommerce.Domain.Entities.VariantEntities.ProductVariation", b =>
+            modelBuilder.Entity("Ecommerce.Domain.Entities.VariantEntities.ProductCategoryVariant", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)")
                         .HasColumnName("id");
 
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("product_id");
+                    b.Property<int>("ProductCategoryId")
+                        .HasColumnType("int")
+                        .HasColumnName("product_category_id");
 
                     b.Property<int>("VariantId")
                         .HasColumnType("int")
                         .HasColumnName("variant_id");
 
                     b.HasKey("Id")
-                        .HasName("pk_product_variation");
+                        .HasName("pk_product_category_variant");
 
-                    b.HasIndex("ProductId")
-                        .HasDatabaseName("ix_product_variation_product_id");
+                    b.HasIndex("ProductCategoryId")
+                        .HasDatabaseName("ix_product_category_variant_product_category_id");
 
                     b.HasIndex("VariantId")
-                        .HasDatabaseName("ix_product_variation_variant_id");
+                        .HasDatabaseName("ix_product_category_variant_variant_id");
 
-                    b.ToTable("product_variation", (string)null);
+                    b.ToTable("product_category_variant", (string)null);
                 });
 
-            modelBuilder.Entity("Ecommerce.Domain.Entities.VariantEntities.ProductVariationOption", b =>
+            modelBuilder.Entity("Ecommerce.Domain.Entities.VariantEntities.ProductVariantOption", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    b.Property<Guid>("ProductVariationId")
+                    b.Property<Guid>("ProductId")
                         .HasColumnType("char(36)")
-                        .HasColumnName("product_variation_id");
+                        .HasColumnName("product_id");
 
                     b.Property<int>("VariantOptionId")
                         .HasColumnType("int")
                         .HasColumnName("variant_option_id");
 
                     b.HasKey("Id")
-                        .HasName("pk_product_variation_option");
+                        .HasName("pk_product_variant_option");
 
-                    b.HasIndex("ProductVariationId")
-                        .HasDatabaseName("ix_product_variation_option_product_variation_id");
+                    b.HasIndex("ProductId")
+                        .HasDatabaseName("ix_product_variant_option_product_id");
 
                     b.HasIndex("VariantOptionId")
-                        .HasDatabaseName("ix_product_variation_option_variant_option_id");
+                        .HasDatabaseName("ix_product_variant_option_variant_option_id");
 
-                    b.ToTable("product_variation_option", (string)null);
+                    b.ToTable("product_variant_option", (string)null);
                 });
 
             modelBuilder.Entity("Ecommerce.Domain.Entities.VariantEntities.Variant", b =>
@@ -639,44 +639,44 @@ namespace Ecommerce.Infra.Data.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("Ecommerce.Domain.Entities.VariantEntities.ProductVariation", b =>
+            modelBuilder.Entity("Ecommerce.Domain.Entities.VariantEntities.ProductCategoryVariant", b =>
                 {
-                    b.HasOne("Ecommerce.Domain.Entities.ProductEntities.Product", "Product")
-                        .WithMany("Variations")
-                        .HasForeignKey("ProductId")
+                    b.HasOne("Ecommerce.Domain.Entities.ProductEntities.ProductCategory", "ProductCategory")
+                        .WithMany("Variants")
+                        .HasForeignKey("ProductCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_product_variation_product_product_id");
+                        .HasConstraintName("fk_product_category_variant_product_category_product_category_id");
 
                     b.HasOne("Ecommerce.Domain.Entities.VariantEntities.Variant", "Variant")
-                        .WithMany("ProductVariations")
+                        .WithMany("ProductCategoryVariants")
                         .HasForeignKey("VariantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_product_variation_variants_variant_id");
+                        .HasConstraintName("fk_product_category_variant_variants_variant_id");
 
-                    b.Navigation("Product");
+                    b.Navigation("ProductCategory");
 
                     b.Navigation("Variant");
                 });
 
-            modelBuilder.Entity("Ecommerce.Domain.Entities.VariantEntities.ProductVariationOption", b =>
+            modelBuilder.Entity("Ecommerce.Domain.Entities.VariantEntities.ProductVariantOption", b =>
                 {
-                    b.HasOne("Ecommerce.Domain.Entities.VariantEntities.ProductVariation", "ProductVariation")
-                        .WithMany("VariationOptions")
-                        .HasForeignKey("ProductVariationId")
+                    b.HasOne("Ecommerce.Domain.Entities.ProductEntities.Product", "Product")
+                        .WithMany("VariantOptions")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_product_variation_option_product_variation_product_variation");
+                        .HasConstraintName("fk_product_variant_option_product_product_id");
 
                     b.HasOne("Ecommerce.Domain.Entities.VariantEntities.VariantOption", "VariantOption")
-                        .WithMany("ProductVariationOptions")
+                        .WithMany("ProductVariantOptions")
                         .HasForeignKey("VariantOptionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_product_variation_option_variant_options_variant_option_id");
+                        .HasConstraintName("fk_product_variant_option_variant_options_variant_option_id");
 
-                    b.Navigation("ProductVariation");
+                    b.Navigation("Product");
 
                     b.Navigation("VariantOption");
                 });
@@ -706,7 +706,12 @@ namespace Ecommerce.Infra.Data.Migrations
 
                     b.Navigation("Reviews");
 
-                    b.Navigation("Variations");
+                    b.Navigation("VariantOptions");
+                });
+
+            modelBuilder.Entity("Ecommerce.Domain.Entities.ProductEntities.ProductCategory", b =>
+                {
+                    b.Navigation("Variants");
                 });
 
             modelBuilder.Entity("Ecommerce.Domain.Entities.ProductEntities.ProductCombination", b =>
@@ -717,21 +722,16 @@ namespace Ecommerce.Infra.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Ecommerce.Domain.Entities.VariantEntities.ProductVariation", b =>
-                {
-                    b.Navigation("VariationOptions");
-                });
-
             modelBuilder.Entity("Ecommerce.Domain.Entities.VariantEntities.Variant", b =>
                 {
                     b.Navigation("Options");
 
-                    b.Navigation("ProductVariations");
+                    b.Navigation("ProductCategoryVariants");
                 });
 
             modelBuilder.Entity("Ecommerce.Domain.Entities.VariantEntities.VariantOption", b =>
                 {
-                    b.Navigation("ProductVariationOptions");
+                    b.Navigation("ProductVariantOptions");
                 });
 #pragma warning restore 612, 618
         }

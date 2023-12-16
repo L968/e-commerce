@@ -12,12 +12,10 @@ public sealed class Product : AuditableEntity
     public int ProductCategoryId { get; private set; }
 
     public ProductCategory? Category { get; private set; }
-    public List<ProductDiscount> Discounts { get; private set; } = new();
     public List<ProductCombination> Combinations { get; private set; } = new();
+    public List<ProductVariantOption> VariantOptions { get; private set; } = new();
+    public List<ProductDiscount> Discounts { get; private set; } = new();
     public List<ProductReview> Reviews { get; private set; } = new();
-
-    private readonly List<ProductVariation> _variations = new();
-    public IReadOnlyCollection<ProductVariation> Variations => _variations;
 
     private Product() { }
 
@@ -70,22 +68,6 @@ public sealed class Product : AuditableEntity
         Visible = visible;
         ProductCategoryId = productCategoryId;
         return Result.Ok();
-    }
-
-    public void AddVariation(VariantOption variantOption)
-    {
-        ProductVariation? productVariation = _variations.FirstOrDefault(pv => pv.VariantId == variantOption.VariantId);
-
-        if (productVariation is not null)
-        {
-            productVariation.AddVariantOption(variantOption.Id);
-        }
-        else
-        {
-            productVariation = new ProductVariation(Id, variantOption.VariantId);
-            productVariation.AddVariantOption(variantOption.Id);
-            _variations.Add(productVariation);
-        }
     }
 
     public float GetRating()

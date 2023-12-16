@@ -17,11 +17,9 @@ public class ProductRepository : IProductRepository
                 .ThenInclude(pc => pc.Images)
             .Include(p => p.Reviews)
             .Include(p => p.Discounts)
-            .Include(p => p.Variations)
-                .ThenInclude(pv => pv.Variant)
-            .Include(p => p.Variations)
-                .ThenInclude(pv => pv.VariationOptions)
+            .Include(p => p.VariantOptions)
                 .ThenInclude(pvo => pvo.VariantOption)
+                .ThenInclude(vo => vo.Variant)
             .ToListAsync();
     }
 
@@ -34,11 +32,9 @@ public class ProductRepository : IProductRepository
                 .ThenInclude(pc => pc.Inventory)
             .Include(p => p.Combinations)
                 .ThenInclude(pc => pc.Images)
-            .Include(p => p.Variations)
-                .ThenInclude(pv => pv.Variant)
-            .Include(p => p.Variations)
-                .ThenInclude(pv => pv.VariationOptions)
+            .Include(p => p.VariantOptions)
                 .ThenInclude(pvo => pvo.VariantOption)
+                .ThenInclude(vo => vo.Variant)
             .FirstOrDefaultAsync(p => p.Id == id);
     }
 

@@ -1,4 +1,6 @@
-﻿namespace Ecommerce.Application.DTOs.Products;
+﻿using Ecommerce.Application.DTOs.Variants;
+
+namespace Ecommerce.Application.DTOs.Products;
 
 public record GetProductListDto
 {
@@ -7,9 +9,9 @@ public record GetProductListDto
     public string CategoryName { get; set; } = "";
     public decimal OriginalPrice { get; set; }
     public decimal DiscountedPrice { get; set; }
-    public string ImageSource { get; set; }
-    public float Rating { get; private set; }
+    public string ImageSource { get; set; } = "";
+    public float Rating { get; set; }
     public int ReviewsCount { get; set; }
 
-    public List<GetProductVariationDto> Variations { get; private set; } = new();
+    public List<GetVariantDto> Variants { get; set; } = new();
 }

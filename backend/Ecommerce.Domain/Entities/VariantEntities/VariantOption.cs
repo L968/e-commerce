@@ -7,7 +7,7 @@ public sealed class VariantOption
     public string Name { get; private set; }
 
     public Variant? Variant { get; private set; }
-    public List<ProductVariationOption>? ProductVariationOptions { get; private set; }
+    public List<ProductVariantOption>? ProductVariantOptions { get; private set; }
 
     private VariantOption() { }
 

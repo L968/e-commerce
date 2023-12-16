@@ -18,8 +18,8 @@ public class AppDbContext : DbContext
 
     public virtual DbSet<Variant> Variants { get; set; }
     public virtual DbSet<VariantOption> VariantOptions { get; set; }
-    public virtual DbSet<ProductVariation> ProductVariations { get; set; }
-    public virtual DbSet<ProductVariationOption> ProductVariationOptions { get; set; }
+    public virtual DbSet<ProductCategoryVariant> ProductCategoryVariants { get; set; }
+    public virtual DbSet<ProductVariantOption> ProductVariantOptions { get; set; }
 
     public virtual DbSet<Address> Addresses { get; set; }
 

@@ -130,6 +130,32 @@ namespace Ecommerce.Infra.Data.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "product_category_variant",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    product_category_id = table.Column<int>(type: "int", nullable: false),
+                    variant_id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_product_category_variant", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_product_category_variant_product_category_product_category_id",
+                        column: x => x.product_category_id,
+                        principalTable: "product_category",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_product_category_variant_variants_variant_id",
+                        column: x => x.variant_id,
+                        principalTable: "variant",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "variant_option",
                 columns: table => new
                 {
@@ -237,26 +263,27 @@ namespace Ecommerce.Infra.Data.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "product_variation",
+                name: "product_variant_option",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     product_id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    variant_id = table.Column<int>(type: "int", nullable: false)
+                    variant_option_id = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_product_variation", x => x.id);
+                    table.PrimaryKey("pk_product_variant_option", x => x.id);
                     table.ForeignKey(
-                        name: "fk_product_variation_product_product_id",
+                        name: "fk_product_variant_option_product_product_id",
                         column: x => x.product_id,
                         principalTable: "product",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_product_variation_variants_variant_id",
-                        column: x => x.variant_id,
-                        principalTable: "variant",
+                        name: "fk_product_variant_option_variant_options_variant_option_id",
+                        column: x => x.variant_option_id,
+                        principalTable: "variant_option",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -338,27 +365,6 @@ namespace Ecommerce.Infra.Data.Migrations
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
-            migrationBuilder.CreateTable(
-                name: "product_variation_option",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    product_variation_id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    variant_option_id = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_product_variation_option", x => x.id);
-                    table.ForeignKey(
-                        name: "fk_product_variation_option_product_variation_product_variation",
-                        column: x => x.product_variation_id,
-                        principalTable: "product_variation",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
             migrationBuilder.CreateIndex(
                 name: "ix_cart_item_cart_id",
                 table: "cart_item",
@@ -373,6 +379,16 @@ namespace Ecommerce.Infra.Data.Migrations
                 name: "ix_product_product_category_id",
                 table: "product",
                 column: "product_category_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_product_category_variant_product_category_id",
+                table: "product_category_variant",
+                column: "product_category_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_product_category_variant_variant_id",
+                table: "product_category_variant",
+                column: "variant_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_product_combination_product_id",
@@ -401,19 +417,14 @@ namespace Ecommerce.Infra.Data.Migrations
                 column: "product_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_product_variation_product_id",
-                table: "product_variation",
+                name: "ix_product_variant_option_product_id",
+                table: "product_variant_option",
                 column: "product_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_product_variation_variant_id",
-                table: "product_variation",
-                column: "variant_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_product_variation_option_product_variation_id",
-                table: "product_variation_option",
-                column: "product_variation_id");
+                name: "ix_product_variant_option_variant_option_id",
+                table: "product_variant_option",
+                column: "variant_option_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_variant_option_variant_id",
@@ -431,6 +442,9 @@ namespace Ecommerce.Infra.Data.Migrations
                 name: "cart_item");
 
             migrationBuilder.DropTable(
+                name: "product_category_variant");
+
+            migrationBuilder.DropTable(
                 name: "product_discount");
 
             migrationBuilder.DropTable(
@@ -443,10 +457,7 @@ namespace Ecommerce.Infra.Data.Migrations
                 name: "product_review");
 
             migrationBuilder.DropTable(
-                name: "product_variation_option");
-
-            migrationBuilder.DropTable(
-                name: "variant_option");
+                name: "product_variant_option");
 
             migrationBuilder.DropTable(
                 name: "cart");
@@ -455,7 +466,7 @@ namespace Ecommerce.Infra.Data.Migrations
                 name: "product_combination");
 
             migrationBuilder.DropTable(
-                name: "product_variation");
+                name: "variant_option");
 
             migrationBuilder.DropTable(
                 name: "product");
