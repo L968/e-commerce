@@ -61,7 +61,7 @@ public sealed class ProductCombination : AuditableEntity
         List<string> imagePaths
     )
     {
-        var validationResult = ValidateDomain(price, length, width, height, weight);
+        var validationResult = ValidateDomain(price, imagePaths, length, width, height, weight);
         if (validationResult.IsFailed) return validationResult;
 
         var productCombination = new ProductCombination(
@@ -83,13 +83,14 @@ public sealed class ProductCombination : AuditableEntity
     public Result Update(
         string sku,
         decimal price,
+        List<string> imagePaths,
         float length,
         float width,
         float height,
         float weight
     )
     {
-        var validationResult = ValidateDomain(price, length, width, height, weight);
+        var validationResult = ValidateDomain(price, imagePaths, length, width, height, weight);
         if (validationResult.IsFailed) return validationResult;
 
         Sku = sku;
@@ -145,12 +146,15 @@ public sealed class ProductCombination : AuditableEntity
         return Math.Round(discountedPrice, 2, MidpointRounding.AwayFromZero);
     }
 
-    private static Result ValidateDomain(decimal price, float length, float width, float height, float weight)
+    private static Result ValidateDomain(decimal price, List<string> imagePaths, float length, float width, float height, float weight)
     {
         var errors = new List<Error>();
 
         if (price <= 0)
             errors.Add(DomainErrors.Product.InvalidPriceValue);
+
+        if (imagePaths.Count <= 0)
+            errors.Add(DomainErrors.Product.EmptyImagePathList);
 
         if (length <= 0)
             errors.Add(DomainErrors.Product.InvalidLengthValue);
