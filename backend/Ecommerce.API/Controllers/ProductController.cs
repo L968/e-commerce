@@ -61,7 +61,7 @@ namespace Ecommerce.API.Controllers
             return NoContent();
         }
 
-        [HttpPatch("{id}/add-combination")]
+        [HttpPost("{id}/add-combination")]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> AddCombination(Guid id, [FromForm] AddProductCombinationCommand command)
         {
@@ -70,7 +70,7 @@ namespace Ecommerce.API.Controllers
 
             if (result.IsFailed) return BadRequest(result.Reasons);
 
-            return NoContent();
+            return Ok(result.Value);
         }
 
         [HttpPatch("{productCombinationid}/add-image")]
