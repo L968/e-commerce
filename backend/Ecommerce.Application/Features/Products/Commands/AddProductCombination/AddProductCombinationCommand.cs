@@ -87,8 +87,8 @@ public class AddProductCombinationCommandHandler : IRequestHandler<AddProductCom
         _productCombinationRepository.Create(createResult.Value);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        var productDto = _mapper.Map<GetProductCombinationDto>(product);
-        return Result.Ok(productDto);
+        var dto = _mapper.Map<GetProductCombinationDto>(createResult.Value);
+        return Result.Ok(dto);
     }
 
     private static string GenerateCombinationString(List<VariantOption> variantOptions)
