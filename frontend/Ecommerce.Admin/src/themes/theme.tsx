@@ -16,6 +16,9 @@ export const theme = createTheme({
     }
   },
   typography: {
+    h1: {
+      fontSize: '50px',
+    },
     fontFamily: 'Montserrat, Roboto, Helvetica, Arial, sans-serif',
   }
 });

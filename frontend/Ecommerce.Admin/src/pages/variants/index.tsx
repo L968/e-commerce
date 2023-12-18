@@ -1,11 +1,11 @@
 import api from '@/services/api';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
+import { Container, Main } from './styles';
 import { useEffect, useState } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
-import { Container, Main, Title } from './styles';
-import { Chip, IconButton, Stack } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { Chip, IconButton, Stack, Typography } from '@mui/material';
 import GetVariantsResponse, { Option } from '@/interfaces/api/responses/GetVariantsResponse';
 
 export default function Variants() {
@@ -52,7 +52,7 @@ export default function Variants() {
 
     return (
         <Main>
-            <Title variant='h1'>Variants</Title>
+            <Typography variant='h1'>Variants</Typography>
 
             <Container>
                 <DataGrid

@@ -1,5 +1,5 @@
+import { Form } from './styles';
 import api from '@/services/api';
-import { Form } from '../../styles';
 import { BaseFormProps } from '../..';
 import { toast } from 'react-toastify';
 import { LoadingButton } from '@mui/lab';
@@ -11,6 +11,7 @@ import GetCategoryResponse from '@/interfaces/api/responses/GetCategoriesRespons
 
 interface BasicDataProps extends BaseFormProps {
     setProductId: Dispatch<SetStateAction<string>>
+    setProductCategoryId: Dispatch<SetStateAction<string>>
 }
 
 interface ProductFormData {
@@ -21,7 +22,7 @@ interface ProductFormData {
     visible: boolean
 }
 
-export default function BasicData({ next, setProductId }: BasicDataProps) {
+export default function BasicData({ next, setProductId, setProductCategoryId }: BasicDataProps) {
     const [categories, setCategories] = useState<GetCategoryResponse[]>([]);
     const [loadingCategories, setLoadingCategories] = useState<boolean>(false);
     const [loadingCreateProduct, setLoadingCreatingProduct] = useState<boolean>(false);
@@ -53,6 +54,8 @@ export default function BasicData({ next, setProductId }: BasicDataProps) {
             active: true,
             visible: true,
         }
+
+        setProductCategoryId(productData.category.id);
 
         setLoadingCreatingProduct(true);
 

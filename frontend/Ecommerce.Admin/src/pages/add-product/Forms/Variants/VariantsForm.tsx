@@ -3,41 +3,52 @@ import { toast } from 'react-toastify';
 import { useEffect, useState } from 'react';
 import { Container, Header } from './styles';
 import Dropzone from '@/components/Dropzone';
-import SelectChip from '@/components/SelectChip';
 import CloseIcon from '@mui/icons-material/Close';
-import Autocomplete from '@/components/Autocomplete';
 import { Divider, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, TextField } from '@mui/material';
-import GetVariantsResponse, { Option } from '@/interfaces/api/responses/GetVariantsResponse';
 import GetProductCategoryVariantsResponse, { VariantOption } from '@/interfaces/api/responses/GetProductCategoryVariantsResponse';
 
-interface CombinationFormProps {
+interface VariantFormProps {
     formKey: string
     productCategoryId: string
-    //onChange: (variantId: number, options: Option[]) => void
+    onDataChange: (formKey: string, data: CombinationFormData) => void
     onRemove: (formKey: string, variantId?: number) => void
 }
 
-interface CombinationFormData {
+export interface CombinationFormData {
     sku: string
     price: string
     stock: string
     images: File[]
+    variants: {[key: string]: VariantOption}
     length: string
     width: string
     height: string
     weight: string
 }
 
-export default function CombinationForm({ formKey, productCategoryId, onRemove }: CombinationFormProps) {
+export default function VariantForm({ formKey, productCategoryId, onDataChange, onRemove }: VariantFormProps) {
     const [variants, setVariants] = useState<GetProductCategoryVariantsResponse[]>([]);
-    const [selectedVariantOptions, setSelectedVariantOptions] = useState<{ [key: string]: VariantOption[] }>({});
-    const [combinationData, setCombinationData] = useState<CombinationFormData>({ sku: '', price: '', stock: '', images: [], length: '', width: '', height: '', weight: '' });
+    const [combinationData, setCombinationData] = useState<CombinationFormData>({
+        sku: '',
+        price: '',
+        stock: '',
+        images: [],
+        variants: {},
+        length: '',
+        width: '',
+        height: '',
+        weight: ''
+    });
 
     useEffect(() => {
         api.get<GetProductCategoryVariantsResponse[]>(`/productCategory/${productCategoryId}/variants`)
             .then(response => setVariants(response.data))
             .catch(error => toast.error('Error 500'));
     }, []);
+
+    useEffect(() => {
+        onDataChange(formKey, combinationData);
+    }, [combinationData]);
 
     function updateCombinationState(name: string, value: any): void {
         setCombinationData(prev => ({
@@ -50,14 +61,14 @@ export default function CombinationForm({ formKey, productCategoryId, onRemove }
         updateCombinationState('images', files);
     }
 
-    function handleOptionChange(name: string, value: VariantOption[]) {
-        setSelectedVariantOptions((prevOptions) => ({
-            ...prevOptions,
-            [name]: value,
-        }));
+    function handleVariantChange(key: string, value: VariantOption[]): void {
+        updateCombinationState('variants', {
+            ...combinationData.variants,
+            [key]: value,
+        });
     }
 
-    function handleOnDropImage(files: File[]) {
+    function handleOnDropImage(files: File[]): void {
         setCombinationData(prev => ({
             ...prev,
             'images': [
@@ -88,9 +99,10 @@ export default function CombinationForm({ formKey, productCategoryId, onRemove }
                             <FormControl fullWidth>
                                 <InputLabel>{variant.name}</InputLabel>
                                 <Select
-                                    value={selectedVariantOptions[variant.name] || ''}
+                                    value={combinationData.variants[variant.name] || ''}
                                     label={variant.name}
-                                    onChange={e => handleOptionChange(variant.name, e.target.value as any)}
+                                    required
+                                    onChange={e => handleVariantChange(variant.name, e.target.value as any)}
                                 >
                                     {variant.options.map(option =>
                                         <MenuItem key={option.id} value={option as any}>{option.name}</MenuItem>

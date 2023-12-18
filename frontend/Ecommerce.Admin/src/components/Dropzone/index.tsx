@@ -1,7 +1,7 @@
 import { useDropzone } from 'react-dropzone';
 import CancelIcon from '@mui/icons-material/Cancel';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
-import { Container, ContainerMessage, Image, ImageCloseButton, ImageContainer, ImagesContainer } from './styles';
+import { Container, ContainerMessage, Image, ImageCloseButton, ImageContainer, ImageCoverDiv, ImagesContainer } from './styles';
 
 interface DropzoneProps {
     files: File[]
@@ -56,11 +56,13 @@ export default function Dropzone({ files, setFiles, onDrop }: DropzoneProps) {
             </Container>
 
             <ImagesContainer container>
-                {files.map(file => (
-                    <ImageContainer item xs={2}>
+                {files.map((file, i) => (
+                    <ImageContainer key={i} item xs={2}>
                         <ImageCloseButton onClick={() => handleOnRemoveImage(file)} size='small'>
                             <CancelIcon />
                         </ImageCloseButton>
+
+                        {i === 0 && <ImageCoverDiv>COVER IMAGE</ImageCoverDiv>}
 
                         <Image src={URL.createObjectURL(file)} alt={file.name} />
                     </ImageContainer>

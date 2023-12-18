@@ -64,6 +64,23 @@ export const ImageCloseButton = styled(IconButton)({
     zIndex: 1,
 })
 
+export const ImageCoverDiv = styled(Box)({
+    position: 'absolute',
+    top: '50%',
+    left: '4%',
+    width: '90px',
+    height: '38px',
+    backgroundColor: '#00A650',
+    color: '#FFF',
+    fontSize: '12px',
+    fontWeight: 600,
+    lineHeight: '12px',
+    textAlign: 'center',
+    padding: '7px 8px',
+    borderRadius: '12px',
+    zIndex: 1,
+})
+
 export const Image = styled('img')({
     filter: 'brightness(.7)',
     maxWidth: '100px',
