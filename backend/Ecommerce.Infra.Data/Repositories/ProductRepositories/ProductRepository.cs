@@ -20,6 +20,7 @@ public class ProductRepository : IProductRepository
             .Include(p => p.VariantOptions)
                 .ThenInclude(pvo => pvo.VariantOption)
                 .ThenInclude(vo => vo.Variant)
+            .Where(p => p.Combinations.Any())
             .ToListAsync();
     }
 
