@@ -1,4 +1,5 @@
 ﻿using Ecommerce.Application.DTOs.Products;
+using Ecommerce.Application.Interfaces;
 using Ecommerce.Domain.Repositories.VariantRepositories;
 using Ecommerce.Utils.Attributes;
 using Microsoft.AspNetCore.Http;
@@ -28,14 +29,23 @@ public class AddProductCombinationCommandHandler : IRequestHandler<AddProductCom
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IBlobStorageService _blobStorageService;
     private readonly IProductRepository _productRepository;
     private readonly IVariantOptionRepository _variantOptionRepository;
     private readonly IProductCombinationRepository _productCombinationRepository;
 
-    public AddProductCombinationCommandHandler(IMapper mapper, IUnitOfWork unitOfWork, IProductRepository productRepository, IVariantOptionRepository variantOptionRepository, IProductCombinationRepository productCombinationRepository)
+    public AddProductCombinationCommandHandler(
+        IMapper mapper,
+        IUnitOfWork unitOfWork,
+        IBlobStorageService blobStorageService,
+        IProductRepository productRepository,
+        IVariantOptionRepository variantOptionRepository,
+        IProductCombinationRepository productCombinationRepository
+       )
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _blobStorageService = blobStorageService;
         _productRepository = productRepository;
         _variantOptionRepository = variantOptionRepository;
         _productCombinationRepository = productCombinationRepository;
@@ -56,7 +66,7 @@ public class AddProductCombinationCommandHandler : IRequestHandler<AddProductCom
             variantOptions.Add(variantOption);
         }
 
-        Result<List<string>> uploadResult = await UploadProductImages(request.Images);
+        Result<List<string>> uploadResult = await _blobStorageService.UploadImage(request.Images);
         if (uploadResult.IsFailed) return Result.Fail(uploadResult.Errors);
 
         var createResult = ProductCombination.Create(
@@ -85,10 +95,5 @@ public class AddProductCombinationCommandHandler : IRequestHandler<AddProductCom
     {
         var combinationStrings = variantOptions.Select(vo => $"{vo.Variant!.Name}={vo.Name}");
         return string.Join("/", combinationStrings);
-    }
-
-    private static async Task<Result<List<string>>> UploadProductImages(IFormFileCollection images)
-    {
-        return Result.Ok(new List<string>());
     }
 }
