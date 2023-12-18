@@ -1,4 +1,4 @@
-import { Box, Paper } from '@mui/material';
+import { Box, Grid, Paper } from '@mui/material';
 import { styled } from '@mui/system';
 
 export const Main = styled('main')({
@@ -10,10 +10,14 @@ export const Container = styled(Paper)({
     display: 'flex',
     flexDirection: 'column',
     padding: '18px',
-    gap: '10px',
+    gap: '20px',
 })
 
 
 export const Header = styled(Box)({
+    display: 'flex',
+})
+
+export const ProductsContainer = styled(Grid)({
     display: 'flex',
 })

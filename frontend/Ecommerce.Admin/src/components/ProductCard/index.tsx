@@ -4,17 +4,11 @@ import { useRouter } from 'next/navigation';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { ActionButtons, CardInfo, Container, Price, ProductName } from './styles';
+import GetProductListResponse from '@/interfaces/api/responses/GetProductListResponse';
 
-export interface ProductCardProps {
-    id: string;
-    name: string;
-    price: number;
-    imageSource: string;
-}
-
-export default function ProductCard(product: ProductCardProps) {
+export default function ProductCard(product: GetProductListResponse) {
     const router = useRouter();
-    const { id, name, price, imageSource } = product;
+    const { id, name, discountedPrice: price, imageSource } = product;
 
     function handleEdit (e: React.MouseEvent) {
         router.push(`/product/${id}`)

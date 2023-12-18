@@ -1,8 +1,22 @@
-import { Container, Header, Main } from './styles';
-import { TextField, Typography } from '@mui/material';
+import { Container, Header, Main, ProductsContainer } from './styles';
+import { CircularProgress, Grid, TextField, Typography } from '@mui/material';
 import ProductCard from '@/components/ProductCard';
+import api from '@/services/api';
+import { toast } from 'react-toastify';
+import { useEffect, useState } from 'react';
+import GetProductListResponse from '@/interfaces/api/responses/GetProductListResponse';
 
 export default function Products() {
+    const [products, setProducts] = useState<GetProductListResponse[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+
+    useEffect(() => {
+        api.get<GetProductListResponse[]>('/product')
+            .then(response => setProducts(response.data))
+            .catch(error => toast.error("Error 500"))
+            .finally(() => setLoading(false));
+    }, []);
+
     return (
         <Main>
             <Typography variant='h1'>Products</Typography>
@@ -16,12 +30,15 @@ export default function Products() {
                     />
                 </Header>
 
-                <ProductCard
-                    id='x'
-                    name='Test'
-                    price={99.90}
-                    imageSource='https://lcoiecommercestorage.blob.core.windows.net/images/4dbe281e-1d4c-40f5-8944-3d2cb2bc1666.png'
-                />
+                {loading && <CircularProgress />}
+
+                <ProductsContainer container spacing={3}>
+                    {products.map(product => (
+                        <Grid item sm>
+                            <ProductCard {...product} />
+                        </Grid>
+                    ))}
+                </ProductsContainer>
             </Container>
         </Main>
     )

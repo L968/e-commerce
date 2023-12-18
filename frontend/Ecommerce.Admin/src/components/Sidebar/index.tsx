@@ -27,7 +27,7 @@ const menuItems: MenuItem[] = [
         text: 'Products',
         icon: <InventoryIcon />,
         children: [
-            { text: 'Add Product', src: '/add-product' },
+            { text: 'Add Product', src: '/products/create' },
             { text: 'Product List', src: '/products' },
             { text: 'Categories', src: '/categories' },
             { text: 'Variants', src: '/variants' },

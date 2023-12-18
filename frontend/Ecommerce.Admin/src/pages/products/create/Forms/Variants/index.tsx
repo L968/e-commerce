@@ -6,6 +6,7 @@ import { Form, CombinationsContainer } from './styles';
 import { FormEvent, useEffect, useState } from 'react';
 import VariantForm, { CombinationFormData } from './VariantsForm';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
+import { useRouter } from 'next/router';
 
 interface VariantsProps {
     productId: string
@@ -13,6 +14,7 @@ interface VariantsProps {
 }
 
 export default function Variants({ productId, productCategoryId }: VariantsProps) {
+    const router = useRouter();
     const [combinationForms, setCombinationForms] = useState<{ key: string; form: JSX.Element }[]>([]);
     const [combinationsData, setCombinationsData] = useState<{ [key: string]: CombinationFormData }>({});
 
@@ -56,22 +58,26 @@ export default function Variants({ productId, productCategoryId }: VariantsProps
         );
     }
 
-    function handleOnSubmit(e: FormEvent<HTMLFormElement>): void {
+    async function handleOnSubmit(e: FormEvent<HTMLFormElement>): Promise<void> {
         e.preventDefault();
 
         const combinationArray = Object.values(combinationsData);
 
-        if (combinationArray.some(d => d.images.length === 0)) {
+        if (combinationArray.some(c => c.images.length === 0)) {
             toast.warning('At least one variant has no images');
             return;
         }
 
-        combinationArray.map(combination => {
-            sendCombination(combination);
-        })
+        try {
+            await Promise.all(combinationArray.map(sendCombination));
+            router.push('/products');
+        } catch (error) {
+            console.error('Error during combination submission:', error);
+            toast.error('Error submitting combinations');
+        }
     }
 
-    function sendCombination(combination: CombinationFormData) {
+    async function sendCombination(combination: CombinationFormData) {
         const formData = new FormData();
 
         Object.entries(combination).map(([key, value]) => {
@@ -87,8 +93,12 @@ export default function Variants({ productId, productCategoryId }: VariantsProps
             }
         })
 
-        api.post(`/product/${productId}/add-combination`, formData)
-            .catch(error => toast.error('Error 500'));
+        try {
+            await api.post(`/product/${productId}/add-combination`, formData);
+        } catch (error) {
+            console.error('Error during combination submission:', error);
+            throw new Error('Error 500');
+        }
     }
 
     return (

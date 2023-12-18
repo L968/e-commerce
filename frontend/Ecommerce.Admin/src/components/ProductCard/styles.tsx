@@ -5,7 +5,7 @@ export const Container = styled(Paper)({
     display: 'flex',
     width: '239px',
     flexDirection: 'column',
-    borderRadius: '8px',
+    borderRadius: '5px',
     overflow: 'hidden',
     border: '1px solid #FFF',
 })

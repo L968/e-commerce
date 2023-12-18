@@ -1,14 +1,11 @@
 import { useState } from 'react';
-import BasicData from './Forms/BasicData';
 import Variants from './Forms/Variants';
+import BasicData from './Forms/BasicData';
 import { Container, Main } from './styles';
+import { CrudType } from '@/interfaces/CrudType';
 import { Step, StepLabel, Stepper, Typography } from '@mui/material';
 
-const steps = ['Basic Data', 'Variants']
-
-export interface BaseFormProps {
-    next: () => void
-}
+const steps = ['Basic Data', 'Variants'];
 
 export default function AddProduct() {
     const [activeStep, setActiveStep] = useState<number>(0);
@@ -22,10 +19,19 @@ export default function AddProduct() {
     function renderStepContent(): JSX.Element {
         switch (activeStep) {
             case 0:
-                return <BasicData next={next} setProductId={setProductId} setProductCategoryId={setProductCategoryId} />
+                return <BasicData
+                    crudType={CrudType.Create}
+                    next={next}
+                    setProductId={setProductId}
+                    setProductCategoryId={setProductCategoryId}
+                />
             case 1:
                 if (!productId) return <div>Product Id not found</div>;
-                return <Variants productId={productId} productCategoryId={productCategoryId} />
+
+                return <Variants
+                    productId={productId}
+                    productCategoryId={productCategoryId}
+                />
             default:
                 return <div>Not Found</div>
         }

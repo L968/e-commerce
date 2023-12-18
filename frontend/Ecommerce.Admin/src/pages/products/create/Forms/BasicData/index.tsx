@@ -1,15 +1,16 @@
 import { Form } from './styles';
 import api from '@/services/api';
-import { BaseFormProps } from '../..';
 import { toast } from 'react-toastify';
 import { LoadingButton } from '@mui/lab';
+import BaseForm from '@/interfaces/BaseForm';
 import Autocomplete from '@/components/Autocomplete';
 import { TextField, FormControlLabel, Checkbox } from '@mui/material';
 import { Dispatch, FormEvent, SetStateAction, useEffect, useState } from 'react';
 import CreateProductRequest from '@/interfaces/api/requests/CreateProductRequest';
 import GetCategoryResponse from '@/interfaces/api/responses/GetCategoriesResponse';
 
-interface BasicDataProps extends BaseFormProps {
+interface BasicDataProps extends Omit<BaseForm, 'next'> {
+    next: () => void
     setProductId: Dispatch<SetStateAction<string>>
     setProductCategoryId: Dispatch<SetStateAction<string>>
 }
