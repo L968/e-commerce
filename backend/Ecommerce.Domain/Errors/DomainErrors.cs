@@ -22,6 +22,7 @@ public static class DomainErrors
     public static class Product
     {
         public static readonly Error InvalidPriceValue = new("Invalid price value");
+        public static readonly Error EmptyImagePathList = new("Empty image path list");
         public static readonly Error InvalidLengthValue = new("Invalid length value");
         public static readonly Error InvalidWidthValue = new("Invalid width value");
         public static readonly Error InvalidHeightValue = new("Invalid height value");
