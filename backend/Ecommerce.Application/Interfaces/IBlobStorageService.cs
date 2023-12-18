@@ -5,4 +5,5 @@ namespace Ecommerce.Application.Interfaces;
 public interface IBlobStorageService
 {
     Task<string> UploadImage(IFormFile file);
+    Task<List<string>> UploadImage(IFormFileCollection file);
 }
