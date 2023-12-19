@@ -1,10 +1,5 @@
 ﻿namespace Ecommerce.Domain.Repositories.ProductRepositories;
 
-public interface IProductReviewRepository
+public interface IProductReviewRepository : IBaseRepository<ProductReview>
 {
-    Task<IEnumerable<ProductReview>> GetAllAsync();
-    Task<ProductReview?> GetByIdAsync(int id);
-    Task<ProductReview> CreateAsync(ProductReview productReview);
-    Task UpdateAsync(ProductReview productReview);
-    Task DeleteAsync(ProductReview productReview);
 }

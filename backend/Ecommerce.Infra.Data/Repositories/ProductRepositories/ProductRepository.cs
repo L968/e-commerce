@@ -1,15 +1,12 @@
 ﻿namespace Ecommerce.Infra.Data.Repositories.ProductRepositories;
 
-public class ProductRepository : IProductRepository
+public class ProductRepository : BaseRepository<Product>, IProductRepository
 {
-    private readonly AppDbContext _context;
-
-    public ProductRepository(AppDbContext context)
+    public ProductRepository(AppDbContext context) : base(context)
     {
-        _context = context;
     }
 
-    public async Task<IEnumerable<Product>> GetAllAsync()
+    public override async Task<IEnumerable<Product>> GetAllAsync()
     {
         return await _context.Products
             .Include(p => p.Category)
@@ -24,7 +21,7 @@ public class ProductRepository : IProductRepository
             .ToListAsync();
     }
 
-    public async Task<Product?> GetByIdAsync(Guid id)
+    public override async Task<Product?> GetByIdAsync(Guid id)
     {
         return await _context.Products
             .Include(p => p.Reviews)
@@ -37,21 +34,5 @@ public class ProductRepository : IProductRepository
                 .ThenInclude(pvo => pvo.VariantOption)
                 .ThenInclude(vo => vo.Variant)
             .FirstOrDefaultAsync(p => p.Id == id);
-    }
-
-    public Product Create(Product product)
-    {
-        _context.Products.Add(product);
-        return product;
-    }
-
-    public void Update(Product product)
-    {
-        _context.Products.Update(product);
-    }
-
-    public void Delete(Product product)
-    {
-        _context.Products.Remove(product);
     }
 }

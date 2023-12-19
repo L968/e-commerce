@@ -2,11 +2,6 @@
 
 namespace Ecommerce.Domain.Repositories.VariantRepositories;
 
-public interface IVariantOptionRepository
+public interface IVariantOptionRepository : IBaseRepository<VariantOption>
 {
-    Task<IEnumerable<VariantOption>> GetAllAsync();
-    Task<VariantOption?> GetByIdAsync(int id);
-    VariantOption Create(VariantOption variantOption);
-    void Update(VariantOption variantOption);
-    void Delete(VariantOption variantOption);
 }

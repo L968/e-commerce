@@ -1,15 +1,12 @@
 ﻿namespace Ecommerce.Infra.Data.Repositories.ProductRepositories;
 
-public class ProductCategoryRepository : IProductCategoryRepository
+public class ProductCategoryRepository : BaseRepository<ProductCategory>, IProductCategoryRepository
 {
-    private readonly AppDbContext _context;
-
-    public ProductCategoryRepository(AppDbContext context)
+    public ProductCategoryRepository(AppDbContext context) : base(context)
     {
-        _context = context;
     }
 
-    public async Task<IEnumerable<ProductCategory>> GetAllAsync()
+    public override async Task<IEnumerable<ProductCategory>> GetAllAsync()
     {
         return await _context.ProductCategories
             .Include(pc => pc.Variants)
@@ -17,27 +14,11 @@ public class ProductCategoryRepository : IProductCategoryRepository
             .ToListAsync();
     }
 
-    public async Task<ProductCategory?> GetByIdAsync(Guid id)
+    public override async Task<ProductCategory?> GetByIdAsync(Guid id)
     {
         return await _context.ProductCategories
             .Include(pc => pc.Variants)
                 .ThenInclude(pcv => pcv.Variant)
             .FirstOrDefaultAsync(pc => pc.Id == id);
-    }
-
-    public ProductCategory Create(ProductCategory productCategory)
-    {
-        _context.ProductCategories.Add(productCategory);
-        return productCategory;
-    }
-
-    public void Update(ProductCategory productCategory)
-    {
-        _context.ProductCategories.Update(productCategory);
-    }
-
-    public void Delete(ProductCategory productCategory)
-    {
-        _context.ProductCategories.Remove(productCategory);
     }
 }

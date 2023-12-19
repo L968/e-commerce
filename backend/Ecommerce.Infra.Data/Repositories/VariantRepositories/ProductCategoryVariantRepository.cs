@@ -1,6 +1,4 @@
-﻿using Ecommerce.Domain.Repositories.VariantRepositories;
-
-namespace Ecommerce.Infra.Data.Repositories.VariantRepositories;
+﻿namespace Ecommerce.Infra.Data.Repositories.VariantRepositories;
 
 public class ProductCategoryVariantRepository : IProductCategoryVariantRepository
 {

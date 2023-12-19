@@ -1,10 +1,5 @@
 ﻿namespace Ecommerce.Domain.Repositories.ProductRepositories;
 
-public interface IProductImageRepository
+public interface IProductImageRepository : IBaseRepository<ProductImage>
 {
-    Task<IEnumerable<ProductImage>> GetAllAsync();
-    Task<ProductImage?> GetByIdAsync(int id);
-    Task<ProductImage> CreateAsync(ProductImage productImage);
-    Task UpdateAsync(ProductImage productImage);
-    Task DeleteAsync(ProductImage productImage);
 }
