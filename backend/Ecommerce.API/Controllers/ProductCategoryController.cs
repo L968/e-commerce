@@ -48,7 +48,10 @@ namespace Ecommerce.API.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> Create([FromBody] CreateProductCategoryCommand command)
         {
-            GetProductCategoryDto productCategory = await _mediator.Send(command);
+            var result = await _mediator.Send(command);
+            if (result.IsFailed) return BadRequest(result.Reasons);
+
+            var productCategory = result.Value;
             return CreatedAtAction(nameof(Get), null, productCategory);
         }
 
