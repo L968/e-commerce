@@ -7,11 +7,13 @@ namespace Ecommerce.Domain.UnitTests
     {
         public static List<ProductCategory> GetProductCategories()
         {
+            var variantIds = new List<Guid>();
+
             return new List<ProductCategory>
             {
-                new("Electronics", "Electronic devices and accessories"),
-                new("Clothing", "Fashionable clothing items"),
-                new("Home and Kitchen", "Household items and kitchenware")
+                ProductCategory.Create("Electronics", "Electronic devices and accessories", variantIds).Value,
+                ProductCategory.Create("Clothing", "Fashionable clothing items", variantIds).Value,
+                ProductCategory.Create("Home and Kitchen", "Household items and kitchenware", variantIds).Value
             };
         }
 

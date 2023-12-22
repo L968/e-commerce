@@ -13,7 +13,7 @@ public class VariantRepository : BaseRepository<Variant>, IVariantRepository
             .ToListAsync();
     }
 
-    public override async Task<Variant?> GetByIdAsync(int id)
+    public override async Task<Variant?> GetByIdAsync(Guid id)
     {
         return await _context.Variants
             .Include(v => v.Options)

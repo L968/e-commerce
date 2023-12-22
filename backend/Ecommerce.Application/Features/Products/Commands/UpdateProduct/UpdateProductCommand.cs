@@ -7,9 +7,9 @@ public record UpdateProductCommand : IRequest<Result>
     public Guid Id { get; set; }
     public string Name { get; set; } = "";
     public string Description { get; set; } = "";
-    public bool Active { get; set; }
-    public bool Visible { get; set; }
-    public Guid ProductCategoryGuid { get; set; }
+    public bool? Active { get; set; }
+    public bool? Visible { get; set; }
+    public Guid ProductCategoryId { get; set; }
 }
 
 public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, Result>
@@ -30,14 +30,14 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
         Product? product = await _productRepository.GetByIdAsync(request.Id);
         if (product is null) return Result.Fail(DomainErrors.NotFound(nameof(Product), request.Id));
 
-        ProductCategory? productCategory = await _productCategoryRepository.GetByIdAsync(request.ProductCategoryGuid);
-        if (productCategory is null) return Result.Fail(DomainErrors.NotFound(nameof(ProductCategory), request.ProductCategoryGuid));
+        ProductCategory? productCategory = await _productCategoryRepository.GetByIdAsync(request.ProductCategoryId);
+        if (productCategory is null) return Result.Fail(DomainErrors.NotFound(nameof(ProductCategory), request.ProductCategoryId));
 
         var updateResult = product.Update(
             request.Name,
             request.Description,
-            request.Active,
-            request.Visible,
+            request.Active!.Value,
+            request.Visible!.Value,
             productCategory.Id
         );
 

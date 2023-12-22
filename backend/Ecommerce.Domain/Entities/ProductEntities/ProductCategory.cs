@@ -13,30 +13,55 @@ public sealed class ProductCategory : AuditableEntity
 
     private ProductCategory() {}
 
-    public ProductCategory(string name, string? description)
+    private ProductCategory(string name, string? description, IEnumerable<Guid> variantIds)
     {
         Id = Guid.NewGuid();
         Name = name;
         Description = description;
+        SetVariants(variantIds);
     }
 
-    public Result Update(string name, string? description, IEnumerable<int> variantIds)
+    public static Result<ProductCategory> Create(string name, string? description, IEnumerable<Guid> variantIds)
     {
+        var result = ValidateDomain(variantIds);
+
+        if (result.IsFailed)
+            return result;
+
+        return Result.Ok(new ProductCategory(name, description, variantIds));
+    }
+
+    public Result Update(string name, string? description, IEnumerable<Guid> variantIds)
+    {
+        var result = ValidateDomain(variantIds);
+
+        if (result.IsFailed)
+            return result;
+
         Name = name;
         Description = description;
-        return SetVariants(variantIds);
+        SetVariants(variantIds);
+
+        return Result.Ok();
     }
 
-    private Result SetVariants(IEnumerable<int> variantIds)
+    private Result SetVariants(IEnumerable<Guid> variantIds)
     {
+        _variants.Clear();
+        _variants.AddRange(variantIds.Select(variantId => new ProductCategoryVariant(Id, variantId)));
+
+        return Result.Ok();
+    }
+
+    private static Result ValidateDomain(IEnumerable<Guid> variantIds)
+    {
+        var errors = new List<Error>();
+
         if (!variantIds.Any())
             return Result.Fail(DomainErrors.ProductCategory.EmptyVariantList);
 
-        _variants.Clear();
-
-        var productCategoryVariants = variantIds.Select(variantId => new ProductCategoryVariant(Id, variantId));
-
-        _variants.AddRange(productCategoryVariants);
+        if (errors.Any())
+            return Result.Fail(errors);
 
         return Result.Ok();
     }

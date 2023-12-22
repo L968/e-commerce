@@ -42,7 +42,31 @@ public class BlobStorageService : IBlobStorageService
         return paths;
     }
 
-    private string GenerateUniqueImageName(string originalFileName)
+    public async Task RemoveImage(string imagePath)
+    {
+        if (string.IsNullOrEmpty(imagePath))
+        {
+            throw new ArgumentException("Image path cannot be null or empty", nameof(imagePath));
+        }
+
+        var blobClient = _blobContainerClient.GetBlobClient(imagePath);
+        await blobClient.DeleteIfExistsAsync();
+    }
+
+    public async Task RemoveImage(List<string> imagePaths)
+    {
+        if (imagePaths.Count == 0)
+        {
+            throw new ArgumentException("Image paths cannot be empty", nameof(imagePaths));
+        }
+
+        foreach (var imagePath in imagePaths)
+        {
+            await RemoveImage(imagePath);
+        }
+    }
+
+    private static string GenerateUniqueImageName(string originalFileName)
     {
         var imageExtension = Path.GetExtension(originalFileName);
         return $"{Guid.NewGuid()}{imageExtension}";

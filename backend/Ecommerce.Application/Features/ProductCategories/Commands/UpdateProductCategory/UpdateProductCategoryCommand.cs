@@ -7,7 +7,7 @@ public record UpdateProductCategoryCommand : IRequest<Result>
     public Guid Id { get; set; }
     public string Name { get; set; } = "";
     public string? Description { get; set; }
-    public IEnumerable<int> VariantIds { get; set; }
+    public IEnumerable<Guid> VariantIds { get; set; }
 }
 
 public class UpdateProductCategoryCommandHandler : IRequestHandler<UpdateProductCategoryCommand, Result>

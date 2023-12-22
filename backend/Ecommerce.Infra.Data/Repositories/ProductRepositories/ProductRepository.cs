@@ -35,4 +35,15 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
                 .ThenInclude(vo => vo.Variant)
             .FirstOrDefaultAsync(p => p.Id == id);
     }
+
+    public async Task<Product?> GetByIdAdminAsync(Guid id)
+    {
+        return await _context.Products
+            .Include(p => p.Combinations)
+                .ThenInclude(pc => pc.Inventory)
+            .Include(p => p.Combinations)
+                .ThenInclude(pc => pc.Images)
+            .Include(p => p.Category)
+            .FirstOrDefaultAsync(p => p.Id == id);
+    }
 }

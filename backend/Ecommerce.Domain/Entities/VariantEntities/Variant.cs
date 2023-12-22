@@ -2,7 +2,7 @@
 
 public sealed class Variant
 {
-    public int Id { get; private set; }
+    public Guid Id { get; private set; }
     public string Name { get; private set; }
 
     public List<ProductCategoryVariant>? ProductCategoryVariants { get; private set; } = new();
@@ -12,27 +12,51 @@ public sealed class Variant
 
     private Variant() { }
 
-    public Variant(string name)
+    private Variant(string name, List<string> options)
     {
+        Id = Guid.NewGuid();
         Name = name;
+        SetOptions(options);
+    }
+
+    public static Result<Variant> Create(string name, List<string> options)
+    {
+        var validation = ValidateDomain(options);
+
+        if (validation.IsFailed)
+            return validation;
+
+        return Result.Ok(new Variant(name, options));
     }
 
     public Result Update(string name, IEnumerable<string> options)
     {
+        var validation = ValidateDomain(options);
+
+        if (validation.IsFailed)
+            return validation;
+
         Name = name;
-        return SetOptions(options);
+        SetOptions(options);
+
+        return Result.Ok();
     }
 
-    private Result SetOptions(IEnumerable<string> options)
+    private void SetOptions(IEnumerable<string> options)
     {
-        if(!options.Any())
+        _options.Clear();
+        _options.AddRange(options.Select(option => new VariantOption(Id, option)));
+    }
+
+    private static Result ValidateDomain(IEnumerable<string> options)
+    {
+        var errors = new List<Error>();
+
+        if (!options.Any())
             return Result.Fail(DomainErrors.Variant.EmptyOptionList);
 
-        _options.Clear();
-
-        var variantOptions = options.Select(option => new VariantOption(Id, option));
-
-        _options.AddRange(variantOptions);
+        if (errors.Any())
+            return Result.Fail(errors);
 
         return Result.Ok();
     }

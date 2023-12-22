@@ -1,6 +1,5 @@
 ﻿using Ecommerce.Application.DTOs.Products;
 using Ecommerce.Application.Interfaces;
-using Ecommerce.Domain.Repositories.VariantRepositories;
 using Ecommerce.Utils.Attributes;
 using Microsoft.AspNetCore.Http;
 
@@ -66,8 +65,7 @@ public class AddProductCombinationCommandHandler : IRequestHandler<AddProductCom
             variantOptions.Add(variantOption);
         }
 
-        Result<List<string>> uploadResult = await _blobStorageService.UploadImage(request.Images);
-        if (uploadResult.IsFailed) return Result.Fail(uploadResult.Errors);
+        List<string> imagePaths = await _blobStorageService.UploadImage(request.Images);
 
         var createResult = ProductCombination.Create(
             productId: product.Id,
@@ -79,7 +77,7 @@ public class AddProductCombinationCommandHandler : IRequestHandler<AddProductCom
             width: request.Width,
             height: request.Height,
             weight: request.Weight,
-            imagePaths: uploadResult.Value
+            imagePaths: imagePaths
         );
 
         if (createResult.IsFailed) return Result.Fail(createResult.Errors);

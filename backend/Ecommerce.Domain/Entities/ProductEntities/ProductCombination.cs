@@ -83,11 +83,11 @@ public sealed class ProductCombination : AuditableEntity
     public Result Update(
         string sku,
         decimal price,
-        List<string> imagePaths,
         float length,
         float width,
         float height,
-        float weight
+        float weight,
+        List<string> imagePaths
     )
     {
         var validationResult = ValidateDomain(price, imagePaths, length, width, height, weight);
@@ -99,22 +99,9 @@ public sealed class ProductCombination : AuditableEntity
         Width = width;
         Height = height;
         Weight = weight;
+        _images.Clear();
+        _images.AddRange(imagePaths.Select(i => new ProductImage(Id, i)).ToList());
         return Result.Ok();
-    }
-
-    public void AddImage(string imagePath)
-    {
-        _images.Add(new ProductImage(Id, imagePath));
-    }
-
-    public void RemoveImage(int productImageId)
-    {
-        var image = _images.FirstOrDefault(i => i.Id == productImageId);
-
-        if (image is not null)
-        {
-            _images.Remove(image);
-        }
     }
 
     public Result<decimal> GetDiscount()

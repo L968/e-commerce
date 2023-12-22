@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ecommerce.Infra.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231216165126_initial")]
+    [Migration("20231219161130_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -458,8 +458,8 @@ namespace Ecommerce.Infra.Data.Migrations
                         .HasColumnType("char(36)")
                         .HasColumnName("product_category_id");
 
-                    b.Property<int>("VariantId")
-                        .HasColumnType("int")
+                    b.Property<Guid>("VariantId")
+                        .HasColumnType("char(36)")
                         .HasColumnName("variant_id");
 
                     b.HasKey("Id")
@@ -503,9 +503,9 @@ namespace Ecommerce.Infra.Data.Migrations
 
             modelBuilder.Entity("Ecommerce.Domain.Entities.VariantEntities.Variant", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("char(36)")
                         .HasColumnName("id");
 
                     b.Property<string>("Name")
@@ -531,8 +531,8 @@ namespace Ecommerce.Infra.Data.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("name");
 
-                    b.Property<int>("VariantId")
-                        .HasColumnType("int")
+                    b.Property<Guid>("VariantId")
+                        .HasColumnType("char(36)")
                         .HasColumnName("variant_id");
 
                     b.HasKey("Id")
