@@ -1,9 +1,8 @@
 ﻿using Ecommerce.Application.DTOs.Variants;
-using Ecommerce.Domain.Repositories.VariantRepositories;
 
 namespace Ecommerce.Application.Features.Variants.Queries;
 
-public record GetVariantByIdQuery(int Id) : IRequest<GetVariantDto?>;
+public record GetVariantByIdQuery(Guid Id) : IRequest<GetVariantDto?>;
 
 public class GetVariantByIdQueryHandler : IRequestHandler<GetVariantByIdQuery, GetVariantDto?>
 {

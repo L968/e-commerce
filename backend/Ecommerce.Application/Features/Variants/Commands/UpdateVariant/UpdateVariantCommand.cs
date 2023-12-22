@@ -1,14 +1,12 @@
-﻿using Ecommerce.Domain.Repositories.VariantRepositories;
-
-namespace Ecommerce.Application.Features.Variants.Commands.UpdateVariant;
+﻿namespace Ecommerce.Application.Features.Variants.Commands.UpdateVariant;
 
 [Authorize]
 public record UpdateVariantCommand : IRequest<Result>
 {
     [JsonIgnore]
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public string Name { get; set; } = "";
-    public IEnumerable<string> Options { get; set; }
+    public IEnumerable<string> Options { get; set; } = null!;
 }
 
 public class UpdateVariantCommandHandler : IRequestHandler<UpdateVariantCommand, Result>

@@ -9,6 +9,7 @@ global using Ecommerce.Domain.Errors;
 global using Ecommerce.Domain.Repositories;
 global using Ecommerce.Domain.Repositories.CartRepositories;
 global using Ecommerce.Domain.Repositories.ProductRepositories;
+global using Ecommerce.Domain.Repositories.VariantRepositories;
 global using FluentResults;
 global using FluentValidation;
 global using MediatR;

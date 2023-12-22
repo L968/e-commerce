@@ -1,4 +1,5 @@
 ﻿using Ecommerce.Application.DTOs.Variants;
+using Ecommerce.Application.Features.Variants.Commands.CreateVariant;
 using Ecommerce.Application.Features.Variants.Commands.UpdateVariant;
 using Ecommerce.Application.Features.Variants.Queries;
 
@@ -23,7 +24,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById(Guid id)
         {
             GetVariantDto? variant = await _mediator.Send(new GetVariantByIdQuery(id));
 
@@ -32,9 +33,20 @@ namespace Ecommerce.API.Controllers
             return Ok(variant);
         }
 
+        [HttpPost]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> Create([FromBody] CreateVariantCommand command)
+        {
+            var result = await _mediator.Send(command);
+            if (result.IsFailed) return BadRequest(result.Reasons);
+
+            var variant = result.Value;
+            return CreatedAtAction(nameof(Get), null, variant);
+        }
+
         [HttpPut("{id}")]
         [Authorize(Roles = "admin")]
-        public async Task<IActionResult> Update(int id, [FromBody] UpdateVariantCommand command)
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateVariantCommand command)
         {
             command.Id = id;
             Result result = await _mediator.Send(command);

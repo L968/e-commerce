@@ -1,5 +1,4 @@
 ﻿using Ecommerce.Application.DTOs.Variants;
-using Ecommerce.Domain.Repositories.VariantRepositories;
 
 namespace Ecommerce.Application.Features.Variants.Queries;
 

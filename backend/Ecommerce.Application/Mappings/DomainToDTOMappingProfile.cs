@@ -15,6 +15,7 @@ public class DomainToDTOMappingProfile : Profile
         CreateMap<Cart, GetCartDto>();
         CreateMap<CartItem, GetCartItemDto>();
 
+        CreateMap<Product, GetProductAdminDto>();
         CreateMap<Product, GetProductDto>()
             .ForMember(dto => dto.Rating, opt => opt.MapFrom(p => p.GetRating()))
             .ForMember(dto => dto.Variants, opt => opt.MapFrom(p => p.VariantOptions.Select(vo => vo.VariantOption.Variant)));
