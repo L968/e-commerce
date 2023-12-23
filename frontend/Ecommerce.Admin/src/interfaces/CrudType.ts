@@ -1,4 +1,3 @@
-export enum CrudType {
-    Create,
-    Update
-}
+export type CrudType = 'Create' | 'Update';
+
+export default CrudType;

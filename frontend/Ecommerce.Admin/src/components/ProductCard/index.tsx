@@ -1,19 +1,13 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { Button } from '@mui/material';
-import { useRouter } from 'next/navigation';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { ActionButtons, CardInfo, Container, Price, ProductName } from './styles';
 import GetProductListResponse from '@/interfaces/api/responses/GetProductListResponse';
 
 export default function ProductCard(product: GetProductListResponse) {
-    const router = useRouter();
     const { id, name, discountedPrice: price, imageSource } = product;
-
-    function handleEdit (e: React.MouseEvent) {
-        router.push(`/product/${id}`)
-        console.log('Editar produto:', id);
-    };
 
     function handleDelete(e: React.MouseEvent) {
     }
@@ -32,15 +26,17 @@ export default function ProductCard(product: GetProductListResponse) {
                 <Price>${price}</Price>
 
                 <ActionButtons>
-                    <Button
-                        variant="contained"
-                        color="secondary"
-                        size='small'
-                        onClick={handleEdit}
-                        startIcon={<EditIcon />}
-                    >
-                        Edit
-                    </Button>
+                    <Link href={`/products/${id}/edit`}>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            size='small'
+                            startIcon={<EditIcon />}
+                        >
+                            Edit
+                        </Button>
+                    </Link>
+
 
                     <Button
                         sx={{ color: 'red' }}

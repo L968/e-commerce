@@ -28,6 +28,7 @@ const menuItems: MenuItem[] = [
         icon: <InventoryIcon />,
         children: [
             { text: 'Add Product', src: '/products/create' },
+            { text: 'Drafts', src: '/products/drafts' },
             { text: 'Product List', src: '/products' },
             { text: 'Categories', src: '/categories' },
             { text: 'Variants', src: '/variants' },

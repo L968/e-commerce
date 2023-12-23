@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import api from '@/services/api';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
@@ -5,7 +6,7 @@ import { Container, Main } from './styles';
 import { useEffect, useState } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { Chip, IconButton, Stack, Typography } from '@mui/material';
+import { Button, Chip, IconButton, Stack, Typography } from '@mui/material';
 import GetVariantsResponse from '@/interfaces/api/responses/GetVariantsResponse';
 import GetCategoryResponse from '@/interfaces/api/responses/GetCategoriesResponse';
 
@@ -57,6 +58,10 @@ export default function Categories() {
             <Typography variant='h1'>Product Categories</Typography>
 
             <Container>
+                <Link href='/categories/create'>
+                    <Button variant='contained'>Create</Button>
+                </Link>
+
                 <DataGrid
                     rows={categories}
                     columns={columns}

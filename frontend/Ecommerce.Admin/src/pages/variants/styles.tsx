@@ -10,6 +10,7 @@ export const Container = styled(Paper)({
     display: 'flex',
     flexDirection: 'column',
     padding: '30px',
+    gap: '15px',
     marginTop: '15px',
     borderRadius: '10px',
 })

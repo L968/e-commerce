@@ -3,25 +3,25 @@ import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import BaseForm from '@/interfaces/BaseForm';
 import AddIcon from '@mui/icons-material/Add';
-import { CrudType } from '@/interfaces/CrudType';
 import RemoveIcon from '@mui/icons-material/Remove';
-import { FormEvent, useEffect, useState, ChangeEvent } from 'react';
+import { FormEvent, useEffect, useState, ChangeEvent, useRef } from 'react';
 import { Container, Form, Main, StyledList, StyledListItem } from './styles';
 import GetVariantsResponse from '@/interfaces/api/responses/GetVariantsResponse';
 import UpdateVariantRequest from '@/interfaces/api/requests/variants/UpdateVariantRequest';
-import { Button, IconButton, InputAdornment, ListItemText, TextField } from '@mui/material';
 import CreateVariantRequest from '@/interfaces/api/requests/variants/CreateVariantRequest';
+import { Button, IconButton, InputAdornment, ListItemText, TextField, Typography } from '@mui/material';
 
 export default function VariantForm({ crudType }: BaseForm) {
     const router = useRouter();
+    const newOptionTextFieldRef = useRef<HTMLInputElement | null>(null);
+
     const [newOption, setNewOption] = useState<string>('');
     const [variant, setVariant] = useState<GetVariantsResponse>({ id: 0, name: '', options: [] });
 
     useEffect(() => {
-        if (crudType === CrudType.Create) return;
+        if (crudType === 'Create') return;
 
         const variantId = router.query.id;
-
         if (!variantId) return;
 
         api.get<GetVariantsResponse>(`/variant/${variantId}`)
@@ -37,15 +37,15 @@ export default function VariantForm({ crudType }: BaseForm) {
             return;
         }
 
-        if (crudType === CrudType.Update) {
-            const data: UpdateVariantRequest = {
+        if (crudType === 'Create') {
+            const data: CreateVariantRequest = {
                 name: variant.name,
                 options: variant.options.map(o => o.name),
             }
 
-            api.put(`/variant/${variant.id}`, data)
+            api.post('/variant/', data)
                 .then(_ => {
-                    toast.success('Variant updated successfully')
+                    toast.success('Variant created successfully')
                     router.push('/variants');
                 })
                 .catch(error => {
@@ -56,15 +56,15 @@ export default function VariantForm({ crudType }: BaseForm) {
 
                     toast.error('Error 500')
                 });
-        } else if (crudType === CrudType.Create) {
-            const data: CreateVariantRequest = {
+        } else if (crudType === 'Update') {
+            const data: UpdateVariantRequest = {
                 name: variant.name,
                 options: variant.options.map(o => o.name),
             }
 
-            api.post('/variant/', data)
+            api.put(`/variant/${variant.id}`, data)
                 .then(_ => {
-                    toast.success('Variant created successfully')
+                    toast.success('Variant updated successfully')
                     router.push('/variants');
                 })
                 .catch(error => {
@@ -101,6 +101,10 @@ export default function VariantForm({ crudType }: BaseForm) {
         }));
 
         setNewOption('');
+
+        if (newOptionTextFieldRef.current) {
+            newOptionTextFieldRef.current.focus();
+        }
     }
 
     function handleRemoveOption(optionId: number): void {
@@ -110,10 +114,10 @@ export default function VariantForm({ crudType }: BaseForm) {
         }));
     }
 
-    function renderTitle(): string {
+    function getTitleText(): string {
         switch (crudType) {
-            case CrudType.Create: return'Create Variant'
-            case CrudType.Update: return'Edit Variant'
+            case 'Create': return 'Create Variant'
+            case 'Update': return 'Edit Variant'
             default: return '';
         }
     }
@@ -122,7 +126,7 @@ export default function VariantForm({ crudType }: BaseForm) {
         <Main>
             <Container>
                 <Form onSubmit={handleOnSubmit}>
-                    <h1>{renderTitle()}</h1>
+                    <Typography variant='h1'>{getTitleText()}</Typography>
 
                     <TextField
                         label='Name'
@@ -131,11 +135,12 @@ export default function VariantForm({ crudType }: BaseForm) {
                         required
                     />
 
-                    <h2>Options</h2>
+                    <Typography variant='h2'>Options</Typography>
 
                     <TextField
                         label='New Option'
                         value={newOption}
+                        inputRef={newOptionTextFieldRef}
                         onChange={(e: ChangeEvent<HTMLInputElement>) => setNewOption(e.target.value)}
                         InputProps={{
                             endAdornment: (

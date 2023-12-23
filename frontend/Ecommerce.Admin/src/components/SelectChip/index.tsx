@@ -1,5 +1,5 @@
-import { ChipsBox } from "./styles";
-import { FormControl, Select, OutlinedInput, Chip, MenuItem, SelectProps, InputLabel, SelectChangeEvent } from "@mui/material";
+import { ChipsBox } from './styles';
+import { FormControl, Select, OutlinedInput, Chip, MenuItem, SelectProps, InputLabel, SelectChangeEvent } from '@mui/material';
 
 export interface SelectChipProps extends Omit<SelectProps, 'onChange'> {
     labelProperty: string

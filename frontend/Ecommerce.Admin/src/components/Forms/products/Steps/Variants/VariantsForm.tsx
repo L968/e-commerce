@@ -4,12 +4,12 @@ import { useEffect, useState } from 'react';
 import { Container, Header } from './styles';
 import Dropzone from '@/components/Dropzone';
 import CloseIcon from '@mui/icons-material/Close';
+import { useProductContext } from '../../ProductContext';
 import { Divider, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import GetProductCategoryVariantsResponse, { VariantOption } from '@/interfaces/api/responses/GetProductCategoryVariantsResponse';
 
 interface VariantFormProps {
     formKey: string
-    productCategoryId: string
     onDataChange: (formKey: string, data: CombinationFormData) => void
     onRemove: (formKey: string, variantId?: number) => void
 }
@@ -26,7 +26,8 @@ export interface CombinationFormData {
     weight: string
 }
 
-export default function VariantForm({ formKey, productCategoryId, onDataChange, onRemove }: VariantFormProps) {
+export default function VariantForm({ formKey, onDataChange, onRemove }: VariantFormProps) {
+    const { productCategoryId } = useProductContext();
     const [variants, setVariants] = useState<GetProductCategoryVariantsResponse[]>([]);
     const [combinationData, setCombinationData] = useState<CombinationFormData>({
         sku: '',

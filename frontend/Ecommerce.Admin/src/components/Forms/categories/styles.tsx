@@ -16,7 +16,7 @@ export const Container = styled(Paper)({
     minWidth: '500px',
     borderRadius: '10px',
     '& h1': {
-        fontSize: '20px'
+        fontSize: '25px'
     }
 })
 
