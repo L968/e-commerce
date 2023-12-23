@@ -22,9 +22,9 @@ public class DomainToDTOMappingProfile : Profile
 
         CreateMap<Product, GetProductListDto>()
             .ForMember(dto => dto.CategoryName, opt => opt.MapFrom(p => p.Category.Name))
-            .ForMember(dto => dto.OriginalPrice, opt => opt.MapFrom(p => p.Combinations[0].Price))
-            .ForMember(dto => dto.DiscountedPrice, opt => opt.MapFrom(p => p.Combinations[0].GetDiscountedPrice()))
-            .ForMember(dto => dto.ImageSource, opt => opt.MapFrom(p => p.Combinations[0].Images.ElementAt(0).ImagePath))
+            .ForMember(dto => dto.OriginalPrice, opt => opt.MapFrom(p => p.Combinations.Any() ? p.Combinations[0].Price : (decimal?)null))
+            .ForMember(dto => dto.DiscountedPrice, opt => opt.MapFrom(p => p.Combinations.Any() ? p.Combinations[0].GetDiscountedPrice() : (decimal?)null))
+            .ForMember(dto => dto.ImageSource, opt => opt.MapFrom(p => p.Combinations.Any() ? p.Combinations[0].Images.ElementAt(0).ImagePath : null))
             .ForMember(dto => dto.Rating, opt => opt.MapFrom(p => p.GetRating()))
             .ForMember(dto => dto.Variants, opt => opt.MapFrom(p => p.VariantOptions.Select(vo => vo.VariantOption.Variant)))
             .ForMember(dto => dto.ReviewsCount, opt => opt.MapFrom(p => p.Reviews.Count));

@@ -8,8 +8,8 @@ public record CreateProductCommand : IRequest<Result<GetProductDto>>
     public string Name { get; set; } = "";
     public string Description { get; set; } = "";
     public Guid ProductCategoryId { get; set; }
-    public bool Active { get; set; }
-    public bool Visible { get; set; }
+    public bool? Active { get; set; }
+    public bool? Visible { get; set; }
 }
 
 public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Result<GetProductDto>>
@@ -35,8 +35,8 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
         var createResult = Product.Create(
             request.Name,
             request.Description,
-            request.Active,
-            request.Visible,
+            request.Active!.Value,
+            request.Visible!.Value,
             productCategory.Id
         );
 

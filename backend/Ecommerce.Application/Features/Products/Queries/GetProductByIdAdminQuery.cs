@@ -2,6 +2,7 @@
 
 namespace Ecommerce.Application.Features.Products.Queries;
 
+[Authorize]
 public record GetProductByIdAdminQuery(Guid Id) : IRequest<GetProductAdminDto?>;
 
 public class GetProductByIdAdminQueryHandler : IRequestHandler<GetProductByIdAdminQuery, GetProductAdminDto?>
