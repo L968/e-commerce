@@ -25,6 +25,13 @@ namespace Ecommerce.API.Controllers
             return Ok(await _mediator.Send(new GetProductQuery()));
         }
 
+        [HttpGet("drafts")]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> GetDrafts()
+        {
+            return Ok(await _mediator.Send(new GetProductDraftsQuery()));
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
@@ -83,11 +90,11 @@ namespace Ecommerce.API.Controllers
             return Ok(result.Value);
         }
 
-        [HttpPut("{productCombinationid}/update-combination")]
+        [HttpPut("{productCombinationId}/update-combination")]
         [Authorize(Roles = "admin")]
-        public async Task<IActionResult> UpdateCombination(Guid productCombinationid, [FromBody] UpdateProductCombinationCommand command)
+        public async Task<IActionResult> UpdateCombination(Guid productCombinationId, [FromBody] UpdateProductCombinationCommand command)
         {
-            command.Id = productCombinationid;
+            command.Id = productCombinationId;
             var result = await _mediator.Send(command);
 
             if (result.IsFailed) return NotFound();
