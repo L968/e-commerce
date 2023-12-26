@@ -28,6 +28,7 @@ export default function BasicData() {
         next,
         setProductId,
         setProductCategoryId,
+        setOriginalProductData,
     } = useProductContext();
 
     const [categories, setCategories] = useState<GetCategoryResponse[]>([]);
@@ -51,7 +52,10 @@ export default function BasicData() {
         if (!productId) return;
 
         api.get<GetProductAdminResponse>(`/product/${productId}/admin`)
-            .then(response => setProductData(response.data))
+            .then(response => {
+                setProductData(response.data);
+                setOriginalProductData(response.data);
+            })
             .catch(error => toast.error('Error 500'));
     }, [router.query]);
 

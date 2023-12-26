@@ -29,6 +29,11 @@ public static class DomainErrors
         public static readonly Error InvalidWeightValue = new("Invalid weight value");
     }
 
+    public static class ProductCombination
+    {
+        public static readonly Error CombinationAlreadyExists = new("Combination already exists for the product");
+    }
+
     public static class ProductCategory
     {
         public static readonly Error EmptyVariantList = new("Empty variant list");

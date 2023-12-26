@@ -1,8 +1,8 @@
-﻿namespace Ecommerce.Application.Features.Products.Commands.AddProductCombination;
+﻿namespace Ecommerce.Application.Features.ProductCombinations.Commands.AddProductCombination;
 
-public class AddProductCombinationCommandValidator : AbstractValidator<AddProductCombinationCommand>
+public class CreateProductCombinationCommandValidator : AbstractValidator<CreateProductCombinationCommand>
 {
-    public AddProductCombinationCommandValidator()
+    public CreateProductCombinationCommandValidator()
     {
         RuleFor(p => p.VariantOptionIds).NotEmpty();
         RuleFor(p => p.Sku).NotEmpty();

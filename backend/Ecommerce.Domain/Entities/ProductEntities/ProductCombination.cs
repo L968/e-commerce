@@ -1,4 +1,5 @@
-﻿using Ecommerce.Domain.Enums;
+﻿using Ecommerce.Domain.Entities.VariantEntities;
+using Ecommerce.Domain.Enums;
 
 namespace Ecommerce.Domain.Entities.ProductEntities;
 
@@ -81,6 +82,7 @@ public sealed class ProductCombination : AuditableEntity
     }
 
     public Result Update(
+        string combinationString,
         string sku,
         decimal price,
         float length,
@@ -93,6 +95,7 @@ public sealed class ProductCombination : AuditableEntity
         var validationResult = ValidateDomain(price, imagePaths, length, width, height, weight);
         if (validationResult.IsFailed) return validationResult;
 
+        CombinationString = combinationString;
         Sku = sku;
         Price = price;
         Length = length;
@@ -131,6 +134,12 @@ public sealed class ProductCombination : AuditableEntity
     {
         decimal discountedPrice = Price - GetDiscount().Value;
         return Math.Round(discountedPrice, 2, MidpointRounding.AwayFromZero);
+    }
+
+    public static string GenerateCombinationString(List<VariantOption> variantOptions)
+    {
+        var combinationStrings = variantOptions.Select(vo => $"{vo.Variant!.Name}={vo.Name}");
+        return string.Join("/", combinationStrings);
     }
 
     private static Result ValidateDomain(decimal price, List<string> imagePaths, float length, float width, float height, float weight)

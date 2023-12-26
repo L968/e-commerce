@@ -18,8 +18,8 @@ export interface Category {
 export interface Combination {
     id: string
     combinationString: string
-    originalPrice: number
-    discountedPrice: number
+    sku: string
+    price: number
     stock: number
     length: number
     width: number

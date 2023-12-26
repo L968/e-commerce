@@ -1,4 +1,4 @@
-﻿namespace Ecommerce.Application.Features.Products.Commands.UpdateProductCombination;
+﻿namespace Ecommerce.Application.Features.ProductCombinations.Commands.UpdateProductCombination;
 
 public class UpdateProductCombinationCommandValidator : AbstractValidator<UpdateProductCombinationCommand>
 {

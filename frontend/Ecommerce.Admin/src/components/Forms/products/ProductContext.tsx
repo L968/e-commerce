@@ -1,4 +1,5 @@
 import { CrudType } from '@/interfaces/CrudType';
+import GetProductAdminResponse from '@/interfaces/api/responses/GetProductAdminResponse';
 import React, { createContext, useContext, ReactNode, FC, useState, Dispatch, SetStateAction } from 'react';
 
 interface ProductContextProps {
@@ -11,6 +12,8 @@ interface ProductContextProps {
   setProductId: Dispatch<SetStateAction<string>>
   productCategoryId: string
   setProductCategoryId: Dispatch<SetStateAction<string>>
+  originalProductData: GetProductAdminResponse | null
+  setOriginalProductData: Dispatch<SetStateAction<GetProductAdminResponse | null>>
 }
 
 const ProductContext = createContext<ProductContextProps | undefined>(undefined);
@@ -20,6 +23,7 @@ export const ProductProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [crudType, setCrudType] = useState<CrudType | null>(null);
   const [productId, setProductId] = useState<string>('');
   const [productCategoryId, setProductCategoryId] = useState<string>('');
+  const [originalProductData, setOriginalProductData] = useState<GetProductAdminResponse | null>(null);
 
   const contextValue: ProductContextProps = {
     activeStep,
@@ -31,6 +35,8 @@ export const ProductProvider: FC<{ children: ReactNode }> = ({ children }) => {
     setProductId,
     productCategoryId,
     setProductCategoryId,
+    originalProductData,
+    setOriginalProductData,
   };
 
   return (

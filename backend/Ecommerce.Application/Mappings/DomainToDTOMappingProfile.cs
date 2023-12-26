@@ -41,6 +41,10 @@ public class DomainToDTOMappingProfile : Profile
             .ForMember(dto => dto.Images, opt => opt.MapFrom(pc => pc.Images.Select(i => i.ImagePath)))
             .ForMember(dto => dto.Stock, opt => opt.MapFrom(pc => pc.Inventory.Stock));
 
+        CreateMap<ProductCombination, GetProductCombinationAdminDto>()
+            .ForMember(dto => dto.Images, opt => opt.MapFrom(pc => pc.Images.Select(i => i.ImagePath)))
+            .ForMember(dto => dto.Stock, opt => opt.MapFrom(pc => pc.Inventory.Stock));
+
         CreateMap<ProductCategoryVariant, GetProductCategoryVariantDto>()
             .ForMember(dto => dto.Name, opt => opt.MapFrom(pv => pv.Variant.Name))
             .ForMember(dto => dto.Options, opt => opt.MapFrom(pcv => pcv.Variant.Options.Select(vo => vo.Name)));

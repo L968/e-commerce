@@ -5,29 +5,34 @@ import { Container, Header } from './styles';
 import Dropzone from '@/components/Dropzone';
 import CloseIcon from '@mui/icons-material/Close';
 import { useProductContext } from '../../ProductContext';
+import { Combination } from '@/interfaces/api/responses/GetProductAdminResponse';
 import { Divider, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import GetProductCategoryVariantsResponse, { VariantOption } from '@/interfaces/api/responses/GetProductCategoryVariantsResponse';
+import DeleteConfirmationDialog from './DeleteConfirmationDialog';
 
 interface VariantFormProps {
     formKey: string
+    defaultData?: Combination
     onDataChange: (formKey: string, data: CombinationFormData) => void
     onRemove: (formKey: string, variantId?: number) => void
 }
 
 export interface CombinationFormData {
+    id?: string
     sku: string
     price: string
     stock: string
     images: File[]
-    variants: {[key: string]: VariantOption}
+    variants: { [key: string]: VariantOption }
     length: string
     width: string
     height: string
     weight: string
 }
 
-export default function VariantForm({ formKey, onDataChange, onRemove }: VariantFormProps) {
+export default function VariantForm({ formKey, defaultData, onDataChange, onRemove }: VariantFormProps) {
     const { productCategoryId } = useProductContext();
+    const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
     const [variants, setVariants] = useState<GetProductCategoryVariantsResponse[]>([]);
     const [combinationData, setCombinationData] = useState<CombinationFormData>({
         sku: '',
@@ -48,6 +53,10 @@ export default function VariantForm({ formKey, onDataChange, onRemove }: Variant
     }, []);
 
     useEffect(() => {
+        setDefaultData();
+    }, [variants]);
+
+    useEffect(() => {
         onDataChange(formKey, combinationData);
     }, [combinationData]);
 
@@ -56,6 +65,29 @@ export default function VariantForm({ formKey, onDataChange, onRemove }: Variant
             ...prev,
             [name]: value,
         }));
+    }
+
+    async function setDefaultData() {
+        if (defaultData) {
+            const files: File[] = [];
+
+            for (const image of defaultData.images) {
+                files.push(await createFile(image))
+            }
+
+            setCombinationData({
+                id: defaultData.id,
+                sku: defaultData.sku,
+                price: defaultData.price.toString(),
+                stock: defaultData.stock.toString(),
+                images: files,
+                variants: parseCombinationString(defaultData.combinationString, variants),
+                length: defaultData.length.toString(),
+                width: defaultData.width.toString(),
+                height: defaultData.height.toString(),
+                weight: defaultData.weight.toString()
+            })
+        }
     }
 
     function setFiles(files: File[]) {
@@ -79,19 +111,72 @@ export default function VariantForm({ formKey, onDataChange, onRemove }: Variant
         }));
     }
 
+    function handleOnRemove(): void {
+        if (combinationData.id) {
+            setDeleteConfirmationOpen(true);
+        } else {
+            onRemove(formKey);
+        }
+    }
+
+    function handleConfirmDelete(): void {
+        api.delete(`/productCombination/${combinationData.id}`)
+        .then(response => {
+            toast.success('Variant deleted successfully');
+            onRemove(formKey);
+        })
+        .catch(error => toast.error('Error 500'));
+    }
+
+    function parseCombinationString(combinationString: string, variants: GetProductCategoryVariantsResponse[]): { [key: string]: VariantOption } {
+        const variantOptions = combinationString.split('/').map(option => option.trim());
+
+        const parsedVariants: { [key: string]: VariantOption } = {};
+        variantOptions.forEach(option => {
+            const [variantName, variantValue] = option.split('=').map(part => part.trim());
+
+            const foundVariant = variants.find(v => v.name === variantName);
+
+            if (foundVariant) {
+                const foundOption = foundVariant.options.find(o => o.name === variantValue);
+                if (foundOption) {
+                    parsedVariants[variantName] = foundOption;
+                }
+            }
+        });
+
+        return parsedVariants;
+    }
+
+    async function createFile(url: string): Promise<File> {
+        const response = await fetch(url);
+        const data = await response.blob();
+        const metadata = { type: 'image/*' };
+
+        return new File([data], "test.jpg", metadata);
+    }
+
+    function getTitleText(): string {
+        if (defaultData) {
+            return 'Edit Variant';
+        } else {
+            return 'New Variant';
+        }
+    }
+
     return (
         <Container>
             <Header>
                 <h1>Variant</h1>
 
-                <IconButton onClick={() => onRemove(formKey)} sx={{ marginLeft: 'auto' }}>
+                <IconButton onClick={handleOnRemove} sx={{ marginLeft: 'auto' }}>
                     <CloseIcon />
                 </IconButton>
             </Header>
 
             <Grid container spacing={3} sx={{ width: '570px' }}>
                 <Grid item xs={12}>
-                    <h3>New Variant</h3>
+                    <h3>{getTitleText()}</h3>
                 </Grid>
 
                 <Grid container item xs={12} spacing={3} marginBottom={5}>
@@ -138,6 +223,7 @@ export default function VariantForm({ formKey, onDataChange, onRemove }: Variant
                     <TextField
                         label='Stock'
                         required
+                        disabled={!!defaultData}
                         fullWidth
                         value={combinationData?.stock}
                         onChange={e => updateCombinationState('stock', e.target.value)}
@@ -201,6 +287,12 @@ export default function VariantForm({ formKey, onDataChange, onRemove }: Variant
                     />
                 </Grid>
             </Grid>
+
+            <DeleteConfirmationDialog
+                open={deleteConfirmationOpen}
+                onClose={() => setDeleteConfirmationOpen(false)}
+                onConfirm={handleConfirmDelete}
+            />
         </Container>
     )
 }

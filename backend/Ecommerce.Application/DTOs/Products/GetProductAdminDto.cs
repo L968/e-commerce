@@ -9,5 +9,5 @@ public record GetProductAdminDto
     public bool Visible { get; set; }
 
     public GetProductCategoryDto? Category { get; set; }
-    public List<GetProductCombinationDto> Combinations { get; set; } = new();
+    public List<GetProductCombinationAdminDto> Combinations { get; set; } = new();
 }

@@ -1,9 +1,7 @@
 using Ecommerce.Application.DTOs.Products;
-using Ecommerce.Application.Features.Products.Commands.AddProductCombination;
 using Ecommerce.Application.Features.Products.Commands.CreateProduct;
 using Ecommerce.Application.Features.Products.Commands.DeleteProduct;
 using Ecommerce.Application.Features.Products.Commands.UpdateProduct;
-using Ecommerce.Application.Features.Products.Commands.UpdateProductCombination;
 using Ecommerce.Application.Features.Products.Queries;
 
 namespace Ecommerce.API.Controllers
@@ -72,30 +70,6 @@ namespace Ecommerce.API.Controllers
         {
             command.Id = id;
             Result result = await _mediator.Send(command);
-
-            if (result.IsFailed) return NotFound();
-
-            return NoContent();
-        }
-
-        [HttpPost("{id}/add-combination")]
-        [Authorize(Roles = "admin")]
-        public async Task<IActionResult> AddCombination(Guid id, [FromForm] AddProductCombinationCommand command)
-        {
-            command.ProductId = id;
-            Result<GetProductCombinationDto> result = await _mediator.Send(command);
-
-            if (result.IsFailed) return BadRequest(result.Reasons);
-
-            return Ok(result.Value);
-        }
-
-        [HttpPut("{productCombinationId}/update-combination")]
-        [Authorize(Roles = "admin")]
-        public async Task<IActionResult> UpdateCombination(Guid productCombinationId, [FromBody] UpdateProductCombinationCommand command)
-        {
-            command.Id = productCombinationId;
-            var result = await _mediator.Send(command);
 
             if (result.IsFailed) return NotFound();
 
