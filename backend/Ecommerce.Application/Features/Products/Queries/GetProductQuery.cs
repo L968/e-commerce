@@ -2,9 +2,9 @@
 
 namespace Ecommerce.Application.Features.Products.Queries;
 
-public record GetProductQuery() : IRequest<IEnumerable<GetProductListDto>>;
+public record GetProductQuery(int Page, int PageSize) : IRequest<Pagination<GetProductListDto>>;
 
-public class GetProductQueryHandler : IRequestHandler<GetProductQuery, IEnumerable<GetProductListDto>>
+public class GetProductQueryHandler : IRequestHandler<GetProductQuery, Pagination<GetProductListDto>>
 {
     private readonly IMapper _mapper;
     private readonly IProductRepository _productRepository;
@@ -15,9 +15,15 @@ public class GetProductQueryHandler : IRequestHandler<GetProductQuery, IEnumerab
         _productRepository = productRepository;
     }
 
-    public async Task<IEnumerable<GetProductListDto>> Handle(GetProductQuery request, CancellationToken cancellationToken)
+    public async Task<Pagination<GetProductListDto>> Handle(GetProductQuery request, CancellationToken cancellationToken)
     {
-        var products = await _productRepository.GetAllAsync();
-        return _mapper.Map<IEnumerable<GetProductListDto>>(products);
+        var (products, totalItems) = await _productRepository.GetAllAsync(request.Page, request.PageSize);
+
+        return new Pagination<GetProductListDto>(
+            request.Page,
+            request.PageSize,
+            totalItems,
+            _mapper.Map<IEnumerable<GetProductListDto>>(products)
+        );
     }
 }

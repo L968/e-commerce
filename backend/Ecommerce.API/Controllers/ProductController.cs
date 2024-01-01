@@ -18,9 +18,12 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            return Ok(await _mediator.Send(new GetProductQuery()));
+            var query = new GetProductQuery(page, pageSize);
+            var result = await _mediator.Send(query);
+
+            return Ok(result);
         }
 
         [HttpGet("drafts")]

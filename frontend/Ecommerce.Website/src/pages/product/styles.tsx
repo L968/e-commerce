@@ -24,25 +24,31 @@ export const ProductInfo = styled(Box)({
     paddingLeft: '24px',
 })
 
-export const Colors = styled(Box)({
-    display: 'flex',
-    gap: '6.077px',
-    marginTop: '29px',
-})
-
 export const ImageContainer = styled(Box)({
     width: '506px',
     height: '546px',
 })
 
+export const SelectedImageContainer = styled(Box)({
+    width: '506px',
+    height: '450px',
+    position: 'relative',
+    overflow: 'hidden',
+})
+
 export const CarouselIndicators = styled(Box)({
     display: 'flex',
-    justifyContent: 'center',
+    justifyContent: 'start',
     marginTop: '21px',
-    width: '219px',
-    height: '75px',
     gap: '19px',
 })
+
+export const CarouselImageContainer = styled(Box)(({ isSelected }: { isSelected: boolean }) => ({
+    cursor: 'pointer',
+    border: isSelected ? '2px solid #3483FA' : '2px solid rgba(0,0,0,.25)',
+    borderRadius: '4px',
+    height: '80px'
+}))
 
 export const ProductName = styled(Typography)({
     fontSize: '20px',
@@ -98,11 +104,18 @@ export const ProductDescription = styled('p')({
     marginBottom: '27px',
 })
 
+export const VariantsContainer = styled(Box)({
+    display: 'flex',
+    flexDirection: 'column',
+    marginTop: '20px',
+    gap: '20px',
+})
+
 export const ButtonsContainer = styled(Box)({
     display: 'inline-flex',
     alignItems: 'center',
     gap: '10px',
-    marginTop: '67px',
+    marginTop: '30px',
     'svg': {
         margin: '10px',
     }

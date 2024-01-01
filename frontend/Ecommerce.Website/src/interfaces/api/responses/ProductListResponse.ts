@@ -1,16 +1,9 @@
-export default interface ProductListResponse {
-    id: string
-    name: string
-    categoryName: string
-    originalPrice: number
-    discountedPrice: number
-    imageSource: string
-    rating: number
-    reviewsCount: number
-    variations: Variation[]
-}
+import Product from '../../Product';
 
-export interface Variation {
-    name: string
-    options: string[]
+export default interface ProductListResponse {
+    page: number
+    itemsPerPage: number
+    totalItems: number
+    totalPages: number
+    items: Product[]
 }

@@ -1,4 +1,4 @@
-﻿using Ecommerce.Application.Features.Addresses.Queries;
+﻿using Ecommerce.Application.DTOs.Addresses;
 
 namespace Ecommerce.Application.Features.Addresses.Commands.CreateAddress;
 

@@ -40,11 +40,6 @@ public class AppDbContext : DbContext
             {
                 builder
                     .Entity(entity.ClrType)
-                    .Property(property.Name)
-                    .HasDefaultValueSql("(uuid())");
-
-                builder
-                    .Entity(entity.ClrType)
                     .HasIndex(property.Name)
                     .IsUnique();
             }

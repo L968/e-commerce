@@ -15,8 +15,8 @@ public sealed class ProductCombination : AuditableEntity
     public float Height { get; private set; }
     public float Weight { get; private set; }
 
-    public Product Product { get; private set; } = null!;
-    public ProductInventory Inventory { get; private set; } = null!;
+    public Product Product { get; private set; }
+    public ProductInventory Inventory { get; private set; }
 
     private readonly List<ProductImage> _images = new();
     public IReadOnlyCollection<ProductImage> Images => _images;

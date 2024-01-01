@@ -6,9 +6,9 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
     {
     }
 
-    public override async Task<IEnumerable<Product>> GetAllAsync()
+    public async Task<(IEnumerable<Product> Products, long TotalItems)> GetAllAsync(int page, int pageSize)
     {
-        return await _context.Products
+        var productsQuery = _context.Products
             .Include(p => p.Category)
             .Include(p => p.Combinations)
                 .ThenInclude(pc => pc.Images)
@@ -17,8 +17,16 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
             .Include(p => p.VariantOptions)
                 .ThenInclude(pvo => pvo.VariantOption)
                 .ThenInclude(vo => vo.Variant)
-            .Where(p => p.Combinations.Any())
+            .Where(p => p.Combinations.Any());
+
+        var totalItems = await productsQuery.CountAsync();
+
+        var products = await productsQuery
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
+
+        return (products, totalItems);
     }
 
     public async Task<IEnumerable<Product>> GetDraftsAsync()

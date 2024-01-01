@@ -1,4 +1,4 @@
-﻿using Ecommerce.Application.Features.Carts.Queries;
+﻿using Ecommerce.Application.DTOs.Carts;
 
 namespace Ecommerce.Application.Features.Carts.Commands;
 

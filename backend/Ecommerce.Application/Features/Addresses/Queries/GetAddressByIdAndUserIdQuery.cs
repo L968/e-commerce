@@ -1,4 +1,6 @@
-﻿namespace Ecommerce.Application.Features.Addresses.Queries;
+﻿using Ecommerce.Application.DTOs.Addresses;
+
+namespace Ecommerce.Application.Features.Addresses.Queries;
 
 [Authorize]
 public record GetAddressByIdAndUserIdQuery(int Id) : IRequest<GetAddressDto?>;

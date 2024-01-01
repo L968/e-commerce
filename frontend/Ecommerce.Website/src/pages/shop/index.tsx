@@ -1,28 +1,37 @@
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import Grid from "@mui/material/Grid";
-import { toast } from "react-toastify";
-import MenuItem from "@mui/material/MenuItem";
-import InputLabel from "@mui/material/InputLabel";
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
+import Grid from '@mui/material/Grid';
+import { toast } from 'react-toastify';
+import MenuItem from '@mui/material/MenuItem';
+import InputLabel from '@mui/material/InputLabel';
 import WindowIcon from '@mui/icons-material/Window';
-import FormControl from "@mui/material/FormControl";
+import FormControl from '@mui/material/FormControl';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 
 import api from '../../services/api';
-import Pagination from "@/components/Pagination";
-import Breadcrumbs from "@/components/Breadcrumbs";
-import ProductListResponse from "@/interfaces/api/responses/ProductListResponse";
-import ProductCard, { ProductCardProps } from "@/components/ProductCard";
-import { Card, CategoriesCardsArea, CardQuantity, CardTextContainer, CardTitle, Header, Title, FilterArea, FilterResultsText, FilterContainer, FilterSort, FilterIconContainer, FilterInputContainer, PopularitySelect, FilterButton, FilterViewsText, ProductCardsArea, ProductCardsContainer, ProductCardsRow } from "./styles";
+import Pagination from '@/components/Pagination';
+import Breadcrumbs from '@/components/Breadcrumbs';
+import ProductCard from '@/components/ProductCard';
+import ProductListResponse from '@/interfaces/api/responses/ProductListResponse';
+import { Card, CategoriesCardsArea, CardQuantity, CardTextContainer, CardTitle, Header, Title, FilterArea, FilterResultsText, FilterContainer, FilterSort, FilterIconContainer, FilterInputContainer, PopularitySelect, FilterButton, FilterViewsText, ProductCardsArea, ProductCardsContainer, ProductCardsRow } from './styles';
 
 export default function Shop() {
-    const [products, setProducts] = useState<ProductCardProps[]>([]);
+    const [products, setProducts] = useState<ProductListResponse>();
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
-        api.get<ProductListResponse[]>('/product')
+        setLoading(true);
+
+        api.get<ProductListResponse>(`/product?page=${currentPage}&pageSize=16`)
             .then(response => setProducts(response.data))
-            .catch(error => toast.error("Error 500"));
-    }, []);
+            .catch(error => toast.error('Error 500'))
+            .finally(() => setLoading(false));
+    }, [currentPage]);
+
+    function handlePageChange(newPage: number) {
+        setCurrentPage(newPage);
+    }
 
     return (
         <main>
@@ -126,17 +135,23 @@ export default function Shop() {
                 </FilterContainer>
             </FilterArea>
             <ProductCardsArea>
-                <ProductCardsContainer>
-                    <ProductCardsRow container columnSpacing={6} rowSpacing={9}>
-                        {products.map(product => (
-                            <Grid key={product.id} item xs={3}>
-                                <ProductCard {...product} />
-                            </Grid>
-                        ))}
-                    </ProductCardsRow>
+                {!loading && products && (
+                    <ProductCardsContainer>
+                        <ProductCardsRow container columnSpacing={6} rowSpacing={9}>
+                            {products.items.map(product => (
+                                <Grid key={product.id} item xs={3}>
+                                    <ProductCard {...product} />
+                                </Grid>
+                            ))}
+                        </ProductCardsRow>
 
-                    <Pagination />
-                </ProductCardsContainer>
+                        <Pagination
+                            page={currentPage}
+                            totalPages={products.totalPages}
+                            onChangePage={handlePageChange}
+                        />
+                    </ProductCardsContainer>
+                )}
             </ProductCardsArea>
         </main>
     )

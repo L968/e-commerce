@@ -1,4 +1,5 @@
-﻿using Ecommerce.Application.Features.Addresses.Commands.CreateAddress;
+﻿using Ecommerce.Application.DTOs.Addresses;
+using Ecommerce.Application.Features.Addresses.Commands.CreateAddress;
 using Ecommerce.Application.Features.Addresses.Commands.DeleteAddress;
 using Ecommerce.Application.Features.Addresses.Queries;
 

@@ -14,6 +14,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 
 import { BrandName, NavMenuItems, StyledNavbar, DarkToolbar, LightToolbar, CenteredGrid, NavMenuItem, UserActions, UserAction } from './styles';
+import { IconButton } from '@mui/material';
 
 export default function Navbar() {
     return (
@@ -79,7 +80,9 @@ export default function Navbar() {
                             <SearchIcon />
                         </UserAction>
                         <UserAction>
-                            <ShoppingCartIcon /> 1
+                            <Link href='/cart'>
+                                <ShoppingCartIcon /> 1
+                            </Link>
                         </UserAction>
                         <UserAction>
                             <FavoriteIcon /> 1

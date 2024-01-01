@@ -7,15 +7,17 @@ import { useEffect, useState } from 'react';
 import GetProductListResponse from '@/interfaces/api/responses/GetProductListResponse';
 
 export default function Products() {
-    const [products, setProducts] = useState<GetProductListResponse[]>([]);
+    const [products, setProducts] = useState<GetProductListResponse>();
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        api.get<GetProductListResponse[]>('/product')
+        api.get<GetProductListResponse>('/product')
             .then(response => setProducts(response.data))
             .catch(error => toast.error("Error 500"))
             .finally(() => setLoading(false));
     }, []);
+
+
 
     return (
         <Main>
@@ -30,15 +32,19 @@ export default function Products() {
                     />
                 </Header>
 
-                {loading && <CircularProgress />}
+                {loading
+                    ?
+                    <CircularProgress />
+                    :
+                    <ProductsContainer container spacing={3}>
+                        {products!.items.map(product => (
+                            <Grid key={product.id} item sm>
+                                <ProductCard {...product} />
+                            </Grid>
+                        ))}
+                    </ProductsContainer>
+                }
 
-                <ProductsContainer container spacing={3}>
-                    {products.map(product => (
-                        <Grid key={product.id} item sm>
-                            <ProductCard {...product} />
-                        </Grid>
-                    ))}
-                </ProductsContainer>
             </Container>
         </Main>
     )

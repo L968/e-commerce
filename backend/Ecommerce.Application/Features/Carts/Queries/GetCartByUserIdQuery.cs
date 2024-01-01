@@ -1,24 +1,26 @@
-﻿namespace Ecommerce.Application.Features.Carts.Queries;
+﻿using Ecommerce.Application.DTOs.Carts;
+
+namespace Ecommerce.Application.Features.Carts.Queries;
 
 [Authorize]
-public record GetCartByUserIdQuery() : IRequest<GetCartDto?>;
+public record GetCartByUserIdQuery() : IRequest<IEnumerable<GetCartItemDto>?>;
 
-public class GetCartByUserIdQueryHandler : IRequestHandler<GetCartByUserIdQuery, GetCartDto?>
+public class GetCartByUserIdQueryHandler : IRequestHandler<GetCartByUserIdQuery, IEnumerable<GetCartItemDto>?>
 {
-    private readonly ICurrentUserService _currentUserService;
-    private readonly ICartRepository _cartRepository;
     private readonly IMapper _mapper;
+    private readonly ICartRepository _cartRepository;
+    private readonly ICurrentUserService _currentUserService;
 
-    public GetCartByUserIdQueryHandler(ICurrentUserService currentUserService, ICartRepository cartRepository, IMapper mapper)
+    public GetCartByUserIdQueryHandler(IMapper mapper, ICartRepository cartRepository, ICurrentUserService currentUserService)
     {
+        _mapper = mapper;
         _cartRepository = cartRepository;
         _currentUserService = currentUserService;
-        _mapper = mapper;
     }
 
-    public async Task<GetCartDto?> Handle(GetCartByUserIdQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<GetCartItemDto>?> Handle(GetCartByUserIdQuery request, CancellationToken cancellationToken)
     {
         Cart? cart = await _cartRepository.GetByUserIdAsync(_currentUserService.UserId);
-        return _mapper.Map<GetCartDto>(cart);
+        return _mapper.Map<IEnumerable<GetCartItemDto>>(cart.CartItems);
     }
 }

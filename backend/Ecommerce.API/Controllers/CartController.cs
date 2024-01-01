@@ -1,14 +1,15 @@
-﻿using Ecommerce.Application.Features.CartItems.Commands.DeleteCartItem;
-using Ecommerce.Application.Features.Carts.Commands;
+﻿using Ecommerce.Application.DTOs.Carts;
 using Ecommerce.Application.Features.CartItems.Commands.CreateCartItem;
+using Ecommerce.Application.Features.CartItems.Commands.DeleteCartItem;
 using Ecommerce.Application.Features.CartItems.Commands.UpdateCartItemQuantity;
+using Ecommerce.Application.Features.Carts.Commands;
 using Ecommerce.Application.Features.Carts.Queries;
 
 namespace Ecommerce.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize(Roles = "regular")]
+    [Authorize(Roles = "regular, admin")]
     public class CartController : ControllerBase
     {
         private readonly IMediator _mediator;

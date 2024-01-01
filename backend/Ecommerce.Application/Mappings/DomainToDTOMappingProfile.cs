@@ -1,8 +1,7 @@
-﻿using Ecommerce.Application.DTOs.Products;
+﻿using Ecommerce.Application.DTOs.Addresses;
+using Ecommerce.Application.DTOs.Carts;
+using Ecommerce.Application.DTOs.Products;
 using Ecommerce.Application.DTOs.Variants;
-using Ecommerce.Application.Features.Addresses.Queries;
-using Ecommerce.Application.Features.CartItems.Queries;
-using Ecommerce.Application.Features.Carts.Queries;
 
 namespace Ecommerce.Application.Mappings;
 
@@ -13,12 +12,13 @@ public class DomainToDTOMappingProfile : Profile
         CreateMap<Address, GetAddressDto>();
 
         CreateMap<Cart, GetCartDto>();
-        CreateMap<CartItem, GetCartItemDto>();
+        CreateMap<CartItem, GetCartItemDto>()
+            .ForMember(dto => dto.Product, opt => opt.MapFrom(ci => ci.ProductCombination));
 
         CreateMap<Product, GetProductAdminDto>();
         CreateMap<Product, GetProductDto>()
             .ForMember(dto => dto.Rating, opt => opt.MapFrom(p => p.GetRating()))
-            .ForMember(dto => dto.Variants, opt => opt.MapFrom(p => p.VariantOptions.Select(vo => vo.VariantOption.Variant)));
+            .ForMember(dto => dto.Variants, opt => opt.MapFrom(p => p.VariantOptions.Select(vo => vo.VariantOption.Variant).GroupBy(v => v.Id).Select(g => g.First())));
 
         CreateMap<Product, GetProductListDto>()
             .ForMember(dto => dto.CategoryName, opt => opt.MapFrom(p => p.Category.Name))
@@ -36,6 +36,7 @@ public class DomainToDTOMappingProfile : Profile
 
         CreateMap<ProductDiscount, GetProductDiscountDto>();
         CreateMap<ProductCombination, GetProductCombinationDto>()
+            .ForMember(dto => dto.Name, opt => opt.MapFrom(pc => pc.Product.Name))
             .ForMember(dto => dto.OriginalPrice, opt => opt.MapFrom(pc => pc.Price))
             .ForMember(dto => dto.DiscountedPrice, opt => opt.MapFrom(pc => pc.GetDiscountedPrice()))
             .ForMember(dto => dto.Images, opt => opt.MapFrom(pc => pc.Images.Select(i => i.ImagePath)))

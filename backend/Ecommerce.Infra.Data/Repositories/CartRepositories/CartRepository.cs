@@ -13,7 +13,12 @@ public class CartRepository : ICartRepository
     {
         return await _context.Carts
             .Include(c => c.CartItems)
-            .ThenInclude(ci => ci.ProductCombination)
+                .ThenInclude(ci => ci.ProductCombination)
+                    .ThenInclude(pc => pc.Product)
+                        .ThenInclude(p => p.Discounts)
+            .Include(c => c.CartItems)
+                .ThenInclude(ci => ci.ProductCombination)
+                    .ThenInclude(pc => pc.Images)
             .FirstOrDefaultAsync(c => c.UserId == userId);
     }
 
