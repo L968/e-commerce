@@ -20,16 +20,16 @@ builder.Services.AddIdentity<CustomIdentityUser, IdentityRole<int>>(options =>
     options.SignIn.RequireConfirmedEmail = true;
     options.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultPhoneProvider;
 })
-    .AddEntityFrameworkStores<Context>()
+    .AddEntityFrameworkStores<AuthorizationContext>()
     .AddDefaultTokenProviders();
 
-var connectionString = builder.Configuration.GetConnectionString("Connection");
-var serverVersion = ServerVersion.AutoDetect(connectionString);
+var authorizationConnectionString = builder.Configuration.GetConnectionString("AuthorizationConnection");
+var serverVersion = ServerVersion.AutoDetect(authorizationConnectionString);
 
-builder.Services.AddDbContext<Context>(options =>
+builder.Services.AddDbContext<AuthorizationContext>(options =>
     options
         .UseSnakeCaseNamingConvention()
-        .UseMySql(connectionString, serverVersion)
+        .UseMySql(authorizationConnectionString, serverVersion)
 );
 
 builder.Services.AddAuthentication(auth =>
