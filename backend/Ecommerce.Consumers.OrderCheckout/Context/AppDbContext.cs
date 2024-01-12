@@ -10,6 +10,7 @@ namespace Ecommerce.Consumers.OrderCheckout.Context;
 public class AppDbContext : DbContext
 {
     public virtual DbSet<Order> Orders { get; set; }
+    public virtual DbSet<Address> Addresses { get; set; }
     public virtual DbSet<ProductCombination> ProductCombinations { get; set; }
 
     public AppDbContext()
