@@ -3,6 +3,7 @@
 public record GetProductCombinationDto
 {
     public Guid Id { get; private init; }
+    public Guid ProductId { get; set; }
     public string Name { get; set; } = "";
     public string CombinationString { get; private set; } = "";
     public decimal OriginalPrice { get; private set; }
