@@ -57,8 +57,7 @@ namespace Ecommerce.Infra.Data.Migrations
                 name: "cart",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     user_id = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -292,7 +291,7 @@ namespace Ecommerce.Infra.Data.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    cart_id = table.Column<int>(type: "int", nullable: false),
+                    cart_id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     product_combination_id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     quantity = table.Column<int>(type: "int", nullable: false),
                     is_selected_for_checkout = table.Column<bool>(type: "tinyint(1)", nullable: false),

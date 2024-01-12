@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ecommerce.Infra.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231219161130_initial")]
+    [Migration("20240103224853_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -101,9 +101,9 @@ namespace Ecommerce.Infra.Data.Migrations
 
             modelBuilder.Entity("Ecommerce.Domain.Entities.CartEntities.Cart", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("char(36)")
                         .HasColumnName("id");
 
                     b.Property<int>("UserId")
@@ -123,8 +123,8 @@ namespace Ecommerce.Infra.Data.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    b.Property<int>("CartId")
-                        .HasColumnType("int")
+                    b.Property<Guid>("CartId")
+                        .HasColumnType("char(36)")
                         .HasColumnName("cart_id");
 
                     b.Property<DateTime>("CreatedAt")
@@ -546,7 +546,7 @@ namespace Ecommerce.Infra.Data.Migrations
 
             modelBuilder.Entity("Ecommerce.Domain.Entities.CartEntities.CartItem", b =>
                 {
-                    b.HasOne("Ecommerce.Domain.Entities.CartEntities.Cart", null)
+                    b.HasOne("Ecommerce.Domain.Entities.CartEntities.Cart", "Cart")
                         .WithMany("CartItems")
                         .HasForeignKey("CartId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -559,6 +559,8 @@ namespace Ecommerce.Infra.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_cart_item_product_combinations_product_combination_id");
+
+                    b.Navigation("Cart");
 
                     b.Navigation("ProductCombination");
                 });
