@@ -21,10 +21,18 @@ public class OrderController : ControllerBase
         _publisher = publisher;
     }
 
-    [HttpGet]
+    [HttpGet("pending")]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> GetPendingOrders()
     {
         return Ok(await _orderService.GetPendingOrdersAsync());
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetUserOrders()
+    {
+        var userId = int.Parse(User.FindFirstValue("id")!);
+        return Ok(await _orderService.GetUserOrders(userId));
     }
 
     [HttpPost]

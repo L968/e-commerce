@@ -16,6 +16,11 @@ public class OrderService : IOrderService
         return await _repository.GetByIdAsync(id);
     }
 
+    public async Task<IEnumerable<Domain.Entities.OrderEntities.Order>> GetUserOrders(int userId)
+    {
+        return await _repository.GetByUserIdAsync(userId);
+    }
+
     public async Task<IEnumerable<Domain.Entities.OrderEntities.Order>> GetPendingOrdersAsync()
     {
         return await _repository.GetPendingOrdersAsync();

@@ -1,4 +1,4 @@
-﻿using Ecommerce.Domain.Entities.OrderEntities;
+﻿using Ecommerce.Domain.Enums;
 using Ecommerce.Order.API.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,5 +23,13 @@ public class OrderRepository : IOrderRepository
     public async Task<Domain.Entities.OrderEntities.Order?> GetByIdAsync(Guid id)
     {
         return await _context.Orders.FirstOrDefaultAsync(o => o.Id == id);
+    }
+
+    public async Task<IEnumerable<Domain.Entities.OrderEntities.Order>> GetByUserIdAsync(int userId)
+    {
+        return await _context.Orders
+            .Include(o => o.Items)
+            .Where(o => o.UserId == userId)
+            .ToListAsync();
     }
 }
