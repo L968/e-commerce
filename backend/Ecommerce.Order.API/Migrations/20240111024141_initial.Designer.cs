@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ecommerce.Order.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231123162958_Initial")]
-    partial class Initial
+    [Migration("20240111024141_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,7 +34,8 @@ namespace Ecommerce.Order.API.Migrations
                         .HasColumnName("created_at");
 
                     b.Property<decimal?>("Discount")
-                        .HasColumnType("decimal(65,30)")
+                        .HasPrecision(65, 2)
+                        .HasColumnType("decimal(65,2)")
                         .HasColumnName("discount");
 
                     b.Property<string>("ShippingBuildingNumber")
@@ -51,7 +52,8 @@ namespace Ecommerce.Order.API.Migrations
                         .HasColumnName("shipping_complement");
 
                     b.Property<decimal>("ShippingCost")
-                        .HasColumnType("decimal(65,30)")
+                        .HasPrecision(65, 2)
+                        .HasColumnType("decimal(65,2)")
                         .HasColumnName("shipping_cost");
 
                     b.Property<string>("ShippingCountry")
@@ -81,7 +83,8 @@ namespace Ecommerce.Order.API.Migrations
                         .HasColumnName("status");
 
                     b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(65,30)")
+                        .HasPrecision(65, 2)
+                        .HasColumnType("decimal(65,2)")
                         .HasColumnName("total_amount");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -146,7 +149,8 @@ namespace Ecommerce.Order.API.Migrations
                         .HasColumnName("product_combination_id");
 
                     b.Property<decimal?>("ProductDiscount")
-                        .HasColumnType("decimal(65,30)")
+                        .HasPrecision(65, 2)
+                        .HasColumnType("decimal(65,2)")
                         .HasColumnName("product_discount");
 
                     b.Property<string>("ProductImagePath")
@@ -164,7 +168,8 @@ namespace Ecommerce.Order.API.Migrations
                         .HasColumnName("product_sku");
 
                     b.Property<decimal>("ProductUnitPrice")
-                        .HasColumnType("decimal(65,30)")
+                        .HasPrecision(65, 2)
+                        .HasColumnType("decimal(65,2)")
                         .HasColumnName("product_unit_price");
 
                     b.Property<int>("Quantity")

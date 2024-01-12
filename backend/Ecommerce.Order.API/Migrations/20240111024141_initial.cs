@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Ecommerce.Order.API.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,9 +22,9 @@ namespace Ecommerce.Order.API.Migrations
                     id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     user_id = table.Column<int>(type: "int", nullable: false),
                     status = table.Column<int>(type: "int", nullable: false),
-                    shipping_cost = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    discount = table.Column<decimal>(type: "decimal(65,30)", nullable: true),
-                    total_amount = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    shipping_cost = table.Column<decimal>(type: "decimal(65,2)", precision: 65, scale: 2, nullable: false),
+                    discount = table.Column<decimal>(type: "decimal(65,2)", precision: 65, scale: 2, nullable: true),
+                    total_amount = table.Column<decimal>(type: "decimal(65,2)", precision: 65, scale: 2, nullable: false),
                     shipping_postal_code = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     shipping_street_name = table.Column<string>(type: "longtext", nullable: false)
@@ -89,8 +89,8 @@ namespace Ecommerce.Order.API.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     product_image_path = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    product_unit_price = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    product_discount = table.Column<decimal>(type: "decimal(65,30)", nullable: true)
+                    product_unit_price = table.Column<decimal>(type: "decimal(65,2)", precision: 65, scale: 2, nullable: false),
+                    product_discount = table.Column<decimal>(type: "decimal(65,2)", precision: 65, scale: 2, nullable: true)
                 },
                 constraints: table =>
                 {
