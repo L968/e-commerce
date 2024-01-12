@@ -2,9 +2,9 @@
 
 namespace Ecommerce.Authorization.Data;
 
-public class Context : IdentityDbContext<CustomIdentityUser, IdentityRole<int>, int>
+public class AuthorizationContext : IdentityDbContext<CustomIdentityUser, IdentityRole<int>, int>
 {
-    public Context(DbContextOptions<Context> options) : base(options)
+    public AuthorizationContext(DbContextOptions<AuthorizationContext> options) : base(options)
     {
     }
 
