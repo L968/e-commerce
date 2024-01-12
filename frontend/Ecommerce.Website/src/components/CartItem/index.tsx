@@ -3,9 +3,11 @@ import { Button } from '@mui/material';
 import currencyFormat from '@/utils/currencyFormat';
 import NumberSelector from '@/components/NumberSelector';
 import { CartInfo, Container, Price, ProductName } from './styles';
+import Link from 'next/link';
 
 interface CartItemProps {
     cartItemId: number
+    productId: string
     imageSource: string
     productName: string
     quantity: number
@@ -15,13 +17,20 @@ interface CartItemProps {
     onDelete: (cartItemId: number) => void
 }
 
-export default function CartItem({ cartItemId, imageSource, productName, quantity, originalPrice, discountedPrice, setQuantity, onDelete }: CartItemProps) {
+export default function CartItem({ cartItemId, productId, imageSource, productName, quantity, originalPrice, discountedPrice, setQuantity, onDelete }: CartItemProps) {
     return (
         <Container>
-            <Image src={imageSource} width={64} height={64} alt='product-image' />
+            <Link href={`/product/${productId}`}>
+                <Image src={imageSource} width={64} height={64} alt='product-image' />
+            </Link>
 
             <CartInfo>
-                <ProductName>{productName}</ProductName>
+                <ProductName>
+                    <Link href={`/product/${productId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                        {productName}
+                    </Link>
+                </ProductName>
+
                 <div>
                     <Button onClick={() => onDelete(cartItemId)}>Delete</Button>
                 </div>

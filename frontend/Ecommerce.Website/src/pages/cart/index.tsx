@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import api from '@/services/api';
 import { toast } from 'react-toastify';
 import { Divider } from '@mui/material';
@@ -6,10 +7,15 @@ import { useEffect, useState } from 'react';
 import CartItem from '@/interfaces/CartItem';
 import axios, { CancelTokenSource } from 'axios';
 import currencyFormat from '@/utils/currencyFormat';
+import PrivateRoute from '@/components/PrivateRoute';
 import CartItemComponent from '@/components/CartItem';
+import OrderCheckoutItem from '@/interfaces/OrderCheckoutItem';
+import { useOrderCheckout } from '@/contexts/orderCheckoutContext';
 import { CartList, Container, EmptyCartList, EmptySummary, Main, PriceContainer, PriceContainerContent, PriceContainerRow, PriceContainerTitle, TotalPrice } from './styles';
 
-export default function Cart() {
+function Cart() {
+    const { setOrderCheckout } = useOrderCheckout();
+
     const [cancelTokenSource, setCancelTokenSource] = useState<CancelTokenSource | null>(null);
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [shipping, setShipping] = useState<number>(50);
@@ -21,10 +27,7 @@ export default function Cart() {
 
     function getCartItems(): void {
         api.get<CartItem[]>('/cart')
-            .then(response => {
-                setCartItems(response.data)
-                console.log(response.data);
-            })
+            .then(response => setCartItems(response.data))
             .catch(error => toast.error('Error 500'))
             .finally(() => setLoading(false));
     }
@@ -75,6 +78,15 @@ export default function Cart() {
             .catch(err => toast.error('Error 500'));
     }
 
+    function handleAddToOrderCheckout() {
+        const items: OrderCheckoutItem[] = cartItems.map(item => ({
+            productCombinationId: item.product.id,
+            quantity: item.quantity
+        }));
+
+        setOrderCheckout(items);
+    }
+
     return (
         <Main>
             <Container>
@@ -86,6 +98,7 @@ export default function Cart() {
                                 <CartItemComponent
                                     key={cartItem.id}
                                     cartItemId={cartItem.id}
+                                    productId={cartItem.product.productId}
                                     imageSource={cartItem.product.images[0]}
                                     productName={cartItem.product.name}
                                     quantity={cartItem.quantity}
@@ -122,7 +135,15 @@ export default function Cart() {
                                 <span>{currencyFormat(getTotalAmount() + shipping)}</span>
                             </TotalPrice>
 
-                            <Button fullWidth variant='contained'>Continue purchase</Button>
+                            <Link href='/checkout'>
+                                <Button
+                                    fullWidth
+                                    variant='contained'
+                                    onClick={handleAddToOrderCheckout}
+                                >
+                                    Continue purchase
+                                </Button>
+                            </Link>
                         </PriceContainerContent>
                         :
                         <EmptySummary>
@@ -132,5 +153,13 @@ export default function Cart() {
                 </PriceContainer>
             </Container>
         </Main>
+    )
+}
+
+export default function Private() {
+    return (
+        <PrivateRoute>
+            <Cart />
+        </PrivateRoute>
     )
 }

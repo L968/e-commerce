@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import MuiAvatar from '@mui/material/Avatar';
 
 export const StyledNavbar = styled(Box)({
     flexGrow: 1,
@@ -52,4 +53,11 @@ export const UserAction = styled(Box)({
     display: 'flex',
     alignItems: 'center',
     marginLeft: '40px',
+})
+
+export const Avatar = styled(MuiAvatar)({
+    marginRight: '5px',
+    width: '30px',
+    height: '30px',
+    fontSize: '15px',
 })

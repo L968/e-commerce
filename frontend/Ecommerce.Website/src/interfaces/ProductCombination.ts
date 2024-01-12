@@ -1,5 +1,6 @@
 export default interface ProductCombination {
     id: string
+    productId: string
     name: string
     combinationString: string
     originalPrice: number

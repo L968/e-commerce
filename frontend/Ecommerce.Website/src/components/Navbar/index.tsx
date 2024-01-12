@@ -1,6 +1,6 @@
 import Link from '../Link';
-import Grid from '@mui/material/Grid';
-import AppBar from '@mui/material/AppBar';
+import { useState } from 'react';
+import { AppBar, Menu, MenuItem, Grid } from '@mui/material';
 
 import PhoneIcon from '@mui/icons-material/Phone';
 import EmailIcon from '@mui/icons-material/Email';
@@ -12,11 +12,25 @@ import PersonIcon from '@mui/icons-material/Person';
 import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
-import { BrandName, NavMenuItems, StyledNavbar, DarkToolbar, LightToolbar, CenteredGrid, NavMenuItem, UserActions, UserAction } from './styles';
-import { IconButton } from '@mui/material';
+import { useAuth } from '@/contexts/authContext';
+import { BrandName, NavMenuItems, StyledNavbar, DarkToolbar, LightToolbar, CenteredGrid, NavMenuItem, UserActions, UserAction, Avatar } from './styles';
 
 export default function Navbar() {
+    const user = {};
+    const { isAuthenticated, logout } = useAuth();
+    const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
+    function handleClose() {
+        setAnchorEl(null);
+    }
+
+    function handleLogout() {
+        logout();
+        handleClose();
+    }
+
     return (
         <StyledNavbar>
             <AppBar position="static" elevation={0}>
@@ -70,26 +84,85 @@ export default function Navbar() {
                     </NavMenuItems>
 
                     <UserActions>
-                        <UserAction>
-                            <PersonIcon />
-                            <Link href='/login'>Login</Link>
-                            &nbsp;/&nbsp;
-                            <Link href='/register'>Register</Link>
-                        </UserAction>
+                        {isAuthenticated ? (
+                            <UserAction
+                                onMouseOver={(e) => setAnchorEl(e.currentTarget)}
+                                sx={{ cursor: 'pointer' }}
+                            >
+                                <Avatar {...stringAvatar('James Bond')} />
+                                {'James'}
+                                <ArrowDropDownIcon />
+                            </UserAction>
+                        ) : (
+                            <UserAction>
+                                <PersonIcon />
+                                <Link href='/login'>Login</Link>
+                                &nbsp;/&nbsp;
+                                <Link href='/register'>Register</Link>
+                            </UserAction>
+                        )}
                         <UserAction>
                             <SearchIcon />
                         </UserAction>
-                        <UserAction>
-                            <Link href='/cart'>
-                                <ShoppingCartIcon /> 1
-                            </Link>
-                        </UserAction>
-                        <UserAction>
-                            <FavoriteIcon /> 1
-                        </UserAction>
+                        {isAuthenticated &&
+                            <>
+                                <UserAction>
+                                    <Link href='/cart'>
+                                        <ShoppingCartIcon /> 1
+                                    </Link>
+                                </UserAction>
+                                <UserAction>
+                                    <FavoriteIcon /> 1
+                                </UserAction>
+                            </>
+                        }
                     </UserActions>
+
+                    <Menu
+                        anchorEl={anchorEl}
+                        open={Boolean(anchorEl)}
+                        onClose={handleClose}
+                        MenuListProps={{ onMouseLeave: handleClose }}
+                    >
+                        <MenuItem onClick={handleClose}>
+                            <Link href='/orders'>Orders</Link>
+                        </MenuItem>
+                        <MenuItem onClick={handleClose}>
+                            <Link href='/profile'>Profile</Link>
+                        </MenuItem>
+                        <MenuItem onClick={handleLogout}>
+                            Logout
+                        </MenuItem>
+                    </Menu>
                 </LightToolbar>
             </AppBar>
-        </StyledNavbar>
-    );
+        </StyledNavbar >
+    )
+}
+
+function stringToColor(string: string): string {
+    let hash = 0;
+    let i;
+
+    for (i = 0; i < string.length; i += 1) {
+        hash = string.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    let color = '#';
+
+    for (i = 0; i < 3; i += 1) {
+        const value = (hash >> (i * 8)) & 0xff;
+        color += `00${value.toString(16)}`.slice(-2);
+    }
+
+    return color;
+}
+
+function stringAvatar(name: string) {
+    return {
+        sx: {
+            bgcolor: stringToColor(name),
+        },
+        children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
+    };
 }

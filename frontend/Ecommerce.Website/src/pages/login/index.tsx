@@ -1,41 +1,37 @@
-import Image from "next/image";
-import Grid from "@mui/material/Grid";
-import { toast } from "react-toastify";
-import { useRouter } from 'next/navigation';
-import { useState, FormEvent } from "react";
-import TextField from "@mui/material/TextField";
-import api from '../../services/apiAuthorization';
-import LoadingButton from "@/components/Button/LoadingButton";
-import { Container, LoginArea, LoginFrame, Form, Main, Paragraph, WelcomeLabel, BrandName } from "./styles";
+import Image from 'next/image';
+import Grid from '@mui/material/Grid';
+import { toast } from 'react-toastify';
+import { useState, FormEvent } from 'react';
+import TextField from '@mui/material/TextField';
+import { useAuth } from '@/contexts/authContext';
+import LoadingButton from '@/components/Button/LoadingButton';
+import { Container, LoginArea, LoginFrame, Form, Main, Paragraph, WelcomeLabel, BrandName } from './styles';
 
 export default function Login() {
-    const router = useRouter();
+    const { login } = useAuth();
 
     const [emailOrPhoneNumber, setEmailOrPhoneNumber] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
 
-    function handleSubmit(e: FormEvent<HTMLFormElement>): void {
+    async function handleSubmit(e: FormEvent<HTMLFormElement>): Promise<void> {
         e.preventDefault();
-
-        const data = { emailOrPhoneNumber, password };
 
         setLoading(true);
 
-        api.post('/login', data)
-        .then(response => {
-            localStorage.setItem('SESSIONJWT', response.data.message);
-            router.push('/home');
-        })
-        .catch(error => {
+        try {
+            await login(emailOrPhoneNumber, password);
+        } catch (error: any) {
             if (error.response.status === 401) {
                 toast.warning(error.response.data.message);
                 return;
             }
 
             toast.error('Error 500');
-        })
-        .finally(() => setLoading(false));
+        }
+        finally {
+            setLoading(false);
+        }
     }
 
     return (
@@ -73,7 +69,7 @@ export default function Login() {
                         alt='login-image'
                         width={0}
                         height={0}
-                        sizes="100vw"
+                        sizes='100vw'
                         style={{ width: '100%', height: 'auto' }}
                     />
                 </Grid>
