@@ -27,7 +27,10 @@ public class CreateCartItemCommandHandler : IRequestHandler<CreateCartItemComman
         Cart? cart = await _cartRepository.GetByUserIdAsync(_currentUserService.UserId);
 
         if (cart is null)
-            return Result.Fail(DomainErrors.Cart.CartNotFound);
+        {
+            cart = new Cart(_currentUserService.UserId);
+            _cartRepository.Create(cart);
+        }
 
         ProductCombination? productCombination = await _productCombinationRepository.GetByIdAsync(request.ProductCombinationId);
 
