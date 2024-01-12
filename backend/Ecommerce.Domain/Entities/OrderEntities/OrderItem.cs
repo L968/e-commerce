@@ -12,11 +12,14 @@ public sealed class OrderItem
     public decimal ProductUnitPrice { get; private set; }
     public decimal? ProductDiscount { get; private set; }
 
+    public Order? Order { get; private set; }
+
     private OrderItem() { }
 
     public OrderItem(
         Guid orderId,
         Guid productCombinationId,
+        int quantity,
         string productName,
         string productSku,
         string? productImagePath,
@@ -26,6 +29,7 @@ public sealed class OrderItem
     {
         OrderId = orderId;
         ProductCombinationId = productCombinationId;
+        Quantity = quantity;
         ProductName = productName;
         ProductSku = productSku;
         ProductImagePath = productImagePath;
