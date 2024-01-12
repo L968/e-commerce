@@ -9,14 +9,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Ecommerce.Authorization.Migrations
 {
-    [DbContext(typeof(Context))]
+    [DbContext(typeof(AuthorizationContext))]
     partial class ContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.5")
+                .HasAnnotation("ProductVersion", "7.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Ecommerce.Authorization.Models.CustomIdentityUser", b =>
@@ -34,6 +34,10 @@ namespace Ecommerce.Authorization.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("longtext")
                         .HasColumnName("concurrency_stamp");
+
+                    b.Property<int?>("DefaultAddressId")
+                        .HasColumnType("int")
+                        .HasColumnName("default_address_id");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -109,16 +113,16 @@ namespace Ecommerce.Authorization.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "51627f21-a82d-4887-ac9a-a26900cf954d",
+                            ConcurrencyStamp = "78359683-4652-4400-817b-7fed9658e314",
                             Email = "admin@admin.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             Name = "Admin",
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBwf6nwFBruL2gVChb1fAHfswwjI+Rnmsza1JRr/qDRmjoqOIrZ0VhcQyhe7/OrOrQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFJv7tKNvw620J5I3LRAA1kV+BDiSpWW7iB4dhmOCYqI+asl3Bu5DLXOOIDFFEgh7A==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "38d2fad6-6a32-47aa-81cd-b71d1ce86d49",
+                            SecurityStamp = "039fbce7-bf6b-4de9-80c4-6225490434b5",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         },
@@ -126,16 +130,16 @@ namespace Ecommerce.Authorization.Migrations
                         {
                             Id = 2,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "cc116b7f-0f4e-4d74-bf6f-dd127f850e71",
+                            ConcurrencyStamp = "a88e746a-029a-41e2-a3aa-dd61fd26f638",
                             Email = "test@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             Name = "Tester",
                             NormalizedEmail = "TEST@TEST.COM",
                             NormalizedUserName = "TEST",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFaa1eAmR/3Hmll2lAajnRS22FFrQLBcUc/oRsqy4ap9qrfSqDOgbUGVB/pUhWAXUA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKFejq9hMvAMp+04RPeitLgdCC2AsTfymmH7PNcDhXxCkm756uDkCsqQOJ79PXMrqQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "2ddab000-7ea9-4898-a89e-cdb7c110bec2",
+                            SecurityStamp = "8af50b42-73d8-429f-ad14-432848bd4c70",
                             TwoFactorEnabled = false,
                             UserName = "test"
                         });
