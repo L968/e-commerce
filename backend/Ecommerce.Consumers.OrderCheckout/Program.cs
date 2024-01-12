@@ -1,5 +1,6 @@
 ﻿using Ecommerce.Application.DTOs.OrderCheckout;
 using Ecommerce.Consumers.OrderCheckout.Context;
+using Ecommerce.Domain.Entities;
 using Ecommerce.Domain.Entities.CartEntities;
 using Ecommerce.Domain.Entities.OrderEntities;
 using Ecommerce.Domain.Entities.ProductEntities;
@@ -62,9 +63,17 @@ async void Process(object? model, BasicDeliverEventArgs ea)
             return;
         }
 
+        Address? address = await GetAddressById(orderCheckout.ShippingAddressId, orderCheckout.UserId);
+
+        if (address == null)
+        {
+            Console.WriteLine($"Address with id {orderCheckout.ShippingAddressId} not found");
+            return;
+        }
+
         var cartItems = new List<CartItem>();
 
-        foreach (var cartItemDto in orderCheckout.CartItems)
+        foreach (var cartItemDto in orderCheckout.OrderCheckoutItems)
         {
             ProductCombination? productCombination = await GetProductCombinationById(cartItemDto.ProductCombinationId);
 
@@ -75,7 +84,7 @@ async void Process(object? model, BasicDeliverEventArgs ea)
             }
 
             var createResult = CartItem.Create(
-                cartId: cartItemDto.CartId,
+                cartId: Guid.Empty,
                 productCombinationId: cartItemDto.ProductCombinationId,
                 quantity: cartItemDto.Quantity,
                 isSelectedForCheckout: true,
@@ -95,14 +104,14 @@ async void Process(object? model, BasicDeliverEventArgs ea)
         var result = Order.Create(
             orderCheckout.UserId,
             cartItems,
-            orderCheckout.ShippingPostalCode,
-            orderCheckout.ShippingStreetName,
-            orderCheckout.ShippingBuildingNumber,
-            orderCheckout.ShippingComplement,
-            orderCheckout.ShippingNeighborhood,
-            orderCheckout.ShippingCity,
-            orderCheckout.ShippingState,
-            orderCheckout.ShippingCountry
+            address.PostalCode,
+            address.StreetName,
+            address.BuildingNumber,
+            address.Complement,
+            address.Neighborhood,
+            address.City,
+            address.State,
+            address.Country
         );
 
         if (result.IsFailed)
@@ -116,7 +125,6 @@ async void Process(object? model, BasicDeliverEventArgs ea)
         await db.SaveChangesAsync();
 
         channel.BasicAck(ea.DeliveryTag, false);
-
         Console.WriteLine("Order processed successfully");
     }
     catch (Exception ex)
@@ -137,4 +145,10 @@ async Task<ProductCombination?> GetProductCombinationById(Guid id)
         .Include(p => p.Inventory)
         .Include(p => p.Images)
         .FirstOrDefaultAsync(p => p.Id == id);
+}
+
+async Task<Address?> GetAddressById(int id, int userId)
+{
+    using var db = new AppDbContext();
+    return await db.Addresses.FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId);
 }
