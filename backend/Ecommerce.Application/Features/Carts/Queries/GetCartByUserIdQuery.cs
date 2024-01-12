@@ -21,6 +21,6 @@ public class GetCartByUserIdQueryHandler : IRequestHandler<GetCartByUserIdQuery,
     public async Task<IEnumerable<GetCartItemDto>?> Handle(GetCartByUserIdQuery request, CancellationToken cancellationToken)
     {
         Cart? cart = await _cartRepository.GetByUserIdAsync(_currentUserService.UserId);
-        return _mapper.Map<IEnumerable<GetCartItemDto>>(cart.CartItems);
+        return _mapper.Map<IEnumerable<GetCartItemDto>>(cart?.CartItems);
     }
 }
