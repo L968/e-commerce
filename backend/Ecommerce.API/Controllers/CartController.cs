@@ -9,7 +9,7 @@ namespace Ecommerce.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize(Roles = "regular, admin")]
+    [Authorize(Roles = "regular")]
     public class CartController : ControllerBase
     {
         private readonly IMediator _mediator;
