@@ -1,10 +1,12 @@
-﻿namespace Ecommerce.Domain.Entities.OrderEntities;
+﻿using Ecommerce.Domain.Enums;
+
+namespace Ecommerce.Domain.Entities.OrderEntities;
 
 public sealed class Order : AuditableEntity
 {
     public Guid Id { get; private set; }
     public int UserId { get; private set; }
-    public OrderStatus Status { get; set; }
+    public OrderStatus Status { get; private set; }
     public decimal ShippingCost { get; private set; }
     public decimal? Discount { get; private set; }
     public decimal TotalAmount { get; private set; }
@@ -70,12 +72,12 @@ public sealed class Order : AuditableEntity
     )
     {
         if (userId <= 0)
-        {
             return Result.Fail(DomainErrors.Order.InvalidUserId);
-        }
 
         var selectedCartItems = cartItems.Where(ci => ci.IsSelectedForCheckout);
-        if (!selectedCartItems.Any()) return Result.Fail(DomainErrors.Order.EmptyProductList);
+
+        if (!selectedCartItems.Any())
+            return Result.Fail(DomainErrors.Order.EmptyProductList);
 
         decimal totalAmount = 0;
         decimal totalDiscount = 0;
@@ -87,13 +89,17 @@ public sealed class Order : AuditableEntity
             Product product = productCombination.Product;
             decimal productPrice = productCombination.Price;
 
-            if (!product.Active) return Result.Fail(DomainErrors.Order.InactiveProduct);
+            if (!product.Active)
+                return Result.Fail(DomainErrors.Order.InactiveProduct);
 
             var reduceStockResult = productCombination.Inventory.ReduceStock(cartItem.Quantity);
-            if (reduceStockResult.IsFailed) return reduceStockResult;
+
+            if (reduceStockResult.IsFailed)
+                return reduceStockResult;
 
             var discountResult = productCombination.GetDiscount();
-            if (discountResult.IsFailed) return Result.Fail(discountResult.Errors);
+            if (discountResult.IsFailed)
+                return Result.Fail(discountResult.Errors);
 
             decimal productDiscount = discountResult.Value;
             productPrice -= productDiscount;
@@ -103,9 +109,10 @@ public sealed class Order : AuditableEntity
             orderItems.Add(new OrderItem(
                 orderId: Guid.Empty,
                 productCombinationId: cartItem.ProductCombinationId,
-                productName: cartItem.ProductCombination!.Product.Name,
-                productSku: cartItem.ProductCombination.Sku,
-                productImagePath: cartItem.ProductCombination.Images.ElementAt(0).ImagePath,
+                quantity: cartItem.Quantity,
+                productName: productCombination.Product.Name,
+                productSku: productCombination.Sku,
+                productImagePath: productCombination.Images.ElementAt(0).ImagePath,
                 productUnitPrice: productPrice,
                 productDiscount: productDiscount == 0 ? null : productDiscount
             ));

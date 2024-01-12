@@ -1,4 +1,6 @@
-﻿namespace Ecommerce.Domain.Entities.OrderEntities;
+﻿using Ecommerce.Domain.Enums;
+
+namespace Ecommerce.Domain.Entities.OrderEntities;
 
 public sealed class OrderHistory
 {
