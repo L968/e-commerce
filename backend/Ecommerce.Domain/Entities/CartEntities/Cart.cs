@@ -2,7 +2,7 @@
 
 public sealed class Cart
 {
-    public int Id { get; private set; }
+    public Guid Id { get; private set; }
     public int UserId { get; private set; }
 
     private readonly List<CartItem> _cartItems = new();
@@ -10,6 +10,7 @@ public sealed class Cart
 
     public Cart(int userId)
     {
+        Id = Guid.NewGuid();
         UserId = userId;
     }
 

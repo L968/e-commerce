@@ -3,16 +3,17 @@
 public sealed class CartItem : AuditableEntity
 {
     public int Id { get; private set; }
-    public int CartId { get; private set; }
+    public Guid CartId { get; private set; }
     public Guid ProductCombinationId { get; private set; }
     public int Quantity { get; private set; }
     public bool IsSelectedForCheckout { get; private set; }
 
+    public Cart? Cart { get; private set; }
     public ProductCombination? ProductCombination { get; private set; } = null!;
 
     private CartItem() { }
 
-    private CartItem(int cartId, Guid productCombinationId, int quantity, bool isSelectedForCheckout, ProductCombination? productCombination)
+    private CartItem(Guid cartId, Guid productCombinationId, int quantity, bool isSelectedForCheckout, ProductCombination? productCombination)
     {
         CartId = cartId;
         ProductCombinationId = productCombinationId;
@@ -21,7 +22,7 @@ public sealed class CartItem : AuditableEntity
         ProductCombination = productCombination;
     }
 
-    public static Result<CartItem> Create(int cartId, Guid productCombinationId, int quantity, bool isSelectedForCheckout, ProductCombination? productCombination = null)
+    public static Result<CartItem> Create(Guid cartId, Guid productCombinationId, int quantity, bool isSelectedForCheckout, ProductCombination? productCombination = null)
     {
         if (quantity <= 0) return Result.Fail(DomainErrors.CartItem.InvalidQuantity);
 
