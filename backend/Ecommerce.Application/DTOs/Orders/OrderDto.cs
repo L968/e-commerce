@@ -1,7 +1,6 @@
-﻿using Ecommerce.Domain.Entities.OrderEntities;
-using Ecommerce.Domain.Enums;
+﻿using Ecommerce.Domain.Enums;
 
-namespace Ecommerce.Order.API.DTOs;
+namespace Ecommerce.Application.DTOs;
 
 public record OrderDto
 {
@@ -12,6 +11,6 @@ public record OrderDto
     public decimal TotalAmount { get; set; }
     public string ShippingAddress { get; set; } = "";
 
-    public List<OrderHistory> History = new();
-    public List<OrderItem> Items = new();
+    public List<OrderHistoryDto> History = [];
+    public List<OrderItemDto> Items = [];
 }
