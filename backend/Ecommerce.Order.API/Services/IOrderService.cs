@@ -1,8 +1,10 @@
-﻿namespace Ecommerce.Order.API.Services;
+﻿using Ecommerce.Application.DTOs;
+
+namespace Ecommerce.Order.API.Services;
 
 public interface IOrderService
 {
-    Task<IEnumerable<Domain.Entities.OrderEntities.Order>> GetPendingOrdersAsync();
-    Task<IEnumerable<Domain.Entities.OrderEntities.Order>> GetUserOrders(int userId);
-    Task<Domain.Entities.OrderEntities.Order?> GetByIdAsync(Guid id);
+    Task<IEnumerable<OrderDto>> GetPendingOrdersAsync();
+    Task<IEnumerable<OrderDto>> GetUserOrders(int userId);
+    Task<OrderDto?> GetByIdAsync(Guid id);
 }

@@ -1,4 +1,5 @@
 using Ecommerce.Order.API.Context;
+using Ecommerce.Order.API.Mappings;
 using Ecommerce.Order.API.RabbitMqClient;
 using Ecommerce.Order.API.Repositories;
 using Ecommerce.Order.API.Services;
@@ -19,6 +20,8 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 var connectionString = builder.Configuration.GetConnectionString("Connection");
 var serverVersion = ServerVersion.AutoDetect(connectionString);
+
+builder.Services.AddAutoMapper(typeof(DomainToDTOMappingProfile));
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options
