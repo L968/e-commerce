@@ -1,4 +1,7 @@
+using Ecommerce.Application.DTOs;
 using Ecommerce.Application.DTOs.OrderCheckout;
+using Ecommerce.Application.DTOs.Products;
+using Ecommerce.Application.Features.Products.Queries;
 using Ecommerce.Order.API.RabbitMqClient;
 using Ecommerce.Order.API.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -29,10 +32,21 @@ public class OrderController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetUserOrders()
+    public async Task<IActionResult> Get()
     {
         var userId = int.Parse(User.FindFirstValue("id")!);
-        return Ok(await _orderService.GetUserOrders(userId));
+        return Ok(await _orderService.GetByUserIdAsync(userId));
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(Guid id)
+    {
+        var userId = int.Parse(User.FindFirstValue("id")!);
+        var order = await _orderService.GetByIdAsync(id, userId);
+
+        if (order is null) return NotFound();
+
+        return Ok(order);
     }
 
     [HttpPost]
