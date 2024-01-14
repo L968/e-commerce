@@ -1,10 +1,12 @@
 import api from '@/services/api';
 import { toast } from 'react-toastify';
+import { useRouter } from 'next/router';
 import Button from '@/components/Button';
 import Address from '@/interfaces/Address';
 import apiOrder from '@/services/apiOrder';
 import { useEffect, useState } from 'react';
 import currencyFormat from '@/utils/currencyFormat';
+import PrivateRoute from '@/components/PrivateRoute';
 import PaymentMethod from '@/interfaces/PaymentMethod';
 import { useOrderCheckout } from '@/contexts/orderCheckoutContext';
 import OrderCheckoutRequest from '@/interfaces/api/requests/OrderCheckoutRequest';
@@ -12,8 +14,14 @@ import { Main, DeliveryContainer, PaymentContainer, OrderSummary } from './style
 
 const defaultAddressId = 1;
 
-export default function Checkout() {
+function Checkout() {
+    const router = useRouter();
     const { orderCheckoutItems } = useOrderCheckout();
+
+    if (orderCheckoutItems.length === 0) {
+        router.push('/cart');
+        return;
+    }
 
     const [totalPrice, setTotalPrice] = useState<number>(0);
     const [deliveryInfo, setDeliveryInfo] = useState<Address | null>(null);
@@ -73,5 +81,13 @@ export default function Checkout() {
                 <Button onClick={handlePlaceOrder}>Place Order</Button>
             </OrderSummary>
         </Main>
+    )
+}
+
+export default function Private() {
+    return (
+        <PrivateRoute>
+            <Checkout />
+        </PrivateRoute>
     )
 }

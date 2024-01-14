@@ -1,6 +1,6 @@
-import api from "@/services/apiAuthorization";
-import { useRouter } from "next/router";
-import { createContext, ReactNode, useState, useEffect, useContext } from "react";
+import { useRouter } from 'next/router';
+import api from '@/services/apiAuthorization';
+import { createContext, ReactNode, useState, useEffect, useContext } from 'react';
 
 interface AuthContextProps {
     isAuthenticated: boolean;
