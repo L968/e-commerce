@@ -21,7 +21,13 @@ public class OrderService : IOrderService
         return _mapper.Map<OrderDto>(order);
     }
 
-    public async Task<IEnumerable<OrderDto>> GetUserOrders(int userId)
+    public async Task<OrderDto?> GetByIdAsync(Guid id, int userId)
+    {
+        var order = await _repository.GetByIdAsync(id, userId);
+        return _mapper.Map<OrderDto>(order);
+    }
+
+    public async Task<IEnumerable<OrderDto>> GetByUserIdAsync(int userId)
     {
         var orders = await _repository.GetByUserIdAsync(userId);
         return _mapper.Map<IEnumerable<OrderDto>>(orders);

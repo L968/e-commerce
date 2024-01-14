@@ -20,16 +20,27 @@ public class OrderRepository : IOrderRepository
             .ToListAsync();
     }
 
-    public async Task<Domain.Entities.OrderEntities.Order?> GetByIdAsync(Guid id)
-    {
-        return await _context.Orders.FirstOrDefaultAsync(o => o.Id == id);
-    }
-
     public async Task<IEnumerable<Domain.Entities.OrderEntities.Order>> GetByUserIdAsync(int userId)
     {
         return await _context.Orders
             .Include(o => o.Items)
             .Where(o => o.UserId == userId)
             .ToListAsync();
+    }
+
+    public async Task<Domain.Entities.OrderEntities.Order?> GetByIdAsync(Guid id)
+    {
+        return await _context.Orders
+            .Include(o => o.Items)
+            .Include(o => o.History)
+            .FirstOrDefaultAsync(o => o.Id == id);
+    }
+
+    public async Task<Domain.Entities.OrderEntities.Order?> GetByIdAsync(Guid id, int userId)
+    {
+        return await _context.Orders
+            .Include(o => o.Items)
+            .Include(o => o.History)
+            .FirstOrDefaultAsync(o => o.Id == id && o.UserId == userId);
     }
 }

@@ -55,12 +55,12 @@ builder.Services.AddAuthentication(auth =>
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
-    {
-        builder.WithOrigins("http://localhost:3000")
-        .AllowAnyMethod()
-        .AllowAnyHeader()
-        .AllowAnyOrigin();
-    }
+        {
+            builder.WithOrigins("http://localhost:3000")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowAnyOrigin();
+        }
     );
 });
 
