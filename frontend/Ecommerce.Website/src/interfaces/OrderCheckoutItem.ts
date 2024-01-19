@@ -1,4 +1,6 @@
+import ProductCombination from "./ProductCombination"
+
 export default interface OrderCheckoutItem {
-    productCombinationId: string
+    product: ProductCombination
     quantity: number
 }

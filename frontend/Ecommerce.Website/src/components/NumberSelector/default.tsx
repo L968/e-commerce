@@ -4,23 +4,22 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 
 interface NumberSelectorProps {
-    cartItemId: number
     value: number
-    setValue: (cartItemId: number, newQuantity: number) => void
+    setValue: (newQuantity: number) => void
 }
 
-export default function NumberSelector({ cartItemId, value, setValue }: NumberSelectorProps) {
+export default function NumberSelector({ value, setValue }: NumberSelectorProps) {
     function handleIncrement() {
-        setValue(cartItemId, value + 1);
+        setValue(value + 1);
     }
 
     function handleDecrement() {
-        setValue(cartItemId, Math.max(value - 1, 0));
+        setValue(Math.max(value - 1, 0));
     }
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = parseInt(event.target.value, 10) || 1;
-        setValue(cartItemId, newValue);
+        setValue(newValue);
     }
 
     return (

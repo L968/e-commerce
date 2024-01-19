@@ -45,6 +45,7 @@ export default function Login() {
                         <Form onSubmit={handleSubmit}>
                             <TextField
                                 label='Email or Phone Number'
+                                name='email'
                                 required
                                 fullWidth
                                 value={emailOrPhoneNumber}
@@ -53,6 +54,7 @@ export default function Login() {
                             <TextField
                                 label='Password'
                                 type='password'
+                                name='password'
                                 required
                                 fullWidth
                                 value={password}

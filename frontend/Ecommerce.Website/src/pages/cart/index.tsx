@@ -80,7 +80,7 @@ function Cart() {
 
     function handleAddToOrderCheckout() {
         const items: OrderCheckoutItem[] = cartItems.map(item => ({
-            productCombinationId: item.product.id,
+            product: item.product,
             quantity: item.quantity
         }));
 
