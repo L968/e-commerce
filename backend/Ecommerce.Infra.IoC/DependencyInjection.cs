@@ -75,6 +75,9 @@ public static class DependencyInjection
         services.AddFluentValidationAutoValidation();
         ValidatorOptions.Global.LanguageManager.Culture = new System.Globalization.CultureInfo("en-US");
 
+        services.AddHealthChecks()
+            .AddDbContextCheck<AppDbContext>();
+
         return services;
     }
 }
