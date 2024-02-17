@@ -76,7 +76,8 @@ public static class DependencyInjection
         ValidatorOptions.Global.LanguageManager.Culture = new System.Globalization.CultureInfo("en-US");
 
         services.AddHealthChecks()
-            .AddDbContextCheck<AppDbContext>();
+            .AddDbContextCheck<AppDbContext>()
+            .AddAzureBlobStorage(Config.AzureStorageConnectionString, containerName: Config.AzureStorageContainer);
 
         return services;
     }
