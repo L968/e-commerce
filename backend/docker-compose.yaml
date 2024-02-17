@@ -14,13 +14,25 @@ services:
       interval: 5s
       timeout: 30s
 
-  ecommerce-authorization:
-    image: ecommerce-authorization:1.0
-    container_name: ecommerce-authorization
-    networks:
-      - ecommerce-bridge
+  mysql:
+    image: mysql:8.3.0
+    container_name: mysql-database
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ecommerce
     ports:
-      - 8080:80
+      - 3306:3306
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -proot"]
+      retries: 5
+      interval: 5s
+      timeout: 30s
+
+volumes:
+  mysql-data:
 
 networks:
   ecommerce-bridge:
