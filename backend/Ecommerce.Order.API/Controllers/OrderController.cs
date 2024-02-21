@@ -1,7 +1,4 @@
-using Ecommerce.Application.DTOs;
 using Ecommerce.Application.DTOs.OrderCheckout;
-using Ecommerce.Application.DTOs.Products;
-using Ecommerce.Application.Features.Products.Queries;
 using Ecommerce.Order.API.RabbitMqClient;
 using Ecommerce.Order.API.Services;
 using Microsoft.AspNetCore.Authorization;
