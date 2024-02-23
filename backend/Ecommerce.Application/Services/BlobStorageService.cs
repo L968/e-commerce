@@ -1,4 +1,5 @@
 ﻿using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using Ecommerce.Application.Interfaces;
 using Microsoft.AspNetCore.Http;
 
@@ -49,8 +50,9 @@ public class BlobStorageService : IBlobStorageService
             throw new ArgumentException("Image path cannot be null or empty", nameof(imagePath));
         }
 
-        var blobClient = _blobContainerClient.GetBlobClient(imagePath);
-        await blobClient.DeleteIfExistsAsync();
+        var blobName = Path.GetFileName(imagePath);
+        var blobClient = _blobContainerClient.GetBlobClient(blobName);
+        await blobClient.DeleteAsync(snapshotsOption: DeleteSnapshotsOption.IncludeSnapshots);
     }
 
     public async Task RemoveImage(List<string> imagePaths)
