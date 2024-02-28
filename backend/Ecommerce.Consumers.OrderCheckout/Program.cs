@@ -28,7 +28,7 @@ channel.QueueDeclare(
     arguments: null
 );
 
-Console.WriteLine(" [*] Waiting for messages.");
+WriteLine(" [*] Waiting for messages.", ConsoleColor.Magenta);
 
 var consumer = new EventingBasicConsumer(channel);
 consumer.Received += Process;
@@ -49,7 +49,7 @@ async void Process(object? model, BasicDeliverEventArgs ea)
     {
         byte[] body = ea.Body.ToArray();
         string message = Encoding.UTF8.GetString(body);
-        Console.WriteLine($"\n [x] Received {message}");
+        WriteLine($"\n [x] Received {message}", ConsoleColor.Cyan);
 
         OrderCheckoutDto orderCheckout = JsonSerializer.Deserialize<OrderCheckoutDto>(message)!;
 
@@ -58,8 +58,8 @@ async void Process(object? model, BasicDeliverEventArgs ea)
 
         if (!validatorResult.IsValid)
         {
-            Console.WriteLine("Invalid order checkout. Errors:");
-            Console.WriteLine(string.Join(Environment.NewLine, validatorResult.Errors.Select(error => $"{error.PropertyName}: {error.ErrorMessage}")));
+            WriteLine("Invalid order checkout. Errors:", ConsoleColor.Red);
+            WriteLine(string.Join(Environment.NewLine, validatorResult.Errors.Select(error => $"{error.PropertyName}: {error.ErrorMessage}")), ConsoleColor.Red);
             return;
         }
 
@@ -125,11 +125,17 @@ async void Process(object? model, BasicDeliverEventArgs ea)
         await db.SaveChangesAsync();
 
         channel.BasicAck(ea.DeliveryTag, false);
-        Console.WriteLine("Order processed successfully");
+        WriteLine("Order processed successfully", ConsoleColor.Green);
     }
     catch (Exception ex)
     {
-        Console.WriteLine("\nException: " + ex.Message);
+        WriteLine("\nException: " + ex.Message, ConsoleColor.Red);
+
+        if (ex.InnerException is not null)
+        {
+            WriteLine("\nInnerException: " + ex.InnerException.Message, ConsoleColor.Red);
+        }
+
         Console.WriteLine(ex.StackTrace);
     }
 }
@@ -151,4 +157,11 @@ async Task<Address?> GetAddressById(int id, int userId)
 {
     using var db = new AppDbContext();
     return await db.Addresses.FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId);
+}
+
+void WriteLine(string? message, ConsoleColor color)
+{
+    Console.ForegroundColor = color;
+    Console.WriteLine(message);
+    Console.ForegroundColor = ConsoleColor.White;
 }
