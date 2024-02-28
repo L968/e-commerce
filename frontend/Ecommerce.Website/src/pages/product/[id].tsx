@@ -63,7 +63,13 @@ export default function Product() {
 
         api.post('/cart/add-item', data)
             .then(res => toast.success('Cart item added successfully'))
-            .catch(err => toast.error('Error 500'))
+            .catch(err => {
+                if (err.response.status === 401) {
+                    return router.push('/login');
+                }
+
+                toast.error('Error 500')
+            })
     }
 
     function handleSelectVariant(variantName: string, selectedOption: Option) {
