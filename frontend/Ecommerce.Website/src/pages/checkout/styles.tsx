@@ -3,10 +3,23 @@ import { Box, Typography } from '@mui/material';
 
 export const Main = styled('main')({
     display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'column',
+    padding: '32px 0 60px 0',
+    backgroundColor: '#F5F5F5',
+})
+
+export const Container = styled(Box)({
+    display: 'flex',
+    gap: '32px',
+    width: '1200px',
+})
+
+export const SectionContainer = styled(Box)({
+    display: 'flex',
     flexDirection: 'column',
     gap: '10px',
-    padding: '20px 60px',
-    backgroundColor: '#F5F5F5',
+    width: '770px',
 })
 
 export const CartContainer = styled(Box)({
@@ -65,5 +78,40 @@ export const ProductName = styled('span')({
 
 export const Price = styled('span')({
     fontSize: '20px',
-    marginLeft: 'auto',
+    marginLeft: '20px',
+})
+
+export const PriceContainer = styled(Box)({
+    width: '360px',
+    height: 'fit-content',
+    borderRadius: '6px',
+    boxShadow: '0 1px 2px rgba(0,0,0,.12)',
+    padding: '20px 24px 24px 24px',
+    backgroundColor: '#FFF',
+})
+
+export const PriceContainerTitle = styled(Box)({
+    fontSize: '16px',
+    fontWeight: 600,
+    paddingBottom: '20px',
+})
+
+export const PriceContainerContent= styled(Box)({
+    paddingTop: '20px',
+})
+
+export const PriceContainerRow = styled(Box)({
+    display: 'flex',
+    justifyContent: 'space-between',
+    fontSize: '14px',
+    marginBottom: '8px',
+})
+
+export const TotalPrice = styled(Box)({
+    display: 'flex',
+    justifyContent: 'space-between',
+    fontSize: '18px',
+    fontWeight: 600,
+    marginBottom: '24px',
+    marginTop: '30px',
 })
