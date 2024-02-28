@@ -17,7 +17,7 @@ export default function NumberSelector({ value, setValue }: NumberSelectorProps)
         setValue(Math.max(value - 1, 0));
     }
 
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
         const newValue = parseInt(event.target.value, 10) || 1;
         setValue(newValue);
     }
