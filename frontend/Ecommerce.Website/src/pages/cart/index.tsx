@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import api from '@/services/api';
 import { toast } from 'react-toastify';
-import { Divider } from '@mui/material';
+import { CircularProgress, Divider } from '@mui/material';
 import Button from '@/components/Button';
 import { useEffect, useState } from 'react';
 import CartItem from '@/interfaces/CartItem';
@@ -18,8 +18,12 @@ function Cart() {
 
     const [cancelTokenSource, setCancelTokenSource] = useState<CancelTokenSource | null>(null);
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
-    const [shipping, setShipping] = useState<number>(50);
     const [loading, setLoading] = useState<boolean>(true);
+
+    const shipping = 50;
+    const totalAmount = cartItems.reduce((total, item) => {
+        return total + item.product.discountedPrice * item.quantity;
+    }, 0);
 
     useEffect(() => {
         getCartItems();
@@ -30,18 +34,6 @@ function Cart() {
             .then(response => setCartItems(response.data))
             .catch(error => toast.error('Error 500'))
             .finally(() => setLoading(false));
-    }
-
-    function getTotalAmount(): number {
-        let totalAmount = 0;
-
-        for (const cartItem of cartItems) {
-            const { quantity, product } = cartItem;
-            const itemTotal = quantity * product.discountedPrice;
-            totalAmount += itemTotal;
-        }
-
-        return totalAmount;
     }
 
     function updateCartItemQuantity(cartItemId: number, newQuantity: number) {
@@ -91,8 +83,11 @@ function Cart() {
         <Main>
             <Container>
                 <CartList>
-                    {cartItems.length > 0
-                        ?
+                    {loading ? (
+                        <EmptyCartList>
+                            <CircularProgress />
+                        </EmptyCartList>
+                    ) : cartItems.length > 0 ? (
                         <>
                             {cartItems.map(cartItem => (
                                 <CartItemComponent
@@ -109,11 +104,11 @@ function Cart() {
                                 />
                             ))}
                         </>
-                        :
+                    ) : (
                         <EmptyCartList>
                             Build a shopping cart!
                         </EmptyCartList>
-                    }
+                    )}
                 </CartList>
 
                 <PriceContainer>
@@ -124,7 +119,7 @@ function Cart() {
                         <PriceContainerContent>
                             <PriceContainerRow>
                                 <span>Products ({cartItems.length})</span>
-                                <span>{currencyFormat(getTotalAmount())}</span>
+                                <span>{currencyFormat(totalAmount)}</span>
                             </PriceContainerRow>
                             <PriceContainerRow>
                                 <span>Shipping</span>
@@ -132,7 +127,7 @@ function Cart() {
                             </PriceContainerRow>
                             <TotalPrice>
                                 <span>Total</span>
-                                <span>{currencyFormat(getTotalAmount() + shipping)}</span>
+                                <span>{currencyFormat(totalAmount + shipping)}</span>
                             </TotalPrice>
 
                             <Link href='/checkout'>
@@ -141,7 +136,7 @@ function Cart() {
                                     variant='contained'
                                     onClick={handleAddToOrderCheckout}
                                 >
-                                    Continue purchase
+                                    Proceed to Checkout
                                 </Button>
                             </Link>
                         </PriceContainerContent>
