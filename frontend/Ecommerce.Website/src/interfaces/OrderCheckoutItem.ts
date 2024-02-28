@@ -1,4 +1,4 @@
-import ProductCombination from "./ProductCombination"
+import ProductCombination from './ProductCombination';
 
 export default interface OrderCheckoutItem {
     product: ProductCombination
