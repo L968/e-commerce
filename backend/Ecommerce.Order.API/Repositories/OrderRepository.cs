@@ -25,6 +25,7 @@ public class OrderRepository : IOrderRepository
         return await _context.Orders
             .Include(o => o.Items)
             .Where(o => o.UserId == userId)
+            .OrderByDescending(o => o.CreatedAt)
             .ToListAsync();
     }
 
