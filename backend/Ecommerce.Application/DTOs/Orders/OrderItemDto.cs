@@ -11,4 +11,6 @@ public record OrderItemDto
     public decimal ProductUnitPrice { get; set; }
     public decimal? ProductDiscount { get; set; }
     public string Description { get; set; } = "";
+
+    public decimal TotalPrice => ProductUnitPrice * Quantity;
 }
