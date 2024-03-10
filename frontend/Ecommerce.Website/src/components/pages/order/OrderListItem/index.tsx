@@ -1,10 +1,11 @@
 import moment from 'moment';
+import Link from 'next/link';
 import Image from 'next/image';
-import Button from '../Button';
+import Button from '@mui/material/Button';
 import { OrderItem } from '@/interfaces/OrderItem';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
+import getOrderStatusColor from '@/utils/getOrderStatusColor';
 import { Container, CreatedAt, Header, Order, Item, Info, Status, ProductName, Description, UserActions } from './styles';
-import Link from 'next/link';
 
 interface OrderListItemProps {
     orderId: string
@@ -35,7 +36,7 @@ export default function OrderListItem({ orderId, status, createdAt, items }: Ord
                         />
 
                         <Info>
-                            <Status>{status}</Status>
+                            <Status color={getOrderStatusColor(status)}>{status}</Status>
                             <ProductName>{item.productName}</ProductName>
                             <Description>{item.description || 'description'}</Description>
                         </Info>

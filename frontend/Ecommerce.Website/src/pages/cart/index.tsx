@@ -1,17 +1,19 @@
 import Link from 'next/link';
 import api from '@/services/api';
 import { toast } from 'react-toastify';
-import { CircularProgress, Divider } from '@mui/material';
-import Button from '@/components/Button';
 import { useEffect, useState } from 'react';
 import CartItem from '@/interfaces/CartItem';
 import axios, { CancelTokenSource } from 'axios';
+import getTotalAmount from '@/utils/getTotalAmount';
 import currencyFormat from '@/utils/currencyFormat';
 import PrivateRoute from '@/components/PrivateRoute';
 import CartItemComponent from '@/components/CartItem';
+import { Button, CircularProgress, Divider } from '@mui/material';
 import OrderCheckoutItem from '@/interfaces/OrderCheckoutItem';
 import { useOrderCheckout } from '@/contexts/orderCheckoutContext';
 import { CartList, Container, EmptyCartList, EmptySummary, Main, PriceContainer, PriceContainerContent, PriceContainerRow, PriceContainerTitle, TotalPrice } from './styles';
+
+const shipping = 20;
 
 function Cart() {
     const { setOrderCheckout } = useOrderCheckout();
@@ -20,10 +22,7 @@ function Cart() {
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
 
-    const shipping = 50;
-    const totalAmount = cartItems.reduce((total, item) => {
-        return total + item.product.discountedPrice * item.quantity;
-    }, 0);
+    const totalAmount = getTotalAmount(cartItems);
 
     useEffect(() => {
         getCartItems();

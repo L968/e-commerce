@@ -3,23 +3,23 @@ import Image from 'next/image';
 import api from '@/services/api';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
-import Button from '@/components/Button';
+import { LoadingButton } from '@mui/lab';
 import Address from '@/interfaces/Address';
 import apiOrder from '@/services/apiOrder';
 import { useEffect, useState } from 'react';
-import { Avatar, Divider } from '@mui/material';
 import currencyFormat from '@/utils/currencyFormat';
+import getTotalAmount from '@/utils/getTotalAmount';
 import PrivateRoute from '@/components/PrivateRoute';
 import PaymentMethod from '@/interfaces/PaymentMethod';
+import { Avatar, Button, Divider } from '@mui/material';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
-import LoadingButton from '@/components/Button/LoadingButton';
 import NumberSelector from '@/components/NumberSelector/default';
 import { useOrderCheckout } from '@/contexts/orderCheckoutContext';
 import OrderCheckoutRequest from '@/interfaces/api/requests/OrderCheckoutRequest';
 import { Container, ItemContainer, ItemInfo, Main, Price, PriceContainer, PriceContainerContent, PriceContainerRow, PriceContainerTitle, ProductName, Section, SectionContainer, SectionContent, SectionTitle, TotalPrice } from './styles';
 
 const defaultAddressId = 1;
-const shipping = 50;
+const shipping = 20;
 
 function Checkout() {
     const router = useRouter();
@@ -34,9 +34,7 @@ function Checkout() {
     const [paymentMethod] = useState<PaymentMethod>(PaymentMethod.Pix);
     const [loading, setLoading] = useState<boolean>(false);
 
-    const totalAmount = orderCheckoutItems.reduce((total, item) => {
-        return total + item.product.discountedPrice * item.quantity;
-    }, 0);
+    const totalAmount = getTotalAmount(orderCheckoutItems);
 
     useEffect(() => {
         api.get<Address>(`/address/${defaultAddressId}`)
@@ -122,7 +120,7 @@ function Checkout() {
                                     </ProductName>
 
                                     <div>
-                                        <Button onClick={() => handleDeleteItem(item.product.id)}>Delete</Button>
+                                        <Button onClick={() => handleDeleteItem(item.product.id)} variant='contained'>Delete</Button>
                                     </div>
                                 </ItemInfo>
 
@@ -154,7 +152,14 @@ function Checkout() {
                             <span>{currencyFormat(totalAmount + shipping)}</span>
                         </TotalPrice>
 
-                        <LoadingButton onClick={handlePlaceOrder} loading={loading} fullWidth>Place Order</LoadingButton>
+                        <LoadingButton
+                            onClick={handlePlaceOrder}
+                            loading={loading}
+                            fullWidth
+                            variant='contained'
+                        >
+                            Place Order
+                        </LoadingButton>
                     </PriceContainerContent>
                 </PriceContainer>
             </Container>

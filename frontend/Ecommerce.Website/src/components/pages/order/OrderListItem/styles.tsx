@@ -22,7 +22,7 @@ export const CreatedAt = styled(Typography)({
 export const Order = styled(Box)({
     display: 'flex',
     justifyContent: 'space-between',
-    padding: '24px',
+    padding: '20px',
     borderBottom: '1px solid rgba(0, 0, 0, .1)',
 })
 
@@ -38,12 +38,13 @@ export const Info = styled(Box)({
     marginLeft: '24px',
 })
 
-export const Status = styled('p')({
-    fontSize: '14px',
+export const Status = styled('p')<{ color: string }>(({ color }) => ({
+    fontSize: '13px',
     fontWeight: 600,
     margin: 0,
     marginBottom: '6px',
-})
+    color: color
+}))
 
 export const ProductName = styled('p')({
     margin: 0,

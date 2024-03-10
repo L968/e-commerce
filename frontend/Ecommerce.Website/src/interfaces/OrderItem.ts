@@ -6,6 +6,7 @@ export interface OrderItem {
     productSku: string
     productImagePath: string
     productUnitPrice: number
-    productDiscount: any,
+    productDiscount: any
     description: string
+    totalPrice: number
 }

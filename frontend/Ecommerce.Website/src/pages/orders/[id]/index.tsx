@@ -1,16 +1,20 @@
+import moment from 'moment';
 import api from '@/services/apiOrder';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { CircularProgress } from '@mui/material';
+import currencyFormat from '@/utils/currencyFormat';
+import getTotalAmount from '@/utils/getTotalAmount';
 import PrivateRoute from '@/components/PrivateRoute';
-import { CircularProgress, Divider } from '@mui/material';
-import { Aside, AsideContent, Container, Main, Product, ProductsContainer } from './styles';
-import { notFound } from 'next/navigation';
-import Image from 'next/image';
+import PaymentMethod from '@/interfaces/PaymentMethod';
+import { OrderListResponse } from '@/interfaces/api/responses/OrderListResponse';
+import { FeedbackContainer, HelpContainer, ProductContainer } from '@/components/pages/order/OrderContainers';
+import { Aside, AsideContent, Container, Divider, Main, PurchaseSummaryRow, PurchaseSummarySubtitle, PurchaseSummaryTitle } from './styles';
 
 function Order() {
     const router = useRouter();
-    const [order, setOrder] = useState();
+    const [order, setOrder] = useState<OrderListResponse | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
@@ -18,7 +22,7 @@ function Order() {
 
         if (!orderId) return;
 
-        api.get('/order/' + orderId)
+        api.get<OrderListResponse>('/order/' + orderId)
             .then(response => setOrder(response.data))
             .catch(error => toast.error('Error 500'))
             .finally(() => setLoading(false));
@@ -29,38 +33,42 @@ function Order() {
     }
 
     if (!order) {
-        notFound();
+        router.push('/404');
+        return;
     }
 
     return (
         <Main>
             <Container>
-                <ProductsContainer>
-                </ProductsContainer>
+                <ProductContainer items={order.items} />
+                <FeedbackContainer status={order.status} totalAmount={order.totalAmount} paymentMethod={PaymentMethod.Pix} />
+                <HelpContainer status={order.status} />
             </Container>
             <Aside>
                 <AsideContent>
-                    <span>Detalhe da compra</span>
-                    <span>6 de dezembro de 2023 | # 2000007076226444</span>
+                    <PurchaseSummaryTitle variant='h2'>Purchase Summary</PurchaseSummaryTitle>
+                    <PurchaseSummarySubtitle>{moment(order.createdAt).format('MMMM D, YYYY')} | # {order.id}</PurchaseSummarySubtitle>
+
                     <Divider />
-                    <div>
-                        <span>Produto</span>
-                        <span>R$ 2589</span>
-                    </div>
-                    <div>
-                        <span>Produto</span>
-                        <span>R$ 2589</span>
-                    </div>
+
+                    {order.items.map(item =>
+                        <PurchaseSummaryRow>
+                            <span>{item.productName} ({item.quantity})</span>
+                            <span>{currencyFormat(item.totalPrice)}</span>
+                        </PurchaseSummaryRow>
+                    )}
+
+                    <PurchaseSummaryRow>
+                        <span>Shipping</span>
+                        <span>{currencyFormat(order.shippingCost)}</span>
+                    </PurchaseSummaryRow>
+
                     <Divider />
-                    <div>
-                        <span>Pagamento</span>
-                        <span>R$ 2589</span>
-                    </div>
-                    <Divider />
-                    <div>
+
+                    <PurchaseSummaryRow>
                         <span>Total</span>
-                        <span>R$ 2589</span>
-                    </div>
+                        <span>{currencyFormat(order.totalAmount)}</span>
+                    </PurchaseSummaryRow>
                 </AsideContent>
             </Aside>
         </Main>
