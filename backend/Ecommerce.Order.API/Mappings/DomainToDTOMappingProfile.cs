@@ -13,6 +13,7 @@ public class DomainToDTOMappingProfile : Profile
             .ForMember(dto => dto.Status, opt => opt.MapFrom(o => StringManipulationUtils.AddSpacesBeforeUpperCase(o.Status.ToString())));
 
         CreateMap<Domain.Entities.OrderEntities.OrderItem, OrderItemDto>();
-        CreateMap<Domain.Entities.OrderEntities.OrderHistory, OrderHistoryDto>();
+        CreateMap<Domain.Entities.OrderEntities.OrderHistory, OrderHistoryDto>()
+            .ForMember(dto => dto.Status, opt => opt.MapFrom(o => StringManipulationUtils.AddSpacesBeforeUpperCase(o.Status.ToString())));
     }
 }
