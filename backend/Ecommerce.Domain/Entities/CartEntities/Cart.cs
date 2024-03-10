@@ -41,4 +41,9 @@ public sealed class Cart
             _cartItems.Remove(cartItem);
         }
     }
+
+    public void ClearItems()
+    {
+        _cartItems.Clear();
+    }
 }

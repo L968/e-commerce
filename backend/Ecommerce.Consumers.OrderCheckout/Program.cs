@@ -67,7 +67,7 @@ async void Process(object? model, BasicDeliverEventArgs ea)
 
         if (address == null)
         {
-            Console.WriteLine($"Address with id {orderCheckout.ShippingAddressId} not found");
+            WriteLine($"Address with id {orderCheckout.ShippingAddressId} not found", ConsoleColor.Red);
             return;
         }
 
@@ -79,7 +79,7 @@ async void Process(object? model, BasicDeliverEventArgs ea)
 
             if (productCombination is null)
             {
-                Console.WriteLine($"Product combination {cartItemDto.ProductCombinationId} not found");
+                WriteLine($"Product combination {cartItemDto.ProductCombinationId} not found", ConsoleColor.Red);
                 return;
             }
 
@@ -93,7 +93,7 @@ async void Process(object? model, BasicDeliverEventArgs ea)
 
             if (createResult.IsFailed)
             {
-                Console.WriteLine("Invalid cart item. Errors:");
+                WriteLine("Invalid cart item. Errors:", ConsoleColor.Red);
                 Console.WriteLine(string.Join(Environment.NewLine, createResult.Errors));
                 return;
             }
@@ -119,6 +119,8 @@ async void Process(object? model, BasicDeliverEventArgs ea)
             Console.WriteLine(result.Errors[0]);
             return;
         }
+
+        ClearCart(orderCheckout.UserId);
 
         using var db = new AppDbContext();
         await db.Orders.AddAsync(result.Value);
@@ -157,6 +159,20 @@ async Task<Address?> GetAddressById(int id, int userId)
 {
     using var db = new AppDbContext();
     return await db.Addresses.FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId);
+}
+
+async void ClearCart(int userId)
+{
+    using var db = new AppDbContext();
+    var cart = await db.Carts
+        .Include(c => c.CartItems)
+        .FirstOrDefaultAsync(c => c.UserId == userId);
+
+    if (cart is null)
+        throw new Exception($"Cart not found for user {userId}");
+
+    cart.ClearItems();
+    await db.SaveChangesAsync();
 }
 
 void WriteLine(string? message, ConsoleColor color)

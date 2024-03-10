@@ -1,5 +1,6 @@
 ﻿using Ecommerce.Consumers.OrderCheckout.Utils;
 using Ecommerce.Domain.Entities;
+using Ecommerce.Domain.Entities.CartEntities;
 using Ecommerce.Domain.Entities.OrderEntities;
 using Ecommerce.Domain.Entities.ProductEntities;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ namespace Ecommerce.Consumers.OrderCheckout.Context;
 
 public class AppDbContext : DbContext
 {
+    public virtual DbSet<Cart> Carts { get; set; }
     public virtual DbSet<Order> Orders { get; set; }
     public virtual DbSet<Address> Addresses { get; set; }
     public virtual DbSet<ProductCombination> ProductCombinations { get; set; }
