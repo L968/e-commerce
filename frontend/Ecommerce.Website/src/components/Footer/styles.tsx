@@ -1,6 +1,6 @@
 import { styled } from '@mui/system';
-import Button from '../Button';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
 export const FooterHeader = styled(Box)({

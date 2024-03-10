@@ -1,7 +1,7 @@
 import { styled } from '@mui/system';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import Button from '@/components/Button';
 
 export const Header = styled(Box)({
     display: 'flex',

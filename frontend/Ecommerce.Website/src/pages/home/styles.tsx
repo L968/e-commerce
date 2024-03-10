@@ -1,6 +1,6 @@
 import { styled } from '@mui/system';
 import Box from "@mui/material/Box";
-import Button from "@/components/Button";
+import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
 export const Banner = styled(Box)({

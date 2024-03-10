@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from "react";
 import TextField from "@mui/material/TextField";
 import api from '../../services/apiAuthorization';
-import LoadingButton from "@/components/Button/LoadingButton";
+import LoadingButton from "@mui/lab/LoadingButton";
 import { Container, LoginArea, LoginFrame, Form, Main, BrandName } from "./styles";
 
 export default function Register() {

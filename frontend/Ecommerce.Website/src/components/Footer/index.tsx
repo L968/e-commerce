@@ -49,7 +49,7 @@ export default function Footer() {
                     <Grid item xs={4}>
                         <FooterCategory>Get in Touch</FooterCategory>
                         <EmailTextField label='Your Email' />
-                        <SubscribeButton>Subscribe</SubscribeButton>
+                        <SubscribeButton variant='contained'>Subscribe</SubscribeButton>
                     </Grid>
                 </Grid>
             </FooterContent>

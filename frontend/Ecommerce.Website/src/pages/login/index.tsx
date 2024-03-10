@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { useState, FormEvent } from 'react';
 import TextField from '@mui/material/TextField';
 import { useAuth } from '@/contexts/authContext';
-import LoadingButton from '@/components/Button/LoadingButton';
+import LoadingButton from '@mui/lab/LoadingButton';
 import { Container, LoginArea, LoginFrame, Form, Main, Paragraph, WelcomeLabel, BrandName } from './styles';
 
 export default function Login() {

@@ -109,7 +109,7 @@ export default function Product() {
         const validCombinations = product?.combinations.filter((combination) => {
             const selectedVariantEntries = Object.entries(selectedVariants).filter(
                 ([key]) => key !== variant.name
-            ); // Excluir a variante atual das seleções
+            );
 
             const combinationParts = combination.combinationString.split('/');
             return selectedVariantEntries.every(([key, selectedVariant]) => {
@@ -207,7 +207,7 @@ export default function Product() {
                     </VariantsContainer>
 
                     <ButtonsContainer>
-                        <SelectOptionButton>Select Options</SelectOptionButton>
+                        <SelectOptionButton variant='contained'>Select Options</SelectOptionButton>
                         <FavoriteBorderOutlinedIcon />
                         <IconButton onClick={handleAddToCart}>
                             <ShoppingCartOutlinedIcon />
