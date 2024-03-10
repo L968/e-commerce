@@ -1,7 +1,7 @@
-import Image from "next/image";
-import ColorOption from "../ColorOption";
+import Image from 'next/image';
+import { Rating } from '@mui/material';
 import { useRouter } from 'next/navigation'
-import { CardInfo, Colors, Container, Prices, ProductCategory, ProductDiscountedPrice, ProductName, ProductOriginalPrice } from "./styles";
+import { CardInfo, Container, Prices, ProductCategory, ProductDiscountedPrice, ProductName, ProductOriginalPrice, RatingContainer, RatingSpan } from './styles';
 
 export interface ProductCardProps {
     id: string;
@@ -16,7 +16,7 @@ export interface ProductCardProps {
 
 export default function ProductCard(product: ProductCardProps) {
     const router = useRouter();
-    const { id, imageSource, name, categoryName, originalPrice, discountedPrice } = product;
+    const { id, imageSource, name, categoryName, originalPrice, discountedPrice, rating, reviewsCount } = product;
 
     return (
         <Container onClick={() => router.push(`/product/${id}`)}>
@@ -36,12 +36,11 @@ export default function ProductCard(product: ProductCardProps) {
                     }
                     <ProductDiscountedPrice>${discountedPrice}</ProductDiscountedPrice>
                 </Prices>
-                <Colors>
-                    <ColorOption width={17} height={16} color='#23A6F0' />
-                    <ColorOption width={17} height={16} color='#23856D' />
-                    <ColorOption width={17} height={16} color='#E77C40' />
-                    <ColorOption width={17} height={16} color='#23856D' />
-                </Colors>
+
+                <RatingContainer>
+                    <Rating name='read-only' precision={0.5} value={rating} readOnly />
+                    <RatingSpan>{reviewsCount}</RatingSpan>
+                </RatingContainer>
             </CardInfo>
         </Container>
     )

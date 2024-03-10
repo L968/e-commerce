@@ -55,7 +55,12 @@ export const ProductDiscountedPrice = styled(Typography)({
     fontWeight: 600
 }) as typeof Typography
 
-export const Colors = styled(Box)({
+export const RatingContainer = styled(Box)({
     display: 'flex',
-    gap: '6.077px',
+    alignItems: 'center',
+    gap: '10px',
+})
+
+export const RatingSpan = styled('span')({
+    fontSize: '12px'
 })
