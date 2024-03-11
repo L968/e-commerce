@@ -123,6 +123,14 @@ export default function Navbar() {
                         open={Boolean(anchorEl)}
                         onClose={handleClose}
                         MenuListProps={{ onMouseLeave: handleClose }}
+                        anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'left',
+                        }}
+                        transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'left',
+                        }}
                     >
                         <MenuItem onClick={handleClose}>
                             <Link href='/orders'>Orders</Link>
