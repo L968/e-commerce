@@ -21,7 +21,7 @@ export const CardInfo = styled(Box)({
     alignItems: 'center',
     alignSelf: 'stretch',
     flexDirection: 'column',
-    gap: '10px',
+    gap: '5px',
     padding: '25px 25px 35px 25px',
 })
 
