@@ -29,10 +29,10 @@ public class OrderController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> Get([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
     {
         var userId = int.Parse(User.FindFirstValue("id")!);
-        return Ok(await _orderService.GetByUserIdAsync(userId));
+        return Ok(await _orderService.GetByUserIdAsync(userId, page, pageSize));
     }
 
     [HttpGet("{id}")]

@@ -20,21 +20,21 @@ public class OrderRepository : IOrderRepository
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<Domain.Entities.OrderEntities.Order>> GetByUserIdAsync(int userId)
+    public async Task<(IEnumerable<Domain.Entities.OrderEntities.Order>, long TotalItems)> GetByUserIdAsync(int userId, int page, int pageSize)
     {
-        return await _context.Orders
+        var query = _context.Orders
             .Include(o => o.Items)
             .Where(o => o.UserId == userId)
-            .OrderByDescending(o => o.CreatedAt)
-            .ToListAsync();
-    }
+            .OrderByDescending(o => o.CreatedAt);
 
-    public async Task<Domain.Entities.OrderEntities.Order?> GetByIdAsync(Guid id)
-    {
-        return await _context.Orders
-            .Include(o => o.Items)
-            .Include(o => o.History)
-            .FirstOrDefaultAsync(o => o.Id == id);
+        var totalItems = await query.CountAsync();
+
+        var orders = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return (orders, totalItems);
     }
 
     public async Task<Domain.Entities.OrderEntities.Order?> GetByIdAsync(Guid id, int userId)
