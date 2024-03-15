@@ -8,7 +8,7 @@ import WindowIcon from '@mui/icons-material/Window';
 import FormControl from '@mui/material/FormControl';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 
-import api from '../../services/api';
+import api from '@/services/api';
 import Pagination from '@/components/Pagination';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import ProductCard from '@/components/ProductCard';

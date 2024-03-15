@@ -1,9 +1,9 @@
+import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@mui/material';
 import currencyFormat from '@/utils/currencyFormat';
 import NumberSelector from '@/components/NumberSelector';
 import { CartInfo, Container, Price, ProductName } from './styles';
-import Link from 'next/link';
 
 interface CartItemProps {
     cartItemId: number
@@ -32,7 +32,7 @@ export default function CartItem({ cartItemId, productId, imageSource, productNa
                 </ProductName>
 
                 <div>
-                    <Button onClick={() => onDelete(cartItemId)}>Delete</Button>
+                    <Button onClick={() => onDelete(cartItemId)} variant='contained'>Delete</Button>
                 </div>
             </CartInfo>
 

@@ -57,7 +57,7 @@ export default function Navbar() {
                     </Grid>
                 </DarkToolbar>
 
-                <LightToolbar>
+                <LightToolbar variant='dense'>
                     <BrandName variant="h6" component="div">
                         Brand Name
                     </BrandName>

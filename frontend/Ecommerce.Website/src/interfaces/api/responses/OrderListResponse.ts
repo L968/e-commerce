@@ -3,6 +3,14 @@ import { OrderItem } from '@/interfaces/OrderItem';
 import OrderStatus from '@/interfaces/OrderStatus';
 
 export interface OrderListResponse {
+    page: number
+    itemsPerPage: number
+    totalItems: number
+    totalPages: number
+    items: OrderResponse[]
+}
+
+interface OrderResponse {
     id: string
     status: OrderStatus
     shippingCost: number
