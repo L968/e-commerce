@@ -43,9 +43,10 @@ export const CarouselIndicators = styled(Box)({
     gap: '19px',
 })
 
-export const CarouselImageContainer = styled(Box)(({ isSelected }: { isSelected: boolean }) => ({
+export const CarouselImageContainer = styled('div')(
+    ({ isSelected }: { isSelected: boolean }) => ({
     cursor: 'pointer',
-    border: isSelected ? '2px solid #3483FA' : '2px solid rgba(0,0,0,.25)',
+    border: isSelected ? '2px solid #3483FA' : '2px solid rgba(0, 0, 0, .25)',
     borderRadius: '4px',
     height: '80px'
 }))

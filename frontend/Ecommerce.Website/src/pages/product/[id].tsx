@@ -147,12 +147,15 @@ export default function Product() {
             <ProductContainer>
                 <ImageContainer>
                     <SelectedImageContainer>
-                        <Image
-                            alt='product-image'
-                            src={selectedImage}
-                            layout='fill'
-                            objectFit='contain'
-                        />
+                        {selectedImage &&
+                            <Image
+                                alt='product-image'
+                                src={selectedImage}
+                                fill
+                                priority
+                                style={{ objectFit: 'contain' }}
+                            />
+                        }
                     </SelectedImageContainer>
 
                     <CarouselIndicators>
@@ -165,6 +168,7 @@ export default function Product() {
                                 <Image
                                     src={image}
                                     alt='product-thumb'
+                                    priority
                                     width={80}
                                     height={80}
                                 />
