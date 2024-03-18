@@ -1,9 +1,9 @@
 import { styled } from '@mui/system';
 import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
+import Grid, { GridProps } from '@mui/material/Grid';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import MuiAvatar from '@mui/material/Avatar';
+import Typography from '@mui/material/Typography';
 
 export const StyledNavbar = styled(Box)({
     flexGrow: 1,
@@ -15,13 +15,6 @@ export const DarkToolbar = styled(Toolbar)({
     fontSize: '12px',
 })
 
-export const CenteredGrid = styled(Grid)({
-    display: 'flex',
-    alignItems: 'center',
-    '& > *': {
-        margin: '0 6px'
-    }
-})
 
 export const LightToolbar = styled(Toolbar)({
     backgroundColor: '#FFF',

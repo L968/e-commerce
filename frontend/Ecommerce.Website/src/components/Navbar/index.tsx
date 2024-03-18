@@ -1,6 +1,6 @@
 import Link from '../Link';
 import { useState } from 'react';
-import { AppBar, Menu, MenuItem, Grid } from '@mui/material';
+import { AppBar, Menu, MenuItem, Grid, GridProps } from '@mui/material';
 
 import PhoneIcon from '@mui/icons-material/Phone';
 import EmailIcon from '@mui/icons-material/Email';
@@ -15,7 +15,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 import { useAuth } from '@/contexts/authContext';
-import { BrandName, NavMenuItems, StyledNavbar, DarkToolbar, LightToolbar, CenteredGrid, NavMenuItem, UserActions, UserAction, Avatar } from './styles';
+import { BrandName, NavMenuItems, StyledNavbar, DarkToolbar, LightToolbar, NavMenuItem, UserActions, UserAction, Avatar } from './styles';
 
 export default function Navbar() {
     const user = {};
@@ -173,4 +173,22 @@ function stringAvatar(name: string) {
         },
         children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
     };
+}
+
+function CenteredGrid(props: GridProps) {
+    const { children, ...rest } = props;
+    return (
+        <Grid
+            {...rest}
+            sx={{
+                display: 'flex',
+                alignItems: 'center',
+                '& > *': {
+                    margin: '0 6px',
+                },
+            }}
+        >
+            {children}
+        </Grid>
+    );
 }
