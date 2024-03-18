@@ -12,10 +12,12 @@ public sealed class Product : AuditableEntity
     public Guid ProductCategoryId { get; private set; }
 
     public ProductCategory? Category { get; private set; }
-    public List<ProductCombination> Combinations { get; private set; } = new();
-    public List<ProductVariantOption> VariantOptions { get; private set; } = new();
-    public List<ProductDiscount> Discounts { get; private set; } = new();
-    public List<ProductReview> Reviews { get; private set; } = new();
+    public List<ProductCombination> Combinations { get; private set; } = [];
+    public List<ProductDiscount> Discounts { get; private set; } = [];
+    public List<ProductReview> Reviews { get; private set; } = [];
+
+    private readonly List<ProductVariantOption> _variantOptions = [];
+    public IReadOnlyCollection<ProductVariantOption> VariantOptions => _variantOptions;
 
     private Product() { }
 
@@ -78,5 +80,11 @@ public sealed class Product : AuditableEntity
         float averageRating = (float) totalRating / Reviews.Count;
 
         return averageRating;
+    }
+
+    public void AddVariantOptions(IEnumerable<VariantOption> variantOptions)
+    {
+        var productVariantOptions = variantOptions.Select(vo => new ProductVariantOption(Id, vo.Id));
+        _variantOptions.AddRange(productVariantOptions);
     }
 }
