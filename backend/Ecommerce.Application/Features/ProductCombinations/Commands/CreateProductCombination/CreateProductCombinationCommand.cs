@@ -65,6 +65,8 @@ public class CreateProductCombinationCommandHandler : IRequestHandler<CreateProd
             variantOptions.Add(variantOption);
         }
 
+        product.AddVariantOptions(variantOptions);
+
         List<string> imagePaths = await _blobStorageService.UploadImage(request.Images);
 
         string combinationString = ProductCombination.GenerateCombinationString(variantOptions);
