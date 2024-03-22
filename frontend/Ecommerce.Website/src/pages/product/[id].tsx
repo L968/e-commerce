@@ -1,26 +1,29 @@
-import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
+import { useRouter } from 'next/router';
 import Rating from '@mui/material/Rating';
+import { useEffect, useState } from 'react';
 import Divider from '@mui/material/Divider';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import { CircularProgress, IconButton } from '@mui/material';
+import { CircularProgress, Grid, IconButton } from '@mui/material';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 
 import api from '@/services/api';
+import Review from '@/components/Review';
 import Option from '@/interfaces/Option';
 import Variant from '@/interfaces/Variant';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import currencyFormat from '@/utils/currencyFormat';
 import VariantSelector from '@/components/VariantSelector';
 import ProductCombination from '@/interfaces/ProductCombination';
+import { useOrderCheckout } from '@/contexts/orderCheckoutContext';
 import ProductResponse from '@/interfaces/api/responses/ProductResponse';
-import { Availability, AvailabilityValue, ButtonsContainer, CarouselImageContainer, CarouselIndicators, Header, ImageContainer, ProductContainer, ProductDescription, ProductInfo, ProductName, ProductPrice, RatingContainer, RatingSpan, SelectOptionButton, SelectedImageContainer, VariantsContainer } from './styles';
+import { Availability, AvailabilityValue, ButtonsContainer, CarouselImageContainer, CarouselIndicators, Header, ImageContainer, ProductContainer, ProductDescription, ProductInfo, ProductName, ProductPrice, RatingContainer, RatingSpan, BuyNowButton, SelectedImageContainer, VariantsContainer, ReviewsSection, ReviewsTitle, RatingAverage, ReviewsRating, ReviewsRatingInfo } from './styles';
 
 export default function Product() {
     const router = useRouter();
+    const { setOrderCheckout } = useOrderCheckout();
+
     const [product, setProduct] = useState<ProductResponse>();
     const [loading, setLoading] = useState<boolean>(true);
     const [selectedImage, setSelectedImage] = useState<string>('');
@@ -36,6 +39,7 @@ export default function Product() {
             .then(response => {
                 setProduct(response.data);
                 setSelectedProductCombination(response.data.combinations[0]);
+                setSelectedVariantsByCombinationString(response.data.variants, response.data.combinations[0].combinationString);
             })
             .catch(error => toast.error('Error 500'))
             .finally(() => setLoading(false));
@@ -72,13 +76,37 @@ export default function Product() {
             })
     }
 
-    function handleSelectVariant(variantName: string, selectedOption: Option) {
+    function handleSelectVariant(variantName: string, selectedOption: Option): void {
         setSelectedVariants((prevVariants) => {
             return {
                 ...prevVariants,
                 [variantName]: selectedOption
             };
         });
+    }
+
+    function handleBuyNow(): void {
+        if (!selectedProductCombination) return;
+
+        setOrderCheckout([{
+            product: selectedProductCombination,
+            quantity: 1
+        }]);
+
+        router.push('/checkout');
+    }
+
+    function setSelectedVariantsByCombinationString(variants: Variant[], combinationString: string): void {
+        variants.forEach(variant => {
+            const selectedOption = variant.options.find(option => {
+                return combinationString.includes(`${variant.name}=${option.name}`);
+            });
+            if (selectedOption) {
+                selectedVariants[variant.name] = selectedOption;
+            }
+        });
+
+        setSelectedVariants(selectedVariants);
     }
 
     function findMatchingCombination(): ProductCombination | null {
@@ -129,7 +157,7 @@ export default function Product() {
         return validOptions;
     }
 
-    if (loading) {
+    if (loading || !product) {
         return <CircularProgress />
     }
 
@@ -178,11 +206,11 @@ export default function Product() {
                 </ImageContainer>
 
                 <ProductInfo>
-                    <ProductName variant='h4'>{product?.name}</ProductName>
+                    <ProductName variant='h4'>{product.name}</ProductName>
 
                     <RatingContainer>
-                        <Rating name='read-only' precision={0.5} value={product?.rating} readOnly />
-                        <RatingSpan>{product?.reviews.length} Reviews</RatingSpan>
+                        <Rating precision={0.5} value={product.rating} readOnly />
+                        <RatingSpan>{product.reviews.length} {product.reviews.length === 1 ? 'Review' : 'Reviews'}</RatingSpan>
                     </RatingContainer>
 
                     <ProductPrice variant='h3'>{currencyFormat(selectedProductCombination?.discountedPrice)}</ProductPrice>
@@ -193,13 +221,13 @@ export default function Product() {
                     </Availability>
 
                     <ProductDescription>
-                        {product?.description}
+                        {product.description}
                     </ProductDescription>
 
                     <Divider />
 
                     <VariantsContainer>
-                        {product?.variants.map((variant) => (
+                        {product.variants.map((variant) => (
                             <VariantSelector
                                 key={variant.id}
                                 variant={variant}
@@ -211,15 +239,40 @@ export default function Product() {
                     </VariantsContainer>
 
                     <ButtonsContainer>
-                        <SelectOptionButton variant='contained'>Select Options</SelectOptionButton>
+                        <BuyNowButton variant='contained' onClick={handleBuyNow}>BUY NOW</BuyNowButton>
                         <FavoriteBorderOutlinedIcon />
                         <IconButton onClick={handleAddToCart}>
                             <ShoppingCartOutlinedIcon />
                         </IconButton>
-                        <VisibilityIcon />
                     </ButtonsContainer>
                 </ProductInfo>
             </ProductContainer>
+
+            {product.reviews.length > 0 && (
+                <ReviewsSection>
+                    <ReviewsTitle variant='h3'>Reviews</ReviewsTitle>
+
+                    <ReviewsRating>
+                        <RatingAverage>{product.rating.toFixed(1)}</RatingAverage>
+                        <ReviewsRatingInfo>
+                            <Rating precision={0.5} value={product.rating} readOnly />
+                            <RatingSpan>{product.reviews.length} {product.reviews.length === 1 ? 'Review' : 'Reviews'}</RatingSpan>
+                        </ReviewsRatingInfo>
+                    </ReviewsRating>
+
+                    <Grid container spacing={5}>
+                        {product.reviews.map(review =>
+                            <Grid item xs={12} md={6}>
+                                <Review
+                                    rating={review.rating}
+                                    description={review.description}
+                                    createdAt={review.createdAt}
+                                />
+                            </Grid>
+                        )}
+                    </Grid>
+                </ReviewsSection>
+            )}
         </main>
     )
 }

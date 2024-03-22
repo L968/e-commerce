@@ -1,3 +1,4 @@
+import Review from '../../Review';
 import Variant from '../../Variant';
 import ProductCombination from '../../ProductCombination';
 
@@ -8,5 +9,5 @@ export default interface ProductResponse {
     rating: number
     combinations: ProductCombination[]
     variants: Variant[]
-    reviews: any[]
+    reviews: Review[]
 }
