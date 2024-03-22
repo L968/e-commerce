@@ -1,6 +1,5 @@
 import { styled } from '@mui/system';
 import Box from '@mui/material/Box';
-import Grid, { GridProps } from '@mui/material/Grid';
 import Toolbar from '@mui/material/Toolbar';
 import MuiAvatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';

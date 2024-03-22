@@ -1,17 +1,21 @@
 import { styled } from '@mui/system';
+import Box from '@mui/material/Box';
 import MuiChip from '@mui/material/Chip';
-import { Box } from '@mui/material';
 
 interface ChipProps {
-    isValidOption: boolean;
+    isValidOption: boolean
+    isSelected: boolean
 }
 
-export const Chip = styled(MuiChip)<ChipProps>(({ isValidOption }) => ({
+export const Chip = styled(MuiChip, {
+    shouldForwardProp: prop => prop !== 'isValidOption' && prop !== 'isSelected'
+})<ChipProps>(({ isValidOption, isSelected }) => ({
+    backgroundColor: '#FFF',
     cursor: 'pointer',
-    borderWidth: 1,
-    borderColor: '#757575',
+    borderWidth: isSelected ? 2 : 1,
+    borderColor: isSelected ? '#3483FA' : '#757575',
     borderStyle: isValidOption ? 'solid' : 'dashed',
-    color: isValidOption ? 'inehrit' : '#757575',
+    color: isValidOption ? 'inherit' : '#757575',
 }))
 
 export const TitleContainer = styled(Box)({

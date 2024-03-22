@@ -26,9 +26,9 @@ export default function VariantSelector({ variant, selectedVariant, onSelectVari
                             key={option.id}
                             label={option.name}
                             onClick={() => isValidOption && onSelectVariant(option)}
-                            color={isSelected ? 'primary' : 'default'}
                             variant={isSelected ? 'filled' : 'outlined'}
                             isValidOption={isValidOption}
+                            isSelected={isSelected}
                         />
                     );
                 })}
