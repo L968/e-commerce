@@ -9,7 +9,7 @@ public record GetProductDto
     public string Description { get; set; } = "";
     public float Rating { get; set; }
 
-    public List<GetProductCombinationDto> Combinations { get; set; } = new();
-    public List<GetVariantDto> Variants { get; set; } = new();
-    public List<GetProductReviewDto> Reviews { get; set; } = new();
+    public List<GetProductCombinationDto> Combinations { get; set; } = [];
+    public List<GetVariantDto> Variants { get; set; } = [];
+    public List<GetProductReviewDto> Reviews { get; set; } = [];
 }
