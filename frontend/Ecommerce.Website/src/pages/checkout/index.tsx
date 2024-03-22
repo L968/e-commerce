@@ -27,7 +27,7 @@ function Checkout() {
     const { orderCheckoutItems, setOrderCheckout } = useOrderCheckout();
 
     if (orderCheckoutItems.length === 0) {
-        router.push('/cart');
+        router.back();
         return;
     }
 
