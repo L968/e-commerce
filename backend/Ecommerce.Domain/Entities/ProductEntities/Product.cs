@@ -84,7 +84,13 @@ public sealed class Product : AuditableEntity
 
     public void AddVariantOptions(IEnumerable<VariantOption> variantOptions)
     {
-        var productVariantOptions = variantOptions.Select(vo => new ProductVariantOption(Id, vo.Id));
-        _variantOptions.AddRange(productVariantOptions);
+        foreach (var vo in variantOptions)
+        {
+            if (!_variantOptions.Any(existingVo => existingVo.Id == vo.Id))
+            {
+                var productVariantOption = new ProductVariantOption(Id, vo.Id);
+                _variantOptions.Add(productVariantOption);
+            }
+        }
     }
 }
