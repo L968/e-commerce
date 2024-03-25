@@ -1,6 +1,6 @@
+import Stack from '@mui/material/Stack';
 import Option from '@/interfaces/Option';
 import Variant from '@/interfaces/Variant';
-import { Stack } from '@mui/material';
 import { Chip, Title, TitleContainer } from './styles';
 
 interface VariantSelectorProps {
@@ -25,7 +25,7 @@ export default function VariantSelector({ variant, selectedVariant, onSelectVari
                         <Chip
                             key={option.id}
                             label={option.name}
-                            onClick={() => isValidOption && onSelectVariant(option)}
+                            onClick={() => onSelectVariant(option)}
                             variant={isSelected ? 'filled' : 'outlined'}
                             isValidOption={isValidOption}
                             isSelected={isSelected}

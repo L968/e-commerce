@@ -29,6 +29,7 @@ export default function Product() {
     const [selectedImage, setSelectedImage] = useState<string>('');
     const [selectedProductCombination, setSelectedProductCombination] = useState<ProductCombination>();
     const [selectedVariants, setSelectedVariants] = useState<{ [key: string]: Option }>({});
+    const [lastOptionSelected, setLastOptionSelected] = useState<Option>();
 
     useEffect(() => {
         const productId = router.query.id;
@@ -77,6 +78,8 @@ export default function Product() {
     }
 
     function handleSelectVariant(variantName: string, selectedOption: Option): void {
+        setLastOptionSelected(selectedOption);
+
         setSelectedVariants((prevVariants) => {
             return {
                 ...prevVariants,
@@ -130,6 +133,27 @@ export default function Product() {
             }
         }
 
+        const firstMatchingCombination = findFirstMatchingCombination(lastOptionSelected!.name);
+
+        if (firstMatchingCombination) {
+            setSelectedVariantsByCombinationString(product.variants, firstMatchingCombination.combinationString);
+            return firstMatchingCombination;
+        }
+
+        return null;
+    }
+
+    function findFirstMatchingCombination(optionName: string): ProductCombination | null {
+        if (!product) return null;
+
+        for (const combination of product.combinations) {
+            const combinationParts = combination.combinationString.split('/');
+
+            if (combinationParts.some(part => part.endsWith(`=${optionName}`))) {
+                return combination;
+            }
+        }
+
         return null;
     }
 
@@ -172,6 +196,7 @@ export default function Product() {
                     ]}
                 />
             </Header>
+
             <ProductContainer>
                 <ImageContainer>
                     <SelectedImageContainer>
@@ -232,7 +257,7 @@ export default function Product() {
                                 key={variant.id}
                                 variant={variant}
                                 selectedVariant={selectedVariants[variant.name]}
-                                onSelectVariant={(selectedOption) => handleSelectVariant(variant.name, selectedOption)}
+                                onSelectVariant={selectedOption => handleSelectVariant(variant.name, selectedOption)}
                                 validOptions={getValidOptions(variant)}
                             />
                         ))}
@@ -261,8 +286,8 @@ export default function Product() {
                     </ReviewsRating>
 
                     <Grid container spacing={5}>
-                        {product.reviews.map(review =>
-                            <Grid item xs={12} md={6}>
+                        {product.reviews.map((review, i) =>
+                            <Grid key={i} item xs={12} md={6}>
                                 <Review
                                     rating={review.rating}
                                     description={review.description}
