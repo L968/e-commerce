@@ -19,7 +19,7 @@ public record UpdateProductCombinationCommand : IRequest<Result>
 
     [DataType(DataType.Upload)]
     [MaxFileSize(5 * 1024 * 1024)]
-    [AllowedExtensions(new string[] { ".jpg", ".png" })]
+    [AllowedExtensions([".jpg", ".png", ".webp"])]
     public IFormFileCollection Images { get; set; } = null!;
 }
 
