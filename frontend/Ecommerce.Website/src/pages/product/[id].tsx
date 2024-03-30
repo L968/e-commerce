@@ -100,16 +100,20 @@ export default function Product() {
     }
 
     function setSelectedVariantsByCombinationString(variants: Variant[], combinationString: string): void {
+        const newSelectedVariants: { [key: string]: Option } = {};
+
         variants.forEach(variant => {
-            const selectedOption = variant.options.find(option => {
-                return combinationString.includes(`${variant.name}=${option.name}`);
-            });
-            if (selectedOption) {
-                selectedVariants[variant.name] = selectedOption;
+            const matches = combinationString.match(new RegExp(`${variant.name}=([^/]+)`));
+            if (matches && matches.length > 1) {
+                const optionName = matches[1];
+                const selectedOption = variant.options.find(option => option.name === optionName);
+                if (selectedOption) {
+                    newSelectedVariants[variant.name] = selectedOption;
+                }
             }
         });
 
-        setSelectedVariants(selectedVariants);
+        setSelectedVariants(newSelectedVariants);
     }
 
     function findMatchingCombination(): ProductCombination | null {
