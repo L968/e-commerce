@@ -83,6 +83,12 @@ async void Process(object? model, BasicDeliverEventArgs ea)
                 return;
             }
 
+            if (!productCombination.Product.Active)
+            {
+                WriteLine($"Product combination {productCombination.Product.Id} is inactive", ConsoleColor.Red);
+                return;
+            }
+
             var createResult = CartItem.Create(
                 cartId: Guid.Empty,
                 productCombinationId: cartItemDto.ProductCombinationId,
