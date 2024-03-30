@@ -18,7 +18,7 @@ public sealed class ProductCombination : AuditableEntity
     public Product Product { get; private set; }
     public ProductInventory Inventory { get; private set; }
 
-    private readonly List<ProductImage> _images = new();
+    private readonly List<ProductImage> _images = [];
     public IReadOnlyCollection<ProductImage> Images => _images;
 
     private ProductCombination() { }
@@ -33,7 +33,7 @@ public sealed class ProductCombination : AuditableEntity
         float width,
         float height,
         float weight,
-        List<string> imagePaths
+        IEnumerable<string> imagePaths
     )
     {
         Id = Guid.NewGuid();
@@ -51,7 +51,8 @@ public sealed class ProductCombination : AuditableEntity
 
     public static Result<ProductCombination> Create(
         Guid productId,
-        string combinationString,
+        IEnumerable<ProductCombination> existingCombinations,
+        IEnumerable<VariantOption> variantOptions,
         string sku,
         decimal price,
         int stock,
@@ -59,15 +60,18 @@ public sealed class ProductCombination : AuditableEntity
         float width,
         float height,
         float weight,
-        List<string> imagePaths
+        IEnumerable<string> imagePaths
     )
     {
         var validationResult = ValidateDomain(price, imagePaths, length, width, height, weight);
         if (validationResult.IsFailed) return validationResult;
 
+        Result<string> combinationStringResult = GenerateCombinationString(existingCombinations, variantOptions);
+        if (combinationStringResult.IsFailed) return Result.Fail(combinationStringResult.Errors);
+
         var productCombination = new ProductCombination(
             productId,
-            combinationString,
+            combinationString: combinationStringResult.Value,
             sku,
             price,
             stock,
@@ -82,20 +86,25 @@ public sealed class ProductCombination : AuditableEntity
     }
 
     public Result Update(
-        string combinationString,
+        IEnumerable<VariantOption> variantOptions,
         string sku,
         decimal price,
         float length,
         float width,
         float height,
         float weight,
-        List<string> imagePaths
+        IEnumerable<string> imagePaths
     )
     {
-        var validationResult = ValidateDomain(price, imagePaths, length, width, height, weight);
+        Result validationResult = ValidateDomain(price, imagePaths, length, width, height, weight);
         if (validationResult.IsFailed) return validationResult;
 
-        CombinationString = combinationString;
+        var existingCombinations = Product.Combinations.Where(pc => pc.Id != Id);
+
+        Result<string> combinationStringResult = GenerateCombinationString(existingCombinations, variantOptions);
+        if (combinationStringResult.IsFailed) return Result.Fail(combinationStringResult.Errors);
+
+        CombinationString = combinationStringResult.Value;
         Sku = sku;
         Price = price;
         Length = length;
@@ -136,20 +145,29 @@ public sealed class ProductCombination : AuditableEntity
         return Math.Round(discountedPrice, 2, MidpointRounding.AwayFromZero);
     }
 
-    public static string GenerateCombinationString(List<VariantOption> variantOptions)
+    private static Result<string> GenerateCombinationString(IEnumerable<ProductCombination> existingCombinations, IEnumerable<VariantOption> variantOptions)
     {
         var combinationStrings = variantOptions.Select(vo => $"{vo.Variant!.Name}={vo.Name}");
-        return string.Join("/", combinationStrings);
+        var combinationString = string.Join("/", combinationStrings);
+
+        bool combinationAlreadyExists = existingCombinations.Any(pc => pc.CombinationString == combinationString);
+
+        if (combinationAlreadyExists)
+        {
+            return Result.Fail(DomainErrors.ProductCombination.CombinationAlreadyExists);
+        }
+
+        return Result.Ok(combinationString);
     }
 
-    private static Result ValidateDomain(decimal price, List<string> imagePaths, float length, float width, float height, float weight)
+    private static Result ValidateDomain(decimal price, IEnumerable<string> imagePaths, float length, float width, float height, float weight)
     {
         var errors = new List<Error>();
 
         if (price <= 0)
             errors.Add(DomainErrors.Product.InvalidPriceValue);
 
-        if (imagePaths.Count <= 0)
+        if (!imagePaths.Any())
             errors.Add(DomainErrors.Product.EmptyImagePathList);
 
         if (length <= 0)
@@ -164,7 +182,7 @@ public sealed class ProductCombination : AuditableEntity
         if (weight <= 0)
             errors.Add(DomainErrors.Product.InvalidWeightValue);
 
-        if (errors.Any())
+        if (errors.Count > 0)
             return Result.Fail(errors);
 
         return Result.Ok();

@@ -30,7 +30,7 @@ public class BlobStorageService : IBlobStorageService
         return blobClient.Uri.ToString();
     }
 
-    public async Task<List<string>> UploadImage(IFormFileCollection imageFiles)
+    public async Task<IEnumerable<string>> UploadImage(IFormFileCollection imageFiles)
     {
         var paths = new List<string>();
 
@@ -55,13 +55,8 @@ public class BlobStorageService : IBlobStorageService
         await blobClient.DeleteAsync(snapshotsOption: DeleteSnapshotsOption.IncludeSnapshots);
     }
 
-    public async Task RemoveImage(List<string> imagePaths)
+    public async Task RemoveImage(IEnumerable<string> imagePaths)
     {
-        if (imagePaths.Count == 0)
-        {
-            throw new ArgumentException("Image paths cannot be empty", nameof(imagePaths));
-        }
-
         foreach (var imagePath in imagePaths)
         {
             await RemoveImage(imagePath);

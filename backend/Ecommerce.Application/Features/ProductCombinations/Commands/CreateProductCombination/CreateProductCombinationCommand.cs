@@ -1,6 +1,6 @@
 ﻿using Ecommerce.Application.DTOs.Products;
 using Ecommerce.Application.Interfaces;
-using Ecommerce.Utils.Attributes;
+using Ecommerce.Application.Utils.Attributes;
 using Microsoft.AspNetCore.Http;
 
 namespace Ecommerce.Application.Features.ProductCombinations.Commands.AddProductCombination;
@@ -24,31 +24,21 @@ public record CreateProductCombinationCommand : IRequest<Result<GetProductCombin
     public IFormFileCollection Images { get; set; } = null!;
 }
 
-public class CreateProductCombinationCommandHandler : IRequestHandler<CreateProductCombinationCommand, Result<GetProductCombinationDto>>
+public class CreateProductCombinationCommandHandler(
+    IMapper mapper,
+    IUnitOfWork unitOfWork,
+    IBlobStorageService blobStorageService,
+    IProductRepository productRepository,
+    IVariantOptionRepository variantOptionRepository,
+    IProductCombinationRepository productCombinationRepository
+    ) : IRequestHandler<CreateProductCombinationCommand, Result<GetProductCombinationDto>>
 {
-    private readonly IMapper _mapper;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IBlobStorageService _blobStorageService;
-    private readonly IProductRepository _productRepository;
-    private readonly IVariantOptionRepository _variantOptionRepository;
-    private readonly IProductCombinationRepository _productCombinationRepository;
-
-    public CreateProductCombinationCommandHandler(
-        IMapper mapper,
-        IUnitOfWork unitOfWork,
-        IBlobStorageService blobStorageService,
-        IProductRepository productRepository,
-        IVariantOptionRepository variantOptionRepository,
-        IProductCombinationRepository productCombinationRepository
-       )
-    {
-        _mapper = mapper;
-        _unitOfWork = unitOfWork;
-        _blobStorageService = blobStorageService;
-        _productRepository = productRepository;
-        _variantOptionRepository = variantOptionRepository;
-        _productCombinationRepository = productCombinationRepository;
-    }
+    private readonly IMapper _mapper = mapper;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IBlobStorageService _blobStorageService = blobStorageService;
+    private readonly IProductRepository _productRepository = productRepository;
+    private readonly IVariantOptionRepository _variantOptionRepository = variantOptionRepository;
+    private readonly IProductCombinationRepository _productCombinationRepository = productCombinationRepository;
 
     public async Task<Result<GetProductCombinationDto>> Handle(CreateProductCombinationCommand request, CancellationToken cancellationToken)
     {
@@ -67,20 +57,12 @@ public class CreateProductCombinationCommandHandler : IRequestHandler<CreateProd
 
         product.AddVariantOptions(variantOptions);
 
-        List<string> imagePaths = await _blobStorageService.UploadImage(request.Images);
-
-        string combinationString = ProductCombination.GenerateCombinationString(variantOptions);
-
-        bool combinationExists = await _productCombinationRepository.CombinationStringExistsAsync(product.Id, combinationString);
-
-        if (combinationExists)
-        {
-            return Result.Fail(DomainErrors.ProductCombination.CombinationAlreadyExists);
-        }
+        IEnumerable<string> imagePaths = await _blobStorageService.UploadImage(request.Images);
 
         var createResult = ProductCombination.Create(
             productId: product.Id,
-            combinationString: combinationString,
+            existingCombinations: product.Combinations,
+            variantOptions: variantOptions,
             sku: request.Sku,
             price: request.Price,
             stock: request.Stock,

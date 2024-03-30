@@ -72,6 +72,11 @@ public sealed class Product : AuditableEntity
         return Result.Ok();
     }
 
+    /// <summary>
+    /// Calculates the average rating of the product based on its reviews.
+    /// If there are no reviews, returns 0.
+    /// </summary>
+    /// <returns>The average rating of the product.</returns>
     public float GetRating()
     {
         if (Reviews.Count == 0) return 0;
@@ -82,15 +87,51 @@ public sealed class Product : AuditableEntity
         return averageRating;
     }
 
+    /// <summary>
+    /// Adds variant options to the product if they are not already associated with it.
+    /// </summary>
+    /// <param name="variantOptions">The variant options to add.</param>
     public void AddVariantOptions(IEnumerable<VariantOption> variantOptions)
     {
         foreach (var vo in variantOptions)
         {
-            if (!_variantOptions.Any(existingVo => existingVo.Id == vo.Id))
+            bool alreadyExists = _variantOptions.Any(existingVo => existingVo.VariantOptionId == vo.Id);
+            if (alreadyExists) continue;
+
+            var productVariantOption = new ProductVariantOption(Id, vo.Id);
+            _variantOptions.Add(productVariantOption);
+        }
+    }
+
+    /// <summary>
+    /// Removes variant options associated with a specific combination from the product.<br/>
+    /// Variant options are only removed if they are not used by other combinations of the same product.
+    /// </summary>
+    /// <param name="productCombinationId">The ID of the combination to remove variants from.</param>
+    public void RemoveVariantOptionsByCombination(Guid productCombinationId)
+    {
+        List<VariantOption> variantOptions = VariantOptions.Select(pvo => pvo.VariantOption!).ToList();
+        List<VariantOption> variantOptionsToDelete = new(variantOptions);
+
+        foreach (ProductCombination combination in Combinations)
+        {
+            if (combination.Id == productCombinationId) continue;
+
+            foreach (var variantOption in variantOptions)
             {
-                var productVariantOption = new ProductVariantOption(Id, vo.Id);
-                _variantOptions.Add(productVariantOption);
+                string combinationStringFragment = $"{variantOption.Variant!.Name}={variantOption.Name}";
+
+                if (combination.CombinationString.Contains(combinationStringFragment))
+                {
+                    variantOptionsToDelete.Remove(variantOption);
+                }
             }
+        }
+
+        foreach (var variantOptionToDelete in variantOptionsToDelete)
+        {
+            ProductVariantOption? variantOption = _variantOptions.FirstOrDefault(pvo => pvo.VariantOptionId == variantOptionToDelete.Id);
+            if (variantOption != null) _variantOptions.Remove(variantOption);
         }
     }
 }

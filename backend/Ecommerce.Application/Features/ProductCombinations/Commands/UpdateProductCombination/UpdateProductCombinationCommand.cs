@@ -1,5 +1,5 @@
 ﻿using Ecommerce.Application.Interfaces;
-using Ecommerce.Utils.Attributes;
+using Ecommerce.Application.Utils.Attributes;
 using Microsoft.AspNetCore.Http;
 
 namespace Ecommerce.Application.Features.ProductCombinations.Commands.UpdateProductCombination;
@@ -23,36 +23,29 @@ public record UpdateProductCombinationCommand : IRequest<Result>
     public IFormFileCollection Images { get; set; } = null!;
 }
 
-public class UpdateProductCombinationCommandHandler : IRequestHandler<UpdateProductCombinationCommand, Result>
+public class UpdateProductCombinationCommandHandler(
+    IMapper mapper,
+    IUnitOfWork unitOfWork,
+    IBlobStorageService blobStorageService,
+    IProductRepository productRepository,
+    IVariantOptionRepository variantOptionRepository,
+    IProductCombinationRepository productCombinationRepository
+    ) : IRequestHandler<UpdateProductCombinationCommand, Result>
 {
-    private readonly IMapper _mapper;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IBlobStorageService _blobStorageService;
-    private readonly IVariantOptionRepository _variantOptionRepository;
-    private readonly IProductCombinationRepository _productCombinationRepository;
-
-    public UpdateProductCombinationCommandHandler(
-        IMapper mapper,
-        IUnitOfWork unitOfWork,
-        IBlobStorageService blobStorageService,
-        IVariantOptionRepository variantOptionRepository,
-        IProductCombinationRepository productCombinationRepository
-    )
-    {
-        _mapper = mapper;
-        _unitOfWork = unitOfWork;
-        _blobStorageService = blobStorageService;
-        _variantOptionRepository = variantOptionRepository;
-        _productCombinationRepository = productCombinationRepository;
-    }
+    private readonly IMapper _mapper = mapper;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IBlobStorageService _blobStorageService = blobStorageService;
+    private readonly IProductRepository _productRepository = productRepository;
+    private readonly IVariantOptionRepository _variantOptionRepository = variantOptionRepository;
+    private readonly IProductCombinationRepository _productCombinationRepository = productCombinationRepository;
 
     public async Task<Result> Handle(UpdateProductCombinationCommand request, CancellationToken cancellationToken)
     {
         ProductCombination? productCombination = await _productCombinationRepository.GetByIdAsync(request.Id);
         if (productCombination is null) return Result.Fail(DomainErrors.NotFound(nameof(ProductCombination), request.Id));
 
-        await _blobStorageService.RemoveImage(productCombination.Images.Select(i => i.ImagePath).ToList());
-        List<string> imagePaths = await _blobStorageService.UploadImage(request.Images);
+        Product? product = await _productRepository.GetByIdAsync(productCombination.ProductId);
+        if (product is null) return Result.Fail(DomainErrors.NotFound(nameof(Product), productCombination.ProductId));
 
         var variantOptions = new List<VariantOption>();
 
@@ -64,17 +57,14 @@ public class UpdateProductCombinationCommandHandler : IRequestHandler<UpdateProd
             variantOptions.Add(variantOption);
         }
 
-        string combinationString = ProductCombination.GenerateCombinationString(variantOptions);
+        product.RemoveVariantOptionsByCombination(productCombination.Id);
+        product.AddVariantOptions(variantOptions);
 
-        bool combinationExists = await _productCombinationRepository.CombinationStringExistsAsync(productCombination.ProductId, combinationString);
-
-        if (productCombination.CombinationString != combinationString && combinationExists)
-        {
-            return Result.Fail(DomainErrors.ProductCombination.CombinationAlreadyExists);
-        }
+        await _blobStorageService.RemoveImage(productCombination.Images.Select(i => i.ImagePath));
+        IEnumerable<string> imagePaths = await _blobStorageService.UploadImage(request.Images);
 
         var updateResult = productCombination.Update(
-            combinationString: combinationString,
+            variantOptions: variantOptions,
             sku: request.Sku,
             price: request.Price,
             length: request.Length,
