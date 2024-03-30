@@ -127,31 +127,28 @@ export default function Variants() {
             return;
         }
 
-        const results = await Promise.allSettled(combinationArray.map(async ([key, combination]) => {
-            const formData = getFormData(combination);
-            const combinationForm = variantForms.find(form => form.key === key)!;
-            await sendCombination(formData, combinationForm.crudType);
-        }));
+        try {
+            for (const [key, combination] of combinationArray) {
+                const formData = getFormData(combination);
+                const combinationForm = variantForms.find(form => form.key === key)!;
+                await sendCombination(formData, combinationForm.crudType);
+            }
 
-        if (!results.some(result => result.status === 'rejected')) {
-            toast.success('Product saved succesfully');
+            toast.success('Product saved successfully');
             router.push('/products');
+        } catch (error) {
+            console.error('Error during combination submission:', error);
+            toast.error('Error 500');
         }
     }
 
     async function sendCombination(formData: FormData, crudType: CrudType): Promise<void> {
-        try {
-            if (crudType === 'Create') {
-                formData.append('productId', productId);
-                await api.post('/productCombination', formData);
-            } else if (crudType === 'Update') {
-                const productCombinationId = formData.get('id');
-                await api.put(`/productCombination/${productCombinationId}`, formData);
-            }
-        } catch (error) {
-            console.error('Error during combination submission:', error);
-            toast.error('Error 500');
-            throw error;
+        if (crudType === 'Create') {
+            formData.append('productId', productId);
+            await api.post('/productCombination', formData);
+        } else if (crudType === 'Update') {
+            const productCombinationId = formData.get('id');
+            await api.put(`/productCombination/${productCombinationId}`, formData);
         }
     }
 
