@@ -5,10 +5,10 @@ import { Container, Header } from './styles';
 import Dropzone from '@/components/Dropzone';
 import CloseIcon from '@mui/icons-material/Close';
 import { useProductContext } from '../../ProductContext';
+import DeleteConfirmationDialog from './DeleteConfirmationDialog';
 import { Combination } from '@/interfaces/api/responses/GetProductAdminResponse';
 import { Divider, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import GetProductCategoryVariantsResponse, { VariantOption } from '@/interfaces/api/responses/GetProductCategoryVariantsResponse';
-import DeleteConfirmationDialog from './DeleteConfirmationDialog';
 
 interface VariantFormProps {
     formKey: string
@@ -67,27 +67,28 @@ export default function VariantForm({ formKey, defaultData, onDataChange, onRemo
         }));
     }
 
-    async function setDefaultData() {
-        if (defaultData) {
-            const files: File[] = [];
+    async function setDefaultData(): Promise<void> {
+        if (!defaultData) return;
+        if (variants.length === 0) return;
 
-            for (const image of defaultData.images) {
-                files.push(await createFile(image))
-            }
+        const files: File[] = [];
 
-            setCombinationData({
-                id: defaultData.id,
-                sku: defaultData.sku,
-                price: defaultData.price.toString(),
-                stock: defaultData.stock.toString(),
-                images: files,
-                variants: parseCombinationString(defaultData.combinationString, variants),
-                length: defaultData.length.toString(),
-                width: defaultData.width.toString(),
-                height: defaultData.height.toString(),
-                weight: defaultData.weight.toString()
-            })
+        for (const image of defaultData.images) {
+            files.push(await createFile(image))
         }
+
+        setCombinationData({
+            id: defaultData.id,
+            sku: defaultData.sku,
+            price: defaultData.price.toString(),
+            stock: defaultData.stock.toString(),
+            images: files,
+            variants: parseCombinationString(defaultData.combinationString, variants),
+            length: defaultData.length.toString(),
+            width: defaultData.width.toString(),
+            height: defaultData.height.toString(),
+            weight: defaultData.weight.toString()
+        })
     }
 
     function setFiles(files: File[]) {
@@ -121,11 +122,11 @@ export default function VariantForm({ formKey, defaultData, onDataChange, onRemo
 
     function handleConfirmDelete(): void {
         api.delete(`/productCombination/${combinationData.id}`)
-        .then(response => {
-            toast.success('Variant deleted successfully');
-            onRemove(formKey);
-        })
-        .catch(error => toast.error('Error 500'));
+            .then(response => {
+                toast.success('Variant deleted successfully');
+                onRemove(formKey);
+            })
+            .catch(error => toast.error('Error 500'));
     }
 
     function parseCombinationString(combinationString: string, variants: GetProductCategoryVariantsResponse[]): { [key: string]: VariantOption } {
@@ -149,11 +150,13 @@ export default function VariantForm({ formKey, defaultData, onDataChange, onRemo
     }
 
     async function createFile(url: string): Promise<File> {
+        const extension = url.split('.').pop();
         const response = await fetch(url);
         const data = await response.blob();
         const metadata = { type: 'image/*' };
+        const fileName = `test.${extension}`;
 
-        return new File([data], "test.jpg", metadata);
+        return new File([data], fileName, metadata);
     }
 
     function getTitleText(): string {
