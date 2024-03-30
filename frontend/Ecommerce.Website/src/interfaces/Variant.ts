@@ -1,7 +1,7 @@
 import Option from './Option';
 
 export default interface Variant {
-    id: number
+    id: string
     name: string
     options: Option[]
 }
