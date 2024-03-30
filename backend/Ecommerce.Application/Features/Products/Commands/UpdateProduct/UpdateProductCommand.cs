@@ -12,18 +12,15 @@ public record UpdateProductCommand : IRequest<Result>
     public Guid ProductCategoryId { get; set; }
 }
 
-public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, Result>
+public class UpdateProductCommandHandler(
+    IUnitOfWork unitOfWork, 
+    IProductRepository productRepository, 
+    IProductCategoryRepository productCategoryRepository
+    ) : IRequestHandler<UpdateProductCommand, Result>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IProductRepository _productRepository;
-    private readonly IProductCategoryRepository _productCategoryRepository;
-
-    public UpdateProductCommandHandler(IUnitOfWork unitOfWork, IProductRepository productRepository, IProductCategoryRepository productCategoryRepository)
-    {
-        _unitOfWork = unitOfWork;
-        _productRepository = productRepository;
-        _productCategoryRepository = productCategoryRepository;
-    }
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IProductRepository _productRepository = productRepository;
+    private readonly IProductCategoryRepository _productCategoryRepository = productCategoryRepository;
 
     public async Task<Result> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
     {

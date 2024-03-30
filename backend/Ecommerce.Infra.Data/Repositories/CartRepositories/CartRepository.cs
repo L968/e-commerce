@@ -1,13 +1,8 @@
 ﻿namespace Ecommerce.Infra.Data.Repositories.CartRepositories;
 
-public class CartRepository : ICartRepository
+public class CartRepository(AppDbContext context) : ICartRepository
 {
-    private readonly AppDbContext _context;
-
-    public CartRepository(AppDbContext context)
-    {
-        _context = context;
-    }
+    private readonly AppDbContext _context = context;
 
     public async Task<Cart?> GetByUserIdAsync(int userId)
     {

@@ -8,18 +8,15 @@ public record UpdateCartItemQuantityCommand : IRequest<Result>
     public int Quantity { get; set; }
 }
 
-public class UpdateCartItemQuantityCommandHandler : IRequestHandler<UpdateCartItemQuantityCommand, Result>
+public class UpdateCartItemQuantityCommandHandler(
+    IUnitOfWork unitOfWork,
+    ICartRepository cartRepository, 
+    ICurrentUserService currentUserService
+    ) : IRequestHandler<UpdateCartItemQuantityCommand, Result>
 {
-    private readonly ICartRepository _cartRepository;
-    private readonly ICurrentUserService _currentUserService;
-    private readonly IUnitOfWork _unitOfWork;
-
-    public UpdateCartItemQuantityCommandHandler(ICartRepository cartRepository, ICurrentUserService currentUserService, IUnitOfWork unitOfWork)
-    {
-        _cartRepository = cartRepository;
-        _currentUserService = currentUserService;
-        _unitOfWork = unitOfWork;
-    }
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICartRepository _cartRepository = cartRepository;
+    private readonly ICurrentUserService _currentUserService = currentUserService;
 
     public async Task<Result> Handle(UpdateCartItemQuantityCommand request, CancellationToken cancellationToken)
     {

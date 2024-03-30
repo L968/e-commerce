@@ -5,18 +5,15 @@ namespace Ecommerce.Application.Features.Carts.Queries;
 [Authorize]
 public record GetCartByUserIdQuery() : IRequest<IEnumerable<GetCartItemDto>?>;
 
-public class GetCartByUserIdQueryHandler : IRequestHandler<GetCartByUserIdQuery, IEnumerable<GetCartItemDto>?>
+public class GetCartByUserIdQueryHandler(
+    IMapper mapper, 
+    ICartRepository cartRepository, 
+    ICurrentUserService currentUserService
+    ) : IRequestHandler<GetCartByUserIdQuery, IEnumerable<GetCartItemDto>?>
 {
-    private readonly IMapper _mapper;
-    private readonly ICartRepository _cartRepository;
-    private readonly ICurrentUserService _currentUserService;
-
-    public GetCartByUserIdQueryHandler(IMapper mapper, ICartRepository cartRepository, ICurrentUserService currentUserService)
-    {
-        _mapper = mapper;
-        _cartRepository = cartRepository;
-        _currentUserService = currentUserService;
-    }
+    private readonly IMapper _mapper = mapper;
+    private readonly ICartRepository _cartRepository = cartRepository;
+    private readonly ICurrentUserService _currentUserService = currentUserService;
 
     public async Task<IEnumerable<GetCartItemDto>?> Handle(GetCartByUserIdQuery request, CancellationToken cancellationToken)
     {

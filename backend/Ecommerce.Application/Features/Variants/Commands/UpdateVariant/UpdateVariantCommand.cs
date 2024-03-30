@@ -9,16 +9,13 @@ public record UpdateVariantCommand : IRequest<Result>
     public IEnumerable<string> Options { get; set; } = null!;
 }
 
-public class UpdateVariantCommandHandler : IRequestHandler<UpdateVariantCommand, Result>
+public class UpdateVariantCommandHandler(
+    IUnitOfWork unitOfWork, 
+    IVariantRepository variantRepository
+    ) : IRequestHandler<UpdateVariantCommand, Result>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IVariantRepository _variantRepository;
-
-    public UpdateVariantCommandHandler(IUnitOfWork unitOfWork, IVariantRepository variantRepository)
-    {
-        _unitOfWork = unitOfWork;
-        _variantRepository = variantRepository;
-    }
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IVariantRepository _variantRepository = variantRepository;
 
     public async Task<Result> Handle(UpdateVariantCommand request, CancellationToken cancellationToken)
     {

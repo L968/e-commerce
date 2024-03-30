@@ -8,14 +8,9 @@ namespace Ecommerce.API.Controllers;
 [ApiController]
 [Route("[controller]")]
 [Authorize(Roles = "admin")]
-public class ProductCombinationController : ControllerBase
+public class ProductCombinationController(IMediator mediator) : ControllerBase
 {
-    private readonly IMediator _mediator;
-
-    public ProductCombinationController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    private readonly IMediator _mediator = mediator;
 
     [HttpPost]
     public async Task<IActionResult> Create([FromForm] CreateProductCombinationCommand command)

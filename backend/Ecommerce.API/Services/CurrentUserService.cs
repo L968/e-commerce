@@ -3,16 +3,11 @@ using System.Security.Claims;
 
 namespace Ecommerce.API.Services;
 
-public class CurrentUserService : ICurrentUserService
+public class CurrentUserService(IHttpContextAccessor httpContextAccessor) : ICurrentUserService
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     public int UserId => GetUserId();
-
-    public CurrentUserService(IHttpContextAccessor httpContextAccessor)
-    {
-        _httpContextAccessor = httpContextAccessor;
-    }
 
     private int GetUserId()
     {

@@ -1,13 +1,8 @@
 ﻿namespace Ecommerce.Infra.Data.Repositories.VariantRepositories;
 
-public class ProductCategoryVariantRepository : IProductCategoryVariantRepository
+public class ProductCategoryVariantRepository(AppDbContext context) : IProductCategoryVariantRepository
 {
-    private readonly AppDbContext _context;
-
-    public ProductCategoryVariantRepository(AppDbContext context)
-    {
-        _context = context;
-    }
+    private readonly AppDbContext _context = context;
 
     public async Task<IEnumerable<ProductCategoryVariant>> GetByProductCategoryIdAsync(Guid id)
     {

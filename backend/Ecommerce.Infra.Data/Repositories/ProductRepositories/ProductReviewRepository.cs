@@ -1,8 +1,5 @@
 ﻿namespace Ecommerce.Infra.Data.Repositories.ProductRepositories;
 
-public class ProductReviewRepository : BaseRepository<ProductReview>, IProductReviewRepository
+public class ProductReviewRepository(AppDbContext context) : BaseRepository<ProductReview>(context), IProductReviewRepository
 {
-    public ProductReviewRepository(AppDbContext context) : base(context)
-    {
-    }
 }

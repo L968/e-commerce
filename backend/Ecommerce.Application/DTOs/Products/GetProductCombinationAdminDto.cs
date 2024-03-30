@@ -12,5 +12,5 @@ public record GetProductCombinationAdminDto
     public float Height { get; set; }
     public float Weight { get; set; }
 
-    public List<string> Images { get; set; } = new();
+    public List<string> Images { get; set; } = [];
 }

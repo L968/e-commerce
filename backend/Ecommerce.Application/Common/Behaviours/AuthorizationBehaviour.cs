@@ -2,14 +2,9 @@
 
 namespace Ecommerce.Application.Common.Behaviours;
 
-public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
+public class AuthorizationBehaviour<TRequest, TResponse>(ICurrentUserService currentUserService) : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
 {
-    private readonly ICurrentUserService _currentUserService;
-
-    public AuthorizationBehaviour(ICurrentUserService currentUserService)
-    {
-        _currentUserService = currentUserService;
-    }
+    private readonly ICurrentUserService _currentUserService = currentUserService;
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {

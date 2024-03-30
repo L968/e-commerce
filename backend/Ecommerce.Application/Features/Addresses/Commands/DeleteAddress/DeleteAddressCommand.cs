@@ -3,18 +3,15 @@
 [Authorize]
 public record DeleteAddressCommand(int Id) : IRequest<Result>;
 
-public class DeleteAddressCommandHandler : IRequestHandler<DeleteAddressCommand, Result>
+public class DeleteAddressCommandHandler(
+    IUnitOfWork unitOfWork,
+    IAddressRepository addressRepository, 
+    ICurrentUserService currentUserService
+    ) : IRequestHandler<DeleteAddressCommand, Result>
 {
-    private readonly IAddressRepository _addressRepository;
-    private readonly ICurrentUserService _currentUserService;
-    private readonly IUnitOfWork _unitOfWork;
-
-    public DeleteAddressCommandHandler(IAddressRepository addressRepository, ICurrentUserService currentUserService, IUnitOfWork unitOfWork)
-    {
-        _addressRepository = addressRepository;
-        _currentUserService = currentUserService;
-        _unitOfWork = unitOfWork;
-    }
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IAddressRepository _addressRepository = addressRepository;
+    private readonly ICurrentUserService _currentUserService = currentUserService;
 
     public async Task<Result> Handle(DeleteAddressCommand request, CancellationToken cancellationToken)
     {

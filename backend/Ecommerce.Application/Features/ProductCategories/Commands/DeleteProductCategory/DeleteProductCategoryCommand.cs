@@ -3,16 +3,13 @@
 [Authorize]
 public record DeleteProductCategoryCommand(Guid Guid) : IRequest<Result>;
 
-public class DeleteProductCategoryCommandHandler : IRequestHandler<DeleteProductCategoryCommand, Result>
+public class DeleteProductCategoryCommandHandler(
+    IUnitOfWork unitOfWork, 
+    IProductCategoryRepository productCategoryRepository
+    ) : IRequestHandler<DeleteProductCategoryCommand, Result>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IProductCategoryRepository _productCategoryRepository;
-
-    public DeleteProductCategoryCommandHandler(IUnitOfWork unitOfWork, IProductCategoryRepository productCategoryRepository)
-    {
-        _unitOfWork = unitOfWork;
-        _productCategoryRepository = productCategoryRepository;
-    }
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IProductCategoryRepository _productCategoryRepository = productCategoryRepository;
 
     public async Task<Result> Handle(DeleteProductCategoryCommand request, CancellationToken cancellationToken)
     {

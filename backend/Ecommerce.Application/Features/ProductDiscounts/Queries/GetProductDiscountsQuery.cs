@@ -5,16 +5,13 @@ namespace Ecommerce.Application.Features.ProductDiscounts.Queries;
 [Authorize]
 public record GetProductDiscountsQuery() : IRequest<IEnumerable<GetProductDiscountDto>>;
 
-public class GetProductDiscountsQueryHandler : IRequestHandler<GetProductDiscountsQuery, IEnumerable<GetProductDiscountDto>>
+public class GetProductDiscountsQueryHandler(
+    IMapper mapper, 
+    IProductDiscountRepository productDiscountRepository
+    ) : IRequestHandler<GetProductDiscountsQuery, IEnumerable<GetProductDiscountDto>>
 {
-    private readonly IMapper _mapper;
-    private readonly IProductDiscountRepository _productDiscountRepository;
-
-    public GetProductDiscountsQueryHandler(IMapper mapper, IProductDiscountRepository productDiscountRepository)
-    {
-        _mapper = mapper;
-        _productDiscountRepository = productDiscountRepository;
-    }
+    private readonly IMapper _mapper = mapper;
+    private readonly IProductDiscountRepository _productDiscountRepository = productDiscountRepository;
 
     public async Task<IEnumerable<GetProductDiscountDto>> Handle(GetProductDiscountsQuery request, CancellationToken cancellationToken)
     {

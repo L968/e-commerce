@@ -13,5 +13,5 @@ public record GetProductListDto
     public float Rating { get; set; }
     public int ReviewsCount { get; set; }
 
-    public List<GetVariantDto> Variants { get; set; } = new();
+    public List<GetVariantDto> Variants { get; set; } = [];
 }

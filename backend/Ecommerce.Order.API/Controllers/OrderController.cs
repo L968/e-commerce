@@ -10,16 +10,10 @@ namespace Ecommerce.Order.API.Controllers;
 [ApiController]
 [Route("[controller]")]
 [Authorize(Roles = "regular")]
-public class OrderController : ControllerBase
+public class OrderController(IOrderService orderService, IRabbitMqClient publisher) : ControllerBase
 {
-    private readonly IOrderService _orderService;
-    private readonly IRabbitMqClient _publisher;
-
-    public OrderController(IOrderService orderService, IRabbitMqClient publisher)
-    {
-        _orderService = orderService;
-        _publisher = publisher;
-    }
+    private readonly IOrderService _orderService = orderService;
+    private readonly IRabbitMqClient _publisher = publisher;
 
     [HttpGet("pending")]
     [Authorize(Roles = "admin")]

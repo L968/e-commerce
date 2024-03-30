@@ -7,19 +7,13 @@ public record UpdateProductCategoryCommand : IRequest<Result>
     public Guid Id { get; set; }
     public string Name { get; set; } = "";
     public string? Description { get; set; }
-    public IEnumerable<Guid> VariantIds { get; set; }
+    public List<Guid> VariantIds { get; set; } = [];
 }
 
-public class UpdateProductCategoryCommandHandler : IRequestHandler<UpdateProductCategoryCommand, Result>
+public class UpdateProductCategoryCommandHandler(IUnitOfWork unitOfWork, IProductCategoryRepository productCategoryRepository) : IRequestHandler<UpdateProductCategoryCommand, Result>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IProductCategoryRepository _productCategoryRepository;
-
-    public UpdateProductCategoryCommandHandler(IUnitOfWork unitOfWork, IProductCategoryRepository productCategoryRepository)
-    {
-        _unitOfWork = unitOfWork;
-        _productCategoryRepository = productCategoryRepository;
-    }
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IProductCategoryRepository _productCategoryRepository = productCategoryRepository;
 
     public async Task<Result> Handle(UpdateProductCategoryCommand request, CancellationToken cancellationToken)
     {

@@ -7,21 +7,18 @@ public record CreateProductCategoryCommand : IRequest<Result<GetProductCategoryD
 {
     public string Name { get; set; } = "";
     public string? Description { get; set; }
-    public List<Guid> VariantIds { get; set; } = null!;
+    public List<Guid> VariantIds { get; set; } = [];
 }
 
-public class CreateProductCategoryCommandHandler : IRequestHandler<CreateProductCategoryCommand, Result<GetProductCategoryDto>>
+public class CreateProductCategoryCommandHandler(
+    IMapper mapper, 
+    IUnitOfWork unitOfWork,
+    IProductCategoryRepository productCategoryRepository
+    ) : IRequestHandler<CreateProductCategoryCommand, Result<GetProductCategoryDto>>
 {
-    private readonly IMapper _mapper;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IProductCategoryRepository _productCategoryRepository;
-
-    public CreateProductCategoryCommandHandler(IMapper mapper, IUnitOfWork unitOfWork, IProductCategoryRepository productCategoryRepository)
-    {
-        _mapper = mapper;
-        _unitOfWork = unitOfWork;
-        _productCategoryRepository = productCategoryRepository;
-    }
+    private readonly IMapper _mapper = mapper;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IProductCategoryRepository _productCategoryRepository = productCategoryRepository;
 
     public async Task<Result<GetProductCategoryDto>> Handle(CreateProductCategoryCommand request, CancellationToken cancellationToken)
     {

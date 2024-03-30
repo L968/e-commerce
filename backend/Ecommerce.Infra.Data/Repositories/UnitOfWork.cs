@@ -3,14 +3,9 @@ using Ecommerce.Domain.Repositories;
 
 namespace Ecommerce.Infra.Data.Repositories;
 
-public sealed class UnitOfWork : IUnitOfWork
+public sealed class UnitOfWork(AppDbContext dbContext) : IUnitOfWork
 {
-    private readonly AppDbContext _dbContext;
-
-    public UnitOfWork(AppDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
+    private readonly AppDbContext _dbContext = dbContext;
 
     public Task SaveChangesAsync(CancellationToken cancellationToken = default)
     {

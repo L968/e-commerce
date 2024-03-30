@@ -7,20 +7,17 @@ public record CreateCartItemCommand : IRequest<Result>
     public Guid ProductCombinationId { get; set; }
 }
 
-public class CreateCartItemCommandHandler : IRequestHandler<CreateCartItemCommand, Result>
+public class CreateCartItemCommandHandler(
+    IUnitOfWork unitOfWork, 
+    ICurrentUserService currentUserService, 
+    ICartRepository cartRepository, 
+    IProductCombinationRepository productCombinationRepository
+    ) : IRequestHandler<CreateCartItemCommand, Result>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly ICurrentUserService _currentUserService;
-    private readonly ICartRepository _cartRepository;
-    private readonly IProductCombinationRepository _productCombinationRepository;
-
-    public CreateCartItemCommandHandler(IUnitOfWork unitOfWork, ICurrentUserService currentUserService, ICartRepository cartRepository, IProductCombinationRepository productCombinationRepository)
-    {
-        _unitOfWork = unitOfWork;
-        _currentUserService = currentUserService;
-        _cartRepository = cartRepository;
-        _productCombinationRepository = productCombinationRepository;
-    }
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICurrentUserService _currentUserService = currentUserService;
+    private readonly ICartRepository _cartRepository = cartRepository;
+    private readonly IProductCombinationRepository _productCombinationRepository = productCombinationRepository;
 
     public async Task<Result> Handle(CreateCartItemCommand request, CancellationToken cancellationToken)
     {

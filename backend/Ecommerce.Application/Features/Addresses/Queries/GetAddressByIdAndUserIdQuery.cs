@@ -5,18 +5,15 @@ namespace Ecommerce.Application.Features.Addresses.Queries;
 [Authorize]
 public record GetAddressByIdAndUserIdQuery(int Id) : IRequest<GetAddressDto?>;
 
-public class GetAddressByIdAndUserIdQueryHandler : IRequestHandler<GetAddressByIdAndUserIdQuery, GetAddressDto?>
+public class GetAddressByIdAndUserIdQueryHandler(
+    IMapper mapper, 
+    IAddressRepository addressRepository, 
+    ICurrentUserService currentUserService
+    ) : IRequestHandler<GetAddressByIdAndUserIdQuery, GetAddressDto?>
 {
-    private readonly IMapper _mapper;
-    private readonly IAddressRepository _addressRepository;
-    private readonly ICurrentUserService _currentUserService;
-
-    public GetAddressByIdAndUserIdQueryHandler(IMapper mapper, IAddressRepository addressRepository, ICurrentUserService currentUserService)
-    {
-        _mapper = mapper;
-        _addressRepository = addressRepository;
-        _currentUserService = currentUserService;
-    }
+    private readonly IMapper _mapper = mapper;
+    private readonly IAddressRepository _addressRepository = addressRepository;
+    private readonly ICurrentUserService _currentUserService = currentUserService;
 
     public async Task<GetAddressDto?> Handle(GetAddressByIdAndUserIdQuery request, CancellationToken cancellationToken)
     {

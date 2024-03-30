@@ -4,16 +4,13 @@ namespace Ecommerce.Application.Features.Products.Queries;
 
 public record GetProductByIdQuery(Guid Id) : IRequest<GetProductDto?>;
 
-public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, GetProductDto?>
+public class GetProductByIdQueryHandler(
+    IMapper mapper, 
+    IProductRepository productRepository
+    ) : IRequestHandler<GetProductByIdQuery, GetProductDto?>
 {
-    private readonly IMapper _mapper;
-    private readonly IProductRepository _productRepository;
-
-    public GetProductByIdQueryHandler(IMapper mapper, IProductRepository productRepository)
-    {
-        _mapper = mapper;
-        _productRepository = productRepository;
-    }
+    private readonly IMapper _mapper = mapper;
+    private readonly IProductRepository _productRepository = productRepository;
 
     public async Task<GetProductDto?> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
     {

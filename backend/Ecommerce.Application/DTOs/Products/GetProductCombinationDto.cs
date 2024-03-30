@@ -14,5 +14,5 @@ public record GetProductCombinationDto
     public float Height { get; private set; }
     public float Weight { get; private set; }
 
-    public List<string> Images { get; private set; } = new();
+    public List<string> Images { get; private set; } = [];
 }

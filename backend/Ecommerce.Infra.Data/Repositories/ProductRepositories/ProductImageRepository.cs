@@ -1,8 +1,5 @@
 ﻿namespace Ecommerce.Infra.Data.Repositories.ProductRepositories;
 
-public class ProductImageRepository : BaseRepository<ProductImage>, IProductImageRepository
+public class ProductImageRepository(AppDbContext context) : BaseRepository<ProductImage>(context), IProductImageRepository
 {
-    public ProductImageRepository(AppDbContext context) : base(context)
-    {
-    }
 }

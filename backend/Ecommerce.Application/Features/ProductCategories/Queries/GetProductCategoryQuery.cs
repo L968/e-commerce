@@ -4,16 +4,13 @@ namespace Ecommerce.Application.Features.ProductCategories.Queries;
 
 public record GetProductCategoryQuery() : IRequest<IEnumerable<GetProductCategoryDto>>;
 
-public class GetProductCategoryQueryHandler : IRequestHandler<GetProductCategoryQuery, IEnumerable<GetProductCategoryDto>>
+public class GetProductCategoryQueryHandler(
+    IMapper mapper, 
+    IProductCategoryRepository productCategoryRepository
+    ) : IRequestHandler<GetProductCategoryQuery, IEnumerable<GetProductCategoryDto>>
 {
-    private readonly IMapper _mapper;
-    private readonly IProductCategoryRepository _productCategoryRepository;
-
-    public GetProductCategoryQueryHandler(IMapper mapper, IProductCategoryRepository productCategoryRepository)
-    {
-        _mapper = mapper;
-        _productCategoryRepository = productCategoryRepository;
-    }
+    private readonly IMapper _mapper = mapper;
+    private readonly IProductCategoryRepository _productCategoryRepository = productCategoryRepository;
 
     public async Task<IEnumerable<GetProductCategoryDto>> Handle(GetProductCategoryQuery request, CancellationToken cancellationToken)
     {

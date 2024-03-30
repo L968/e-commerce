@@ -4,14 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.Order.API.Repositories;
 
-public class OrderRepository : IOrderRepository
+public class OrderRepository(AppDbContext context) : IOrderRepository
 {
-    private readonly AppDbContext _context;
-
-    public OrderRepository(AppDbContext context)
-    {
-        _context = context;
-    }
+    private readonly AppDbContext _context = context;
 
     public async Task<IEnumerable<Domain.Entities.OrderEntities.Order>> GetPendingOrdersAsync()
     {

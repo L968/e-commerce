@@ -7,14 +7,9 @@ namespace Ecommerce.API.Controllers
     [ApiController]
     [Route("[controller]")]
     [Authorize(Roles = "admin")]
-    public class ProductDiscountController : ControllerBase
+    public class ProductDiscountController(IMediator mediator) : ControllerBase
     {
-        private readonly IMediator _mediator;
-
-        public ProductDiscountController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+        private readonly IMediator _mediator = mediator;
 
         [HttpGet]
         public async Task<IActionResult> Get()

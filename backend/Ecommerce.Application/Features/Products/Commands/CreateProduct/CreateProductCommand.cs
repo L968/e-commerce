@@ -12,20 +12,17 @@ public record CreateProductCommand : IRequest<Result<GetProductDto>>
     public bool? Visible { get; set; }
 }
 
-public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Result<GetProductDto>>
+public class CreateProductCommandHandler(
+    IMapper mapper, 
+    IUnitOfWork unitOfWork,
+    IProductRepository productRepository, 
+    IProductCategoryRepository productCategoryRepository
+    ) : IRequestHandler<CreateProductCommand, Result<GetProductDto>>
 {
-    private readonly IMapper _mapper;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IProductRepository _productRepository;
-    private readonly IProductCategoryRepository _productCategoryRepository;
-
-    public CreateProductCommandHandler(IMapper mapper, IUnitOfWork unitOfWork, IProductRepository productRepository, IProductCategoryRepository productCategoryRepository)
-    {
-        _mapper = mapper;
-        _unitOfWork = unitOfWork;
-        _productRepository = productRepository;
-        _productCategoryRepository = productCategoryRepository;
-    }
+    private readonly IMapper _mapper = mapper;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IProductRepository _productRepository = productRepository;
+    private readonly IProductCategoryRepository _productCategoryRepository = productCategoryRepository;
 
     public async Task<Result<GetProductDto>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {

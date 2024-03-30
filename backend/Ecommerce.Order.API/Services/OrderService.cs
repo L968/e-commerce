@@ -5,16 +5,10 @@ using Ecommerce.Order.API.Repositories;
 
 namespace Ecommerce.Order.API.Services;
 
-public class OrderService : IOrderService
+public class OrderService(IMapper mapper, IOrderRepository repository) : IOrderService
 {
-    private readonly IMapper _mapper;
-    private readonly IOrderRepository _repository;
-
-    public OrderService(IMapper mapper, IOrderRepository repository)
-    {
-        _mapper = mapper;
-        _repository = repository;
-    }
+    private readonly IMapper _mapper = mapper;
+    private readonly IOrderRepository _repository = repository;
 
     public async Task<OrderDto?> GetByIdAsync(Guid id, int userId)
     {

@@ -4,16 +4,13 @@ namespace Ecommerce.Application.Features.Variants.Queries;
 
 public record GetVariantByIdQuery(Guid Id) : IRequest<GetVariantDto?>;
 
-public class GetVariantByIdQueryHandler : IRequestHandler<GetVariantByIdQuery, GetVariantDto?>
+public class GetVariantByIdQueryHandler(
+    IMapper mapper, 
+    IVariantRepository variantRepository
+    ) : IRequestHandler<GetVariantByIdQuery, GetVariantDto?>
 {
-    private readonly IMapper _mapper;
-    private readonly IVariantRepository _variantRepository;
-
-    public GetVariantByIdQueryHandler(IMapper mapper, IVariantRepository variantRepository)
-    {
-        _mapper = mapper;
-        _variantRepository = variantRepository;
-    }
+    private readonly IMapper _mapper = mapper;
+    private readonly IVariantRepository _variantRepository = variantRepository;
 
     public async Task<GetVariantDto?> Handle(GetVariantByIdQuery request, CancellationToken cancellationToken)
     {

@@ -18,18 +18,15 @@ public record UpdateAddressCommand : IRequest<Result>
     public string? AdditionalInformation { get; set; }
 }
 
-public class UpdateAddressCommandHandler : IRequestHandler<UpdateAddressCommand, Result>
+public class UpdateAddressCommandHandler(
+    IUnitOfWork unitOfWork,
+    IAddressRepository addressRepository, 
+    ICurrentUserService currentUserService
+    ) : IRequestHandler<UpdateAddressCommand, Result>
 {
-    private readonly IAddressRepository _addressRepository;
-    private readonly ICurrentUserService _currentUserService;
-    private readonly IUnitOfWork _unitOfWork;
-
-    public UpdateAddressCommandHandler(IAddressRepository addressRepository, ICurrentUserService currentUserService, IUnitOfWork unitOfWork)
-    {
-        _addressRepository = addressRepository;
-        _currentUserService = currentUserService;
-        _unitOfWork = unitOfWork;
-    }
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IAddressRepository _addressRepository = addressRepository;
+    private readonly ICurrentUserService _currentUserService = currentUserService;
 
     public async Task<Result> Handle(UpdateAddressCommand request, CancellationToken cancellationToken)
     {

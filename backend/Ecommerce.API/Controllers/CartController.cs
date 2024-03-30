@@ -10,14 +10,9 @@ namespace Ecommerce.API.Controllers
     [ApiController]
     [Route("[controller]")]
     [Authorize(Roles = "regular")]
-    public class CartController : ControllerBase
+    public class CartController(IMediator mediator) : ControllerBase
     {
-        private readonly IMediator _mediator;
-
-        public CartController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+        private readonly IMediator _mediator = mediator;
 
         [HttpGet]
         public async Task<IActionResult> Get()

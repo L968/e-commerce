@@ -3,18 +3,15 @@
 [Authorize]
 public record DeleteCartItemCommand(int Id) : IRequest<Result>;
 
-public class DeleteCartItemCommandHandler : IRequestHandler<DeleteCartItemCommand, Result>
+public class DeleteCartItemCommandHandler(
+    IUnitOfWork unitOfWork,
+    ICartRepository cartRepository, 
+    ICurrentUserService currentUserService
+    ) : IRequestHandler<DeleteCartItemCommand, Result>
 {
-    private readonly ICartRepository _cartRepository;
-    private readonly ICurrentUserService _currentUserService;
-    private readonly IUnitOfWork _unitOfWork;
-
-    public DeleteCartItemCommandHandler(ICartRepository cartRepository, ICurrentUserService currentUserService, IUnitOfWork unitOfWork)
-    {
-        _cartRepository = cartRepository;
-        _currentUserService = currentUserService;
-        _unitOfWork = unitOfWork;
-    }
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICartRepository _cartRepository = cartRepository;
+    private readonly ICurrentUserService _currentUserService = currentUserService;
 
     public async Task<Result> Handle(DeleteCartItemCommand request, CancellationToken cancellationToken)
     {

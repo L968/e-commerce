@@ -2,5 +2,5 @@
 
 public record GetCartDto
 {
-    public IEnumerable<GetCartItemDto> CartItems { get; set; } = null!;
+    public List<GetCartItemDto> CartItems { get; set; } = [];
 }

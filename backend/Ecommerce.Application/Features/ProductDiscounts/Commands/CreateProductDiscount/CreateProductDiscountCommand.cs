@@ -15,20 +15,17 @@ public record CreateProductDiscountCommand : IRequest<Result<GetProductDiscountD
     public DateTime? ValidUntil { get; set; }
 }
 
-public class CreateProductDiscountCommandHandler : IRequestHandler<CreateProductDiscountCommand, Result<GetProductDiscountDto>>
+public class CreateProductDiscountCommandHandler(
+    IMapper mapper, 
+    IUnitOfWork unitOfWork, 
+    IProductRepository productRepository, 
+    IProductDiscountRepository productDiscountRepository
+    ) : IRequestHandler<CreateProductDiscountCommand, Result<GetProductDiscountDto>>
 {
-    private readonly IMapper _mapper;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IProductRepository _productRepository;
-    private readonly IProductDiscountRepository _productDiscountRepository;
-
-    public CreateProductDiscountCommandHandler(IMapper mapper, IUnitOfWork unitOfWork, IProductRepository productRepository, IProductDiscountRepository productDiscountRepository)
-    {
-        _mapper = mapper;
-        _unitOfWork = unitOfWork;
-        _productRepository = productRepository;
-        _productDiscountRepository = productDiscountRepository;
-    }
+    private readonly IMapper _mapper = mapper;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IProductRepository _productRepository = productRepository;
+    private readonly IProductDiscountRepository _productDiscountRepository = productDiscountRepository;
 
     public async Task<Result<GetProductDiscountDto>> Handle(CreateProductDiscountCommand request, CancellationToken cancellationToken)
     {

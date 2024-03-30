@@ -1,11 +1,7 @@
 ﻿namespace Ecommerce.Infra.Data.Repositories.VariantRepositories;
 
-public class VariantOptionRepository : BaseRepository<VariantOption>, IVariantOptionRepository
+public class VariantOptionRepository(AppDbContext context) : BaseRepository<VariantOption>(context), IVariantOptionRepository
 {
-    public VariantOptionRepository(AppDbContext context) : base(context)
-    {
-    }
-
     public override async Task<IEnumerable<VariantOption>> GetAllAsync()
     {
         return await _context.VariantOptions

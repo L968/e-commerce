@@ -8,14 +8,9 @@ namespace Ecommerce.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ProductController : ControllerBase
+    public class ProductController(IMediator mediator) : ControllerBase
     {
-        private readonly IMediator _mediator;
-
-        public ProductController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+        private readonly IMediator _mediator = mediator;
 
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 10)

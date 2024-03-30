@@ -6,10 +6,7 @@ public static class Extensions
 {
     public static string ToSnakeCase(this string text)
     {
-        if (text == null)
-        {
-            throw new ArgumentNullException(nameof(text));
-        }
+        ArgumentNullException.ThrowIfNull(text);
 
         if (text.Length < 2)
         {

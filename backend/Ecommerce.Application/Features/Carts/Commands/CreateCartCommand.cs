@@ -5,20 +5,17 @@ namespace Ecommerce.Application.Features.Carts.Commands;
 [Authorize]
 public record CreateCartCommand : IRequest<Result<GetCartDto>>;
 
-public class CreateCartCommandHandler : IRequestHandler<CreateCartCommand, Result<GetCartDto>>
+public class CreateCartCommandHandler(
+    IMapper mapper,
+    IUnitOfWork unitOfWork, 
+    ICartRepository cartRepository,
+    ICurrentUserService currentUserService
+    ) : IRequestHandler<CreateCartCommand, Result<GetCartDto>>
 {
-    private readonly ICurrentUserService _currentUserService;
-    private readonly ICartRepository _cartRepository;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
-
-    public CreateCartCommandHandler(ICurrentUserService currentUserService, ICartRepository cartRepository, IUnitOfWork unitOfWork, IMapper mapper)
-    {
-        _cartRepository = cartRepository;
-        _currentUserService = currentUserService;
-        _unitOfWork = unitOfWork;
-        _mapper = mapper;
-    }
+    private readonly IMapper _mapper = mapper;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICartRepository _cartRepository = cartRepository;
+    private readonly ICurrentUserService _currentUserService = currentUserService;
 
     public async Task<Result<GetCartDto>> Handle(CreateCartCommand request, CancellationToken cancellationToken)
     {

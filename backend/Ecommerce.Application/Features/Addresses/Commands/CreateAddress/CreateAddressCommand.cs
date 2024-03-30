@@ -18,20 +18,17 @@ public record CreateAddressCommand : IRequest<Result<GetAddressDto>>
     public string? AdditionalInformation { get; set; }
 }
 
-public class CreateAddressCommandHandler : IRequestHandler<CreateAddressCommand, Result<GetAddressDto>>
+public class CreateAddressCommandHandler(
+    IMapper mapper, 
+    IUnitOfWork unitOfWork, 
+    ICurrentUserService currentUserService, 
+    IAddressRepository addressRepository
+    ) : IRequestHandler<CreateAddressCommand, Result<GetAddressDto>>
 {
-    private readonly IMapper _mapper;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly ICurrentUserService _currentUserService;
-    private readonly IAddressRepository _addressRepository;
-
-    public CreateAddressCommandHandler(IMapper mapper, IUnitOfWork unitOfWork, ICurrentUserService currentUserService, IAddressRepository addressRepository)
-    {
-        _mapper = mapper;
-        _unitOfWork = unitOfWork;
-        _currentUserService = currentUserService;
-        _addressRepository = addressRepository;
-    }
+    private readonly IMapper _mapper = mapper;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICurrentUserService _currentUserService = currentUserService;
+    private readonly IAddressRepository _addressRepository = addressRepository;
 
     public async Task<Result<GetAddressDto>> Handle(CreateAddressCommand request, CancellationToken cancellationToken)
     {

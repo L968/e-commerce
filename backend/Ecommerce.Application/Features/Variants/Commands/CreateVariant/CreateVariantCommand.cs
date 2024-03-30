@@ -9,18 +9,15 @@ public record CreateVariantCommand : IRequest<Result<GetVariantDto>>
     public List<string> Options { get; set; } = null!;
 }
 
-public class CreateVariantCommandHandler : IRequestHandler<CreateVariantCommand, Result<GetVariantDto>>
+public class CreateVariantCommandHandler(
+    IMapper mapper, 
+    IUnitOfWork unitOfWork, 
+    IVariantRepository variantRepository
+    ) : IRequestHandler<CreateVariantCommand, Result<GetVariantDto>>
 {
-    private readonly IMapper _mapper;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IVariantRepository _variantRepository;
-
-    public CreateVariantCommandHandler(IMapper mapper, IUnitOfWork unitOfWork, IVariantRepository variantRepository)
-    {
-        _mapper = mapper;
-        _unitOfWork = unitOfWork;
-        _variantRepository = variantRepository;
-    }
+    private readonly IMapper _mapper = mapper;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IVariantRepository _variantRepository = variantRepository;
 
     public async Task<Result<GetVariantDto>> Handle(CreateVariantCommand request, CancellationToken cancellationToken)
     {
