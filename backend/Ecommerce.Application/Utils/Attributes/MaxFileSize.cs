@@ -1,15 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace Ecommerce.Utils.Attributes;
+namespace Ecommerce.Application.Utils.Attributes;
 
-public class MaxFileSize : ValidationAttribute
+public class MaxFileSize(int maxFileSize) : ValidationAttribute
 {
-    private readonly int _maxFileSize;
-
-    public MaxFileSize(int maxFileSize)
-    {
-        _maxFileSize = maxFileSize;
-    }
+    private readonly int _maxFileSize = maxFileSize;
 
     protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
     {

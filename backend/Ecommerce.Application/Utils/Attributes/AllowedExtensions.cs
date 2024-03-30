@@ -1,15 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace Ecommerce.Utils.Attributes;
+namespace Ecommerce.Application.Utils.Attributes;
 
-public class AllowedExtensions : ValidationAttribute
+public class AllowedExtensions(string[] extensions) : ValidationAttribute
 {
-    private readonly string[] _extensions;
-
-    public AllowedExtensions(string[] extensions)
-    {
-        _extensions = extensions;
-    }
+    private readonly string[] _extensions = extensions;
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
