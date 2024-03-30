@@ -17,8 +17,6 @@ export default function Products() {
             .finally(() => setLoading(false));
     }, []);
 
-
-
     return (
         <Main>
             <Typography variant='h1'>Products</Typography>
@@ -33,8 +31,7 @@ export default function Products() {
                 </Header>
 
                 {loading
-                    ?
-                    <CircularProgress />
+                    ? <CircularProgress />
                     :
                     <ProductsContainer container spacing={3}>
                         {products!.items.map(product => (
@@ -44,7 +41,6 @@ export default function Products() {
                         ))}
                     </ProductsContainer>
                 }
-
             </Container>
         </Main>
     )
