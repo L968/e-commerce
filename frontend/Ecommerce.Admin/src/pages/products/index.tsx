@@ -1,9 +1,9 @@
-import { Container, Header, Main, ProductsContainer } from './styles';
-import { CircularProgress, Grid, TextField, Typography } from '@mui/material';
-import ProductCard from '@/components/ProductCard';
 import api from '@/services/api';
 import { toast } from 'react-toastify';
 import { useEffect, useState } from 'react';
+import ProductCard from '@/components/ProductCard';
+import { Container, Header, Main, ProductsContainer } from './styles';
+import { CircularProgress, Grid, TextField, Typography } from '@mui/material';
 import GetProductListResponse from '@/interfaces/api/responses/GetProductListResponse';
 
 export default function Products() {
@@ -16,6 +16,10 @@ export default function Products() {
             .catch(error => toast.error("Error 500"))
             .finally(() => setLoading(false));
     }, []);
+
+    if (!loading && !products) {
+        return;
+    }
 
     return (
         <Main>
