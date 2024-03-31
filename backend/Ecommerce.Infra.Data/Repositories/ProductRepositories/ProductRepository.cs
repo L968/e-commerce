@@ -55,6 +55,22 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
             .FirstOrDefaultAsync(p => p.Id == id);
     }
 
+    public async Task<Product?> GetWithCombinationsByIdAsync(Guid id)
+    {
+        return await _context.Products
+            .Include(p => p.Reviews)
+            .Include(p => p.Discounts)
+            .Include(p => p.Combinations)
+                .ThenInclude(pc => pc.Inventory)
+            .Include(p => p.Combinations)
+                .ThenInclude(pc => pc.Images)
+            .Include(p => p.VariantOptions)
+                .ThenInclude(pvo => pvo.VariantOption)
+                .ThenInclude(vo => vo.Variant)
+            .Where(p => p.Combinations.Any())
+            .FirstOrDefaultAsync(p => p.Id == id);
+    }
+
     public async Task<Product?> GetByIdAdminAsync(Guid id)
     {
         return await _context.Products

@@ -14,7 +14,7 @@ public class GetProductByIdQueryHandler(
 
     public async Task<GetProductDto?> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
     {
-        Product? product = await _productRepository.GetByIdAsync(request.Id);
+        Product? product = await _productRepository.GetWithCombinationsByIdAsync(request.Id);
         return _mapper.Map<GetProductDto?>(product);
     }
 }
