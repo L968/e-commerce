@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import api from '@/services/api';
+import apiAuthorization from '@/services/apiAuthorization';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import { LoadingButton } from '@mui/lab';
@@ -19,7 +20,6 @@ import PostCheckout from '@/components/pages/checkout/PostCheckout';
 import OrderCheckoutRequest from '@/interfaces/api/requests/OrderCheckoutRequest';
 import { Container, ItemContainer, ItemInfo, Main, Price, PriceContainer, PriceContainerContent, PriceContainerRow, PriceContainerTitle, ProductName, Section, SectionContainer, SectionContent, SectionTitle, TotalPrice } from './styles';
 
-const defaultAddressId = 1;
 const shipping = 20;
 
 function Checkout() {
@@ -34,15 +34,24 @@ function Checkout() {
     const [deliveryInfo, setDeliveryInfo] = useState<Address | null>(null);
     const [paymentMethod] = useState<PaymentMethod>(PaymentMethod.Pix);
     const [loading, setLoading] = useState<boolean>(false);
+    const [defaultAddressId, setDefaultAddressId] = useState<number>();
     const [orderPlaced, setOrderPlaced] = useState<boolean>(false);
 
     const totalAmount = getTotalAmount(orderCheckoutItems);
 
     useEffect(() => {
-        api.get<Address>(`/address/${defaultAddressId}`)
-            .then(response => setDeliveryInfo(response.data))
-            .catch(error => toast.error('Error 500'));
+        apiAuthorization.get<number>('/user/GetDefaultAddress')
+            .then(res => setDefaultAddressId(res.data))
+            .catch(err => toast.error('Error 500'));
     }, []);
+
+    useEffect(() => {
+        if (!defaultAddressId) return;
+
+        api.get<Address>(`/address/${defaultAddressId}`)
+            .then(res=> setDeliveryInfo(res.data))
+            .catch(err => toast.error('Error 500'));
+    }, [defaultAddressId]);
 
     function handlePlaceOrder() {
         if (!deliveryInfo) return;

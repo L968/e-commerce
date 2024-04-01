@@ -2,10 +2,10 @@ import Link from 'next/link';
 import api from '@/services/api';
 import { toast } from 'react-toastify';
 import { useState, useEffect } from 'react';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { Product } from '@/interfaces/api/responses/GetProductListResponse';
 import { ActionsContainer, Container, ListItemButton, Main } from './styles';
 import { Button, CircularProgress, IconButton, List, ListItem, ListItemText, Typography } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function ProductDrafts() {
     const [products, setProducts] = useState<Product[]>([]);
