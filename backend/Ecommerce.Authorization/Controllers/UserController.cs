@@ -4,13 +4,20 @@ namespace Ecommerce.Authorization.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UserController : ControllerBase
+public class UserController(UserService userService) : ControllerBase
 {
-    private readonly UserService _userService;
+    private readonly UserService _userService = userService;
 
-    public UserController(UserService userService)
+    [HttpGet("GetDefaultAddress")]
+    [Authorize(Roles = "regular")]
+    public async Task<IActionResult> GetDefaultAddress()
     {
-        _userService = userService;
+        int userId = int.Parse(User.FindFirst("id")!.Value);
+        int? addressId = await _userService.GetDefaultAddressId(userId);
+
+        if (addressId is null) return NotFound();
+
+        return Ok(addressId);
     }
 
     [HttpPost]
