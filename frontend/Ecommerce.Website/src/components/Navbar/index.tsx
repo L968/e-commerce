@@ -133,10 +133,10 @@ export default function Navbar() {
                         }}
                     >
                         <MenuItem onClick={handleClose}>
-                            <Link href='/orders'>Orders</Link>
+                            <Link href='/profile'>Profile</Link>
                         </MenuItem>
                         <MenuItem onClick={handleClose}>
-                            <Link href='/profile'>Profile</Link>
+                            <Link href='/orders'>Orders</Link>
                         </MenuItem>
                         <MenuItem onClick={handleLogout}>
                             Logout
