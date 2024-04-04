@@ -16,6 +16,7 @@ using Ecommerce.Infra.Data.Repositories.VariantRepositories;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -53,7 +54,11 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IBlobStorageService, BlobStorageService>();
         services.AddHttpClient<IAuthorizationService, AuthorizationService>()
-            .AddHttpMessageHandler<AuthorizationHeaderHandler>();
+            .AddHttpMessageHandler(provider =>
+            {
+                var httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
+                return new AuthorizationHeaderHandler(httpContextAccessor);
+            });
 
         services.AddScoped<IAddressRepository, AddressRepository>();
         services.AddScoped<ICartRepository, CartRepository>();
