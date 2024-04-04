@@ -1,5 +1,5 @@
-﻿using System.Web;
-using System.Transactions;
+﻿using System.Transactions;
+using System.Web;
 
 namespace Ecommerce.Authorization.Services;
 
@@ -86,11 +86,27 @@ public class UserService(UserManager<CustomIdentityUser> userManager, EmailServi
         return Result.Ok();
     }
 
-    public async Task<int?> GetDefaultAddressId(int userId)
+    public async Task<Guid?> GetDefaultAddressId(int userId)
     {
         var identityUser = await _userManager.Users.FirstOrDefaultAsync(user => user.Id == userId);
         if (identityUser is null) return null;
 
         return identityUser.DefaultAddressId;
+    }
+
+    public async Task<Result> UpdateDefaultAddress(Guid? addressId, int userId)
+    {
+        if (addressId is not null)
+        {
+            if (addressId == Guid.Empty) return Result.Fail("Invalid address id value");
+        }
+
+        var identityUser = await _userManager.Users.FirstOrDefaultAsync(user => user.Id == userId);
+        if (identityUser is null) return Result.Fail("User not found");
+
+        identityUser.DefaultAddressId = addressId;
+        await _userManager.UpdateAsync(identityUser);
+
+        return Result.Ok();
     }
 }

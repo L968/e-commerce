@@ -1,4 +1,5 @@
 ﻿using Ecommerce.Application.DTOs.Addresses;
+using Ecommerce.Application.Interfaces;
 
 namespace Ecommerce.Application.Features.Addresses.Commands.CreateAddress;
 
@@ -22,17 +23,18 @@ public class CreateAddressCommandHandler(
     IMapper mapper, 
     IUnitOfWork unitOfWork, 
     ICurrentUserService currentUserService, 
+    IAuthorizationService authorizationService,
     IAddressRepository addressRepository
     ) : IRequestHandler<CreateAddressCommand, Result<GetAddressDto>>
 {
     private readonly IMapper _mapper = mapper;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICurrentUserService _currentUserService = currentUserService;
+    private readonly IAuthorizationService _authorizationService = authorizationService;
     private readonly IAddressRepository _addressRepository = addressRepository;
 
     public async Task<Result<GetAddressDto>> Handle(CreateAddressCommand request, CancellationToken cancellationToken)
     {
-        // TODO: API Cep?
         Result<Address> createResult = Address.Create(
             userId: _currentUserService.UserId,
             request.RecipientFullName,
@@ -52,6 +54,13 @@ public class CreateAddressCommandHandler(
 
         Address address = createResult.Value;
         _addressRepository.Create(address);
+
+        var userAddresses = await _addressRepository.GetByUserIdAsync(_currentUserService.UserId);
+        if (!userAddresses.Any())
+        {
+            await _authorizationService.UpdateDefaultAddressIdAsync(address.Id);
+        }
+        
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         var dto = _mapper.Map<GetAddressDto>(address);

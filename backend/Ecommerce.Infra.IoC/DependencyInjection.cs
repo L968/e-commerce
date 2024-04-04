@@ -1,5 +1,6 @@
 ﻿using Ecommerce.Application;
 using Ecommerce.Application.Common.Behaviours;
+using Ecommerce.Application.Common.Handlers;
 using Ecommerce.Application.Interfaces;
 using Ecommerce.Application.Mappings;
 using Ecommerce.Application.Services;
@@ -48,8 +49,11 @@ public static class DependencyInjection
 
         services.AddAutoMapper(typeof(DomainToDTOMappingProfile));
 
+        services.AddSingleton<AuthorizationHeaderHandler>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IBlobStorageService, BlobStorageService>();
+        services.AddHttpClient<IAuthorizationService, AuthorizationService>()
+            .AddHttpMessageHandler<AuthorizationHeaderHandler>();
 
         services.AddScoped<IAddressRepository, AddressRepository>();
         services.AddScoped<ICartRepository, CartRepository>();
