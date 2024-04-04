@@ -40,7 +40,7 @@ function Checkout() {
     const totalAmount = getTotalAmount(orderCheckoutItems);
 
     useEffect(() => {
-        apiAuthorization.get<number>('/user/GetDefaultAddress')
+        apiAuthorization.get<number>('/user/defaultAddressId')
             .then(res => setDefaultAddressId(res.data))
             .catch(err => toast.error('Error 500'));
     }, []);

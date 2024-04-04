@@ -2,7 +2,7 @@ import PaymentMethod from '@/interfaces/PaymentMethod';
 
 export default interface OrderCheckoutRequest {
     orderCheckoutItems: OrderCheckoutItemRequest[]
-    shippingAddressId: number
+    shippingAddressId: string
     paymentMethod: PaymentMethod
 }
 

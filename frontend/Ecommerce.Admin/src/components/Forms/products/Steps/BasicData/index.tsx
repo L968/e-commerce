@@ -3,7 +3,6 @@ import api from '@/services/api';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import { LoadingButton } from '@mui/lab';
-import { CrudType } from '@/interfaces/CrudType';
 import Autocomplete from '@/components/Autocomplete';
 import { FormEvent, useEffect, useState } from 'react';
 import { useProductContext } from '../../ProductContext';
@@ -34,7 +33,18 @@ export default function BasicData() {
     const [categories, setCategories] = useState<GetCategoryResponse[]>([]);
     const [loadingCategories, setLoadingCategories] = useState<boolean>(false);
     const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
-    const [productData, setProductData] = useState<ProductFormData>({ name: '', description: '', category: { id: '', name: '', description: '', variants: [] }, active: false, visible: false });
+    const [productData, setProductData] = useState<ProductFormData>({
+        name: '',
+        description: '',
+        category: {
+            id: '',
+            name: '',
+            description: '',
+            variants: []
+        },
+        active: false,
+        visible: false
+    });
 
     useEffect(() => {
         setLoadingCategories(true);

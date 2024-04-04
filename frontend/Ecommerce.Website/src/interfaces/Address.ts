@@ -1,5 +1,5 @@
 export default interface Address {
-    id: number
+    id: string
     recipientFullName: string
     recipientPhoneNumber: string
     postalCode: string
