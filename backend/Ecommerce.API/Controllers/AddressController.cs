@@ -20,7 +20,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById(Guid id)
         {
             GetAddressDto? address = await _mediator.Send(new GetAddressByIdAndUserIdQuery(id));
 
@@ -41,7 +41,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] UpdateAddressCommand command)
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateAddressCommand command)
         {
             command.Id = id;
             Result result = await _mediator.Send(command);
@@ -52,7 +52,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             Result result = await _mediator.Send(new DeleteAddressCommand(id));
 

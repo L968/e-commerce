@@ -4,7 +4,7 @@ namespace Ecommerce.Domain.Entities;
 
 public sealed class Address : AuditableEntity
 {
-    public int? Id { get; private set; }
+    public Guid Id { get; private set; }
     public int UserId { get; private set; }
     public string RecipientFullName { get; private set; }
     public string RecipientPhoneNumber { get; private set; }
@@ -33,6 +33,7 @@ public sealed class Address : AuditableEntity
         string? additionalInformation
     )
     {
+        Id = Guid.NewGuid();
         UserId = userId;
         RecipientFullName = recipientFullName;
         RecipientPhoneNumber = recipientPhoneNumber;

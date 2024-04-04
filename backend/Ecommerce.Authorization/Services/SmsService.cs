@@ -16,7 +16,7 @@ public class SmsService
         Send(to, $"Two factor authentication token: {twoFactorToken}");
     }
 
-    private void Send(string to, string body)
+    private static void Send(string to, string body)
     {
         var username = Config.TwilioSID;
         var password = Config.TwilioAuthToken;

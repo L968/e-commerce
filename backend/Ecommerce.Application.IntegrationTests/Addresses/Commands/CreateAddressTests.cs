@@ -36,13 +36,13 @@ public class CreateAddressTests : BaseTestFixture
         GetAddressDto createdAddress = result.Value;
         Assert.True(result.IsSuccess);
         Assert.IsNotNull(createdAddress);
-        Assert.True(createdAddress.Id > 0);
+        Assert.True(createdAddress.Id != Guid.Empty);
 
-        var query = new GetAddressByIdAndUserIdQuery(createdAddress.Id!.Value);
+        var query = new GetAddressByIdAndUserIdQuery(createdAddress.Id);
         GetAddressDto? address = await SendAsync(query);
 
         Assert.IsNotNull(address);
-        Assert.True(address!.Id > 0);
+        Assert.True(address!.Id != Guid.Empty);
         Assert.AreEqual(address.RecipientFullName, command.RecipientFullName);
         Assert.AreEqual(address.RecipientPhoneNumber, command.RecipientPhoneNumber);
         Assert.AreEqual(address.PostalCode, command.PostalCode);

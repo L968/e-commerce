@@ -4,8 +4,6 @@ public class DeleteAddressCommandValidator : AbstractValidator<DeleteAddressComm
 {
     public DeleteAddressCommandValidator()
     {
-        RuleFor(a => a.Id)
-            .NotEmpty()
-            .GreaterThan(0);
+        RuleFor(a => a.Id).NotEmpty();
     }
 }

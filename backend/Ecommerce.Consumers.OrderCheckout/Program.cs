@@ -161,7 +161,7 @@ async Task<ProductCombination?> GetProductCombinationById(Guid id)
         .FirstOrDefaultAsync(p => p.Id == id);
 }
 
-async Task<Address?> GetAddressById(int id, int userId)
+async Task<Address?> GetAddressById(Guid id, int userId)
 {
     using var db = new AppDbContext();
     return await db.Addresses.FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId);

@@ -4,7 +4,7 @@
 public record UpdateAddressCommand : IRequest<Result>
 {
     [JsonIgnore]
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public string RecipientFullName { get; set; } = "";
     public string RecipientPhoneNumber { get; set; } = "";
     public string PostalCode { get; set; } = "";
@@ -31,10 +31,7 @@ public class UpdateAddressCommandHandler(
     public async Task<Result> Handle(UpdateAddressCommand request, CancellationToken cancellationToken)
     {
         Address? address = await _addressRepository.GetByIdAndUserIdAsync(request.Id, _currentUserService.UserId);
-
         if (address is null) return Result.Fail(DomainErrors.NotFound(nameof(Address), request.Id));
-
-        // TODO: API Cep?
 
         Result updateResult = address.Update(
             request.RecipientFullName,

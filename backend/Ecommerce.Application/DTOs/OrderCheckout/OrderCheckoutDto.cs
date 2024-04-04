@@ -6,6 +6,6 @@ public record OrderCheckoutDto
 {
     public int UserId { get; set; }
     public List<OrderCheckoutItemDto> OrderCheckoutItems { get; init; } = null!;
-    public int ShippingAddressId { get; set; }
+    public Guid ShippingAddressId { get; set; }
     public PaymentMethod PaymentMethod { get; set; }
 }

@@ -2,8 +2,7 @@
 
 public class GetAddressDto
 {
-    public int? Id { get; set; }
-    public int UserId { get; set; }
+    public Guid Id { get; set; }
     public string RecipientFullName { get; set; } = "";
     public string RecipientPhoneNumber { get; set; } = "";
     public string PostalCode { get; set; } = "";

@@ -32,7 +32,7 @@ public class GetAddressByIdAndUserIdTests : BaseTestFixture
         GetAddressDto createdAddress = createResult.Value;
 
         // Act
-        GetAddressDto? addresses = await SendAsync(new GetAddressByIdAndUserIdQuery(createdAddress.Id!.Value));
+        GetAddressDto? addresses = await SendAsync(new GetAddressByIdAndUserIdQuery(createdAddress.Id));
 
         // Assert
         Assert.NotNull(addresses);

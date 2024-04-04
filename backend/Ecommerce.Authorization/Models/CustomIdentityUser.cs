@@ -3,5 +3,5 @@
 public class CustomIdentityUser : IdentityUser<int>
 {
     public string Name { get; set; } = "";
-    public int? DefaultAddressId { get; set; }
+    public Guid? DefaultAddressId { get; set; }
 }

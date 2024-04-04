@@ -1,19 +1,16 @@
 ﻿namespace Ecommerce.Authorization.Services;
 
-public class LoginService
+public class LoginService(
+    SignInManager<CustomIdentityUser> signInManager, 
+    TokenService tokenService, 
+    EmailService emailService, 
+    SmsService smsService
+    )
 {
-    private readonly SignInManager<CustomIdentityUser> _signInManager;
-    private readonly TokenService _tokenService;
-    private readonly EmailService _emailService;
-    private readonly SmsService _smsService;
-
-    public LoginService(SignInManager<CustomIdentityUser> signInManager, TokenService tokenService, EmailService emailService, SmsService smsService)
-    {
-        _signInManager = signInManager;
-        _tokenService = tokenService;
-        _emailService = emailService;
-        _smsService = smsService;
-    }
+    private readonly SignInManager<CustomIdentityUser> _signInManager = signInManager;
+    private readonly TokenService _tokenService = tokenService;
+    private readonly EmailService _emailService = emailService;
+    private readonly SmsService _smsService = smsService;
 
     public Result Login(LoginRequest loginRequest)
     {

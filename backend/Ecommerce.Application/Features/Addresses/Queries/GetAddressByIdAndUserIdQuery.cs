@@ -3,7 +3,7 @@
 namespace Ecommerce.Application.Features.Addresses.Queries;
 
 [Authorize]
-public record GetAddressByIdAndUserIdQuery(int Id) : IRequest<GetAddressDto?>;
+public record GetAddressByIdAndUserIdQuery(Guid Id) : IRequest<GetAddressDto?>;
 
 public class GetAddressByIdAndUserIdQueryHandler(
     IMapper mapper, 

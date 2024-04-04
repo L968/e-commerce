@@ -2,17 +2,12 @@
 
 namespace Ecommerce.Application;
 
-public class Config
+public class Config(IConfiguration configuration)
 {
-    private readonly IConfiguration _configuration;
+    private readonly IConfiguration _configuration = configuration;
 
     public static string AzureStorageConnectionString { get; set; } = "";
     public static string AzureStorageContainer { get; set; } = "";
-
-    public Config(IConfiguration configuration)
-    {
-        _configuration = configuration;
-    }
 
     public void Init()
     {

@@ -35,7 +35,7 @@ public class UpdateAddressTests : BaseTestFixture
         // Act
         Result result = await SendAsync(new UpdateAddressCommand()
         {
-            Id = createdAddress.Id!.Value,
+            Id = createdAddress.Id,
             RecipientFullName = "Spencer Smith",
             RecipientPhoneNumber = "1234567890",
             PostalCode = "AB123CD",
@@ -52,7 +52,7 @@ public class UpdateAddressTests : BaseTestFixture
         // Assert
         Assert.IsTrue(result.IsSuccess);
 
-        Address? address = await FindAsync<Address>(createdAddress.Id!.Value);
+        Address? address = await FindAsync<Address>(createdAddress.Id);
 
         Assert.IsNotNull(address);
         Assert.AreEqual(address!.RecipientFullName, "Spencer Smith");

@@ -33,12 +33,12 @@ public class DeleteAddressTests : BaseTestFixture
         GetAddressDto createdAddress = createResult.Value;
 
         // Act
-        Result result = await SendAsync(new DeleteAddressCommand(createdAddress.Id!.Value));
+        Result result = await SendAsync(new DeleteAddressCommand(createdAddress.Id));
 
         // Assert
         Assert.True(result.IsSuccess);
 
-        GetAddressDto? addresses = await SendAsync(new GetAddressByIdAndUserIdQuery(createdAddress.Id!.Value));
+        GetAddressDto? addresses = await SendAsync(new GetAddressByIdAndUserIdQuery(createdAddress.Id));
 
         Assert.IsNull(addresses);
     }
