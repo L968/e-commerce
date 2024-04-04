@@ -41,7 +41,11 @@ function Addresses() {
     function fetchDefaultAddressId() {
         apiAuthorization.get<string>('/user/defaultAddressId')
             .then(res => setDefaultAddressId(res.data))
-            .catch(err => toast.error('Error 500'));
+            .catch(err => {
+                if (err.response?.status !== 404) {
+                    toast.error('Error 500');
+                }
+            });
     }
 
     function handleEdit(addressId: string): void {

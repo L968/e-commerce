@@ -6,5 +6,7 @@ interface Item {
 }
 
 export default function getTotalAmount(items: Item[]): number {
-    return items.reduce((total, item) =>  total + item.product.discountedPrice * item.quantity, 0);
+    return items.reduce((total, item) =>
+        total + item.product.discountedPrice * item.quantity, 0
+    );
 }

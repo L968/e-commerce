@@ -1,5 +1,5 @@
 import { styled } from '@mui/system';
-import { Box, Typography } from '@mui/material';
+import { Box, FormControlLabel, FormControlLabelProps, Typography } from '@mui/material';
 
 export const Main = styled('main')({
     display: 'flex',
@@ -96,7 +96,7 @@ export const PriceContainerTitle = styled(Box)({
     paddingBottom: '20px',
 })
 
-export const PriceContainerContent= styled(Box)({
+export const PriceContainerContent = styled(Box)({
     paddingTop: '20px',
 })
 
@@ -115,3 +115,23 @@ export const TotalPrice = styled(Box)({
     marginBottom: '24px',
     marginTop: '30px',
 })
+
+export const StyledAddressFormControlLabel = styled((props: FormControlLabelProps) => <FormControlLabel {...props} />)(
+    ({ theme, checked }) => ({
+        '&.MuiFormControlLabel-root': {
+            padding: theme.spacing(1, 2),
+            borderRadius: theme.shape.borderRadius,
+            margin: theme.spacing(.5, 0),
+            ...(checked
+                ? {
+                    backgroundColor: '#FCF5EE',
+                    border: '1px solid #FBD8B4',
+                }
+                : {
+                    '&:hover': {
+                        backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                    },
+                }),
+        },
+    })
+);
