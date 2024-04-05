@@ -10,8 +10,16 @@ public class AuthorizationService : IAuthorizationService
 
     public AuthorizationService(HttpClient httpClient, IConfiguration configuration)
     {
+        string? timeout = configuration["AuthorizationTimeout"];
+
+        if (string.IsNullOrEmpty(timeout))
+            throw new InvalidOperationException("AuthorizationTimeout configuration is missing or empty");
+
+        if (!int.TryParse(timeout, out int timeoutSeconds))
+            throw new InvalidOperationException("AuthorizationTimeout configuration is not a valid integer");
+
         _httpClient = httpClient;
-        _httpClient.Timeout = TimeSpan.FromSeconds(3);
+        _httpClient.Timeout = TimeSpan.FromSeconds(timeoutSeconds);
         _httpClient.BaseAddress = new Uri(configuration["AuthorizationBaseUrl"] ?? throw new InvalidOperationException("AuthorizationBaseUrl configuration is missing or empty"));
     }
 
@@ -29,7 +37,7 @@ public class AuthorizationService : IAuthorizationService
 
             return defaultAddressId;
         }
-        catch (HttpRequestException ex) 
+        catch (HttpRequestException ex)
             when (ex.StatusCode == HttpStatusCode.NotFound)
         {
             return null;
@@ -38,7 +46,7 @@ public class AuthorizationService : IAuthorizationService
 
     public async Task UpdateDefaultAddressIdAsync(Guid? addressId)
     {
-        string requestUriString = addressId.HasValue 
+        string requestUriString = addressId.HasValue
             ? "user/defaultAddressId/" + addressId
             : "user/defaultAddressId/";
 

@@ -7,7 +7,7 @@ public record DeleteAddressCommand(Guid Id) : IRequest<Result>;
 
 public class DeleteAddressCommandHandler(
     IUnitOfWork unitOfWork,
-    IAddressRepository addressRepository, 
+    IAddressRepository addressRepository,
     ICurrentUserService currentUserService,
     IAuthorizationService authorizationService
     ) : IRequestHandler<DeleteAddressCommand, Result>
