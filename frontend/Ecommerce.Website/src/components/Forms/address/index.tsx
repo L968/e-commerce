@@ -11,7 +11,11 @@ import { FormEvent, useEffect, useState } from 'react';
 
 type AddressFormData = Omit<Address, 'id'>;
 
-function AddressForm({ crudType }: BaseForm) {
+export interface AddressFormProps extends BaseForm {
+    onClose?: () => void
+}
+
+function AddressForm({ crudType, onClose }: AddressFormProps) {
     const router = useRouter();
 
     const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
@@ -49,26 +53,31 @@ function AddressForm({ crudType }: BaseForm) {
 
     function handleOnSubmit(e: FormEvent<HTMLFormElement>): void {
         e.preventDefault();
-
         setLoadingSubmit(true);
+
+        const onSuccess = () => {
+            toast.success('Address saved successfully');
+            if (onClose) {
+                onClose();
+            } else {
+                router.push('/profile/addresses');
+            }
+        }
+
+        const onError = () => {
+            toast.error('Error 500');
+        }
 
         if (crudType === 'Create') {
             api.post('/address', addressData)
-                .then(res => {
-                    toast.success('Address saved successfully');
-                    router.push('/profile/addresses');
-                })
-                .catch(err => toast.error('Error 500'))
+                .then(res => onSuccess())
+                .catch(err => onError())
                 .finally(() => setLoadingSubmit(false));
         } else if (crudType === 'Update') {
             const addressId = router.query.id;
-
             api.put('/address/' + addressId, addressData)
-                .then(res => {
-                    toast.success('Address saved successfully');
-                    router.push('/profile/addresses');
-                })
-                .catch(err => toast.error('Error 500'))
+                .then(res => onSuccess())
+                .catch(err => onError())
                 .finally(() => setLoadingSubmit(false));
         }
     }
@@ -86,7 +95,7 @@ function AddressForm({ crudType }: BaseForm) {
             <Title variant='h1'>{getTitleText()}</Title>
 
             <Form onSubmit={handleOnSubmit}>
-                <Grid container spacing={4}>
+                <Grid container spacing={3.5}>
                     <Grid item xs={12} sm={6}>
                         <TextField
                             label="Recipient's Full Name"
@@ -204,10 +213,10 @@ function AddressForm({ crudType }: BaseForm) {
     )
 }
 
-export default function Private({ crudType }: BaseForm) {
+export default function Private({ crudType, onClose }: AddressFormProps) {
     return (
         <PrivateRoute>
-            <AddressForm crudType={crudType} />
+            <AddressForm crudType={crudType} onClose={onClose} />
         </PrivateRoute>
     )
 }

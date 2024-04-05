@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import currencyFormat from '@/utils/currencyFormat';
 import getTotalAmount from '@/utils/getTotalAmount';
+import AddressForm from '@/components/Forms/address';
 import PrivateRoute from '@/components/PrivateRoute';
 import PaymentMethod from '@/interfaces/PaymentMethod';
 import apiAuthorization from '@/services/apiAuthorization';
@@ -18,7 +19,7 @@ import NumberSelector from '@/components/NumberSelector/default';
 import { useOrderCheckout } from '@/contexts/orderCheckoutContext';
 import PostCheckout from '@/components/pages/checkout/PostCheckout';
 import OrderCheckoutRequest from '@/interfaces/api/requests/OrderCheckoutRequest';
-import { Avatar, Button, CircularProgress, Divider, Radio, RadioGroup } from '@mui/material';
+import { Avatar, Button, CircularProgress, Dialog, Divider, Radio, RadioGroup } from '@mui/material';
 import { Container, ItemContainer, ItemInfo, Main, Price, PriceContainer, PriceContainerContent, PriceContainerRow, PriceContainerTitle, ProductName, Section, SectionContainer, SectionContent, SectionTitle, StyledAddressFormControlLabel, TotalPrice } from './styles';
 
 const shipping = 20;
@@ -37,6 +38,8 @@ function Checkout() {
     const [defaultAddressId, setDefaultAddressId] = useState<string>();
     const [radioSelectedAddressId, setRadioSelectedAddressId] = useState<string | null>(null);
     const [addressLoading, setAddressLoading] = useState<boolean>(false);
+
+    const [openAddressDialog, setOpenAddressDialog] = useState(false);
 
     const [paymentMethod] = useState<PaymentMethod>(PaymentMethod.Pix);
     const [orderPlaced, setOrderPlaced] = useState<boolean>(false);
@@ -81,9 +84,7 @@ function Checkout() {
             .then(res => {
                 const fetchedAddresses = res.data;
 
-                if (fetchedAddresses.length === 1) {
-                    setDeliveryInfo(fetchedAddresses[0]);
-                } else if (fetchedAddresses.length > 1) {
+                if (fetchedAddresses.length >= 1) {
                     setAddresses(fetchedAddresses);
                     setRadioSelectedAddressId(fetchedAddresses[0].id);
                 } else {
@@ -135,11 +136,17 @@ function Checkout() {
     }
 
     function handleChangeAddress(): void {
+        fetchAllAddresses();
         setDeliveryInfo(null);
     }
 
     function handleAddNewAddress(): void {
+        setOpenAddressDialog(true);
+    }
 
+    function onDialogClose(): void {
+        setOpenAddressDialog(false);
+        fetchAllAddresses();
     }
 
     function updateItemQuantity(productId: string, newQuantity: number): void {
@@ -187,6 +194,7 @@ function Checkout() {
                                 <RadioGroup
                                     value={radioSelectedAddressId?.toString()}
                                     onChange={(event) => setRadioSelectedAddressId(event.target.value)}
+                                    sx={{ marginBottom: '8px' }}
                                 >
                                     {addresses.map((address) => (
                                         <StyledAddressFormControlLabel
@@ -215,6 +223,14 @@ function Checkout() {
                                     variant='contained'
                                 >
                                     Ship to this address
+                                </Button>
+
+                                <Button
+                                    onClick={handleAddNewAddress}
+                                    size='small'
+                                    sx={{ marginLeft: '15px' }}
+                                >
+                                    Add new address
                                 </Button>
                             </div>
                         }
@@ -304,6 +320,15 @@ function Checkout() {
                     </PriceContainerContent>
                 </PriceContainer>
             </Container>
+
+            <Dialog
+                open={openAddressDialog}
+                onClose={() => setOpenAddressDialog(false)}
+                fullWidth
+                maxWidth='md'
+            >
+                <AddressForm crudType='Create' onClose={onDialogClose} />
+            </Dialog>
         </Main>
     )
 }
