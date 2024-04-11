@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Net.Http;
 using System.Text.Json.Serialization;
 
 namespace Ecommerce.Infra.IoC;
@@ -53,12 +54,24 @@ public static class DependencyInjection
         services.AddSingleton<AuthorizationHeaderHandler>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IBlobStorageService, BlobStorageService>();
-        services.AddHttpClient<IAuthorizationService, AuthorizationService>()
-            .AddHttpMessageHandler(provider =>
-            {
-                var httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
-                return new AuthorizationHeaderHandler(httpContextAccessor);
-            });
+        services.AddHttpClient<IAuthorizationService, AuthorizationService>((serviceProvider, client) =>
+        {
+            string? timeout = configuration["AuthorizationTimeout"];
+
+            if (string.IsNullOrEmpty(timeout))
+                throw new InvalidOperationException("AuthorizationTimeout configuration is missing or empty");
+
+            if (!int.TryParse(timeout, out int timeoutSeconds))
+                throw new InvalidOperationException("AuthorizationTimeout configuration is not a valid integer");
+
+            client.Timeout = TimeSpan.FromSeconds(timeoutSeconds);
+            client.BaseAddress = new Uri(configuration["AuthorizationBaseUrl"] ?? throw new InvalidOperationException("AuthorizationBaseUrl configuration is missing or empty"));
+        })
+        .AddHttpMessageHandler(provider =>
+        {
+            var httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
+            return new AuthorizationHeaderHandler(httpContextAccessor);
+        });
 
         services.AddScoped<IAddressRepository, AddressRepository>();
         services.AddScoped<ICartRepository, CartRepository>();
