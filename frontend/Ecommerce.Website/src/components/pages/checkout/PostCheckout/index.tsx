@@ -6,7 +6,7 @@ import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import { BannerContainer, Container, DetailsAction, DetailsContainer, DetailsTitle, SuccessBanner, Title } from './styles';
 
 interface PostCheckoutProps {
-    address: Address
+    address?: Address
 }
 
 export default function PostCheckout({ address }: PostCheckoutProps) {
@@ -43,7 +43,12 @@ export default function PostCheckout({ address }: PostCheckoutProps) {
 
             <DetailsContainer>
                 <DetailsTitle>
-                    <h2>Shipping to {formatAddress(address)}</h2>
+                    <h2>
+                        {address
+                            ? <>Shipping to {formatAddress(address)}</>
+                            : <>Thank you for your purchase!</>
+                        }
+                    </h2>
                 </DetailsTitle>
                 <DetailsAction>
                     <Link href='/orders'>

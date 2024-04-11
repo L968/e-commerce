@@ -8,6 +8,7 @@ import Address from '@/interfaces/Address';
 import apiOrder from '@/services/apiOrder';
 import { useEffect, useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
+import PixIcon from '@mui/icons-material/Pix';
 import currencyFormat from '@/utils/currencyFormat';
 import getTotalAmount from '@/utils/getTotalAmount';
 import AddressForm from '@/components/Forms/address';
@@ -19,8 +20,8 @@ import NumberSelector from '@/components/NumberSelector/default';
 import { useOrderCheckout } from '@/contexts/orderCheckoutContext';
 import PostCheckout from '@/components/pages/checkout/PostCheckout';
 import OrderCheckoutRequest from '@/interfaces/api/requests/OrderCheckoutRequest';
-import { Avatar, Button, CircularProgress, Dialog, Divider, Radio, RadioGroup } from '@mui/material';
-import { Container, ItemContainer, ItemInfo, Main, Price, PriceContainer, PriceContainerContent, PriceContainerRow, PriceContainerTitle, ProductName, Section, SectionContainer, SectionContent, SectionTitle, StyledAddressFormControlLabel, TotalPrice } from './styles';
+import { Button, CircularProgress, Dialog, Divider, Radio, RadioGroup, Stack } from '@mui/material';
+import { Container, ItemContainer, ItemInfo, Main, Price, PriceContainer, PriceContainerContent, PriceContainerRow, PriceContainerTitle, ProductName, Section, SectionContainer, SectionContent, SectionTitle, StyledFormControlLabel, TotalPrice } from './styles';
 
 const shipping = 20;
 
@@ -38,10 +39,11 @@ function Checkout() {
     const [defaultAddressId, setDefaultAddressId] = useState<string>();
     const [radioSelectedAddressId, setRadioSelectedAddressId] = useState<string | null>(null);
     const [addressLoading, setAddressLoading] = useState<boolean>(false);
-
     const [openAddressDialog, setOpenAddressDialog] = useState(false);
 
-    const [paymentMethod] = useState<PaymentMethod>(PaymentMethod.Pix);
+    const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(PaymentMethod.PayPal);
+
+
     const [orderPlaced, setOrderPlaced] = useState<boolean>(false);
     const [placeOrderLoading, setPlaceOrderLoading] = useState<boolean>(false);
 
@@ -101,7 +103,7 @@ function Checkout() {
             return;
         }
 
-        if (!paymentMethod) {
+        if (paymentMethod === null) {
             toast.warning('Please select a payment method before placing the order.');
             return;
         }
@@ -118,7 +120,14 @@ function Checkout() {
         setPlaceOrderLoading(true);
 
         apiOrder.post('/order', data)
-            .then(res => setOrderPlaced(true))
+            .then(res => {
+                if (data.paymentMethod === PaymentMethod.PayPal) {
+                    const paypalCheckoutUrl = res.data;
+                    window.location.href = paypalCheckoutUrl;
+                } else {
+                    setOrderPlaced(true);
+                }
+            })
             .catch(err => toast.error('Error 500'))
             .finally(() => setPlaceOrderLoading(false));
     }
@@ -197,7 +206,7 @@ function Checkout() {
                                     sx={{ marginBottom: '8px' }}
                                 >
                                     {addresses.map((address) => (
-                                        <StyledAddressFormControlLabel
+                                        <StyledFormControlLabel
                                             key={address.id}
                                             value={address.id}
                                             control={<Radio />}
@@ -253,10 +262,33 @@ function Checkout() {
                         <SectionTitle variant='h3'>2 Payment Method</SectionTitle>
 
                         <SectionContent>
-                            <Avatar>
-                                <CreditCardIcon />
-                            </Avatar>
-                            Credit card: **** 9999
+                            <RadioGroup
+                                value={paymentMethod}
+                                onChange={(e) => setPaymentMethod(parseInt(e.target.value))}
+                            >
+                                <StyledFormControlLabel
+                                    value={PaymentMethod.PayPal}
+                                    control={<Radio />}
+                                    checked={paymentMethod === PaymentMethod.PayPal}
+                                    label={
+                                        <Stack alignItems='center' direction='row' gap={1}>
+                                            <CreditCardIcon sx={{ color: '#005280' }} />
+                                            PayPal
+                                        </Stack>
+                                    }
+                                />
+                                <StyledFormControlLabel
+                                    value={PaymentMethod.Pix}
+                                    control={<Radio />}
+                                    checked={paymentMethod === PaymentMethod.Pix}
+                                    label={
+                                        <Stack alignItems='center' direction='row' gap={1}>
+                                            <PixIcon sx={{ color: '#4BB8A9' }} />
+                                            Pix
+                                        </Stack>
+                                    }
+                                />
+                            </RadioGroup>
                         </SectionContent>
                     </Section>
 

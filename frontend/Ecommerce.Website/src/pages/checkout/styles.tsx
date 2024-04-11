@@ -116,7 +116,7 @@ export const TotalPrice = styled(Box)({
     marginTop: '30px',
 })
 
-export const StyledAddressFormControlLabel = styled((props: FormControlLabelProps) => <FormControlLabel {...props} />)(
+export const StyledFormControlLabel = styled((props: FormControlLabelProps) => <FormControlLabel {...props} />)(
     ({ theme, checked }) => ({
         '&.MuiFormControlLabel-root': {
             padding: theme.spacing(1, 2),
@@ -134,4 +134,4 @@ export const StyledAddressFormControlLabel = styled((props: FormControlLabelProp
                 }),
         },
     })
-);
+)
