@@ -1,27 +1,11 @@
 ﻿using Ecommerce.Application.Interfaces;
-using Microsoft.Extensions.Configuration;
 using System.Net;
 
 namespace Ecommerce.Application.Services;
 
-public class AuthorizationService : IAuthorizationService
+public class AuthorizationService(HttpClient httpClient) : IAuthorizationService
 {
-    private readonly HttpClient _httpClient;
-
-    public AuthorizationService(HttpClient httpClient, IConfiguration configuration)
-    {
-        string? timeout = configuration["AuthorizationTimeout"];
-
-        if (string.IsNullOrEmpty(timeout))
-            throw new InvalidOperationException("AuthorizationTimeout configuration is missing or empty");
-
-        if (!int.TryParse(timeout, out int timeoutSeconds))
-            throw new InvalidOperationException("AuthorizationTimeout configuration is not a valid integer");
-
-        _httpClient = httpClient;
-        _httpClient.Timeout = TimeSpan.FromSeconds(timeoutSeconds);
-        _httpClient.BaseAddress = new Uri(configuration["AuthorizationBaseUrl"] ?? throw new InvalidOperationException("AuthorizationBaseUrl configuration is missing or empty"));
-    }
+    private readonly HttpClient _httpClient = httpClient;
 
     public async Task<Guid?> GetDefaultAddressIdAsync()
     {
