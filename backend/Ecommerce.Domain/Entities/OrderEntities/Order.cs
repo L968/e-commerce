@@ -7,9 +7,11 @@ public sealed class Order : AuditableEntity
     public Guid Id { get; private set; }
     public int UserId { get; private set; }
     public OrderStatus Status { get; private set; }
+    public PaymentMethod PaymentMethod{ get; set; }
     public decimal ShippingCost { get; private set; }
     public decimal? Discount { get; private set; }
     public decimal TotalAmount { get; private set; }
+    public string? ExternalPaymentId { get; private set; }
     public string ShippingPostalCode { get; private set; } = "";
     public string ShippingStreetName { get; private set; } = "";
     public string ShippingBuildingNumber { get; private set; } = "";
@@ -19,19 +21,21 @@ public sealed class Order : AuditableEntity
     public string? ShippingState { get; private set; }
     public string? ShippingCountry { get; private set; }
 
-    private readonly List<OrderHistory> _history = new();
+    private readonly List<OrderHistory> _history = [];
     public IReadOnlyCollection<OrderHistory> History => _history;
 
-    private readonly List<OrderItem> _items = new();
+    private readonly List<OrderItem> _items = [];
     public IReadOnlyCollection<OrderItem> Items => _items;
 
     private Order() { }
 
     private Order(
         int userId,
+        PaymentMethod paymentMethod,
         decimal shippingCost,
         decimal? discount,
-        decimal total,
+        decimal totalAmount,
+        string? externalPaymentId,
         string shippingPostalCode,
         string shippingStreetName,
         string shippingBuildingNumber,
@@ -45,9 +49,11 @@ public sealed class Order : AuditableEntity
         Id = Guid.NewGuid();
         UserId = userId;
         Status = OrderStatus.PendingPayment;
+        PaymentMethod = paymentMethod;
         ShippingCost = shippingCost;
         Discount = discount;
-        TotalAmount = total;
+        TotalAmount = totalAmount;
+        ExternalPaymentId = externalPaymentId;
         ShippingPostalCode = shippingPostalCode;
         ShippingStreetName = shippingStreetName;
         ShippingBuildingNumber = shippingBuildingNumber;
@@ -61,6 +67,8 @@ public sealed class Order : AuditableEntity
     public static Result<Order> Create(
         int userId,
         IEnumerable<CartItem> cartItems,
+        PaymentMethod paymentMethod,
+        string? externalPaymentId,
         string shippingPostalCode,
         string shippingStreetName,
         string shippingBuildingNumber,
@@ -122,9 +130,11 @@ public sealed class Order : AuditableEntity
 
         var order = new Order(
             userId,
+            paymentMethod,
             shippingCost,
             totalDiscount,
             totalAmount,
+            externalPaymentId,
             shippingPostalCode,
             shippingStreetName,
             shippingBuildingNumber,
@@ -137,7 +147,8 @@ public sealed class Order : AuditableEntity
 
         foreach (OrderItem orderItem in orderItems)
         {
-            order.AddItem(orderItem);
+            var result = order.AddItem(orderItem);
+            if (result.IsFailed) return result;
         }
 
         order.AddHistory(OrderStatus.PendingPayment, "Order created, awaiting payment");
@@ -145,20 +156,43 @@ public sealed class Order : AuditableEntity
         return Result.Ok(order);
     }
 
+    public Result CompletePayment()
+    {
+        if (Status != OrderStatus.PendingPayment)
+            return Result.Fail(DomainErrors.Order.InvalidPaymentStatus);
+
+        Status = OrderStatus.Processing;
+        AddHistory(OrderStatus.Processing, "Payment completed, order processing");
+
+        return Result.Ok();
+    }
+
     public void AddHistory(OrderStatus status, string? notes = null)
     {
         _history.Add(new OrderHistory(Id, status, notes));
     }
 
-    public void AddItem(OrderItem orderItem)
+    public Result AddItem(OrderItem orderItem)
     {
+        if (Status == OrderStatus.Cancelled)
+            return Result.Fail(DomainErrors.Order.CannotAddItemToCancelledOrder);
+
         orderItem.SetOrderId(Id);
         _items.Add(orderItem);
+        return Result.Ok();
     }
 
     private static decimal CalculateShippingCost(int orderItems)
     {
         // TODO: Calculate Shipping
         return orderItems * 10;
+    }
+
+    public void Cancel()
+    {
+        if (Status == OrderStatus.Cancelled) return;
+
+        Status = OrderStatus.Cancelled;
+        AddHistory(OrderStatus.Cancelled, "Order cancelled");
     }
 }

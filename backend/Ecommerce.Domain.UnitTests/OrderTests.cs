@@ -1,4 +1,5 @@
 ﻿using Ecommerce.Domain.Entities.OrderEntities;
+using Ecommerce.Domain.Enums;
 
 namespace Ecommerce.Domain.UnitTests;
 
@@ -13,7 +14,9 @@ public class OrderTests
         // Act
         var result = Order.Create(
             userId: 3,
+            paymentMethod: PaymentMethod.PayPal,
             cartItems: cartItems,
+            externalPaymentId: null,
             shippingPostalCode: "12345-678",
             shippingStreetName: "Main Street",
             shippingBuildingNumber: "123",

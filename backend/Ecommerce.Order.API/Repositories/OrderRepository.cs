@@ -39,4 +39,15 @@ public class OrderRepository(AppDbContext context) : IOrderRepository
             .Include(o => o.History)
             .FirstOrDefaultAsync(o => o.Id == id && o.UserId == userId);
     }
+
+    public async Task<Domain.Entities.OrderEntities.Order?> GetByExternalPaymentIdAsync(string externalPaymentId)
+    {
+        return await _context.Orders.FirstOrDefaultAsync(o => o.ExternalPaymentId == externalPaymentId);
+    }
+
+    public async Task UpdateAsync(Domain.Entities.OrderEntities.Order order)
+    {
+        _context.Orders.Update(order);
+        await _context.SaveChangesAsync();
+    }
 }

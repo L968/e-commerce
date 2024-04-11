@@ -20,7 +20,7 @@ public record UpdateAddressCommand : IRequest<Result>
 
 public class UpdateAddressCommandHandler(
     IUnitOfWork unitOfWork,
-    IAddressRepository addressRepository, 
+    IAddressRepository addressRepository,
     ICurrentUserService currentUserService
     ) : IRequestHandler<UpdateAddressCommand, Result>
 {

@@ -1,3 +1,4 @@
+using Ecommerce.Order.API;
 using Ecommerce.Order.API.Context;
 using Ecommerce.Order.API.Mappings;
 using Ecommerce.Order.API.RabbitMqClient;
@@ -14,9 +15,16 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+new Config(builder.Configuration).Init();
+
 builder.Services.AddSingleton<IRabbitMqClient, RabbitMqClient>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+
+builder.Services.AddHttpClient<IPayPalService, PayPalService>((serviceProvider, client) =>
+{
+    client.BaseAddress = new Uri(Config.PayPalBaseAddress);
+});
 
 var connectionString = builder.Configuration.GetConnectionString("Connection");
 var serverVersion = ServerVersion.AutoDetect(connectionString);

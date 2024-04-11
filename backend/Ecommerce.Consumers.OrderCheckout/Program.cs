@@ -110,6 +110,8 @@ async void Process(object? model, BasicDeliverEventArgs ea)
         var result = Order.Create(
             orderCheckout.UserId,
             cartItems,
+            orderCheckout.PaymentMethod,
+            orderCheckout.ExternalPaymentId,
             address.PostalCode,
             address.StreetName,
             address.BuildingNumber,

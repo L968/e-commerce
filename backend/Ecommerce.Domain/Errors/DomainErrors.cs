@@ -70,6 +70,8 @@ public static class DomainErrors
         public static readonly Error InsufficientStock = new("Insufficient stock for some products");
         public static readonly Error InactiveProduct = new("Inactive product cannot be added to the order");
         public static readonly Error DiscountUnitNotImplemented = new("Discount unit is not implemented");
+        public static readonly Error CannotAddItemToCancelledOrder = new("Cannot add item to a cancelled order");
+        public static readonly Error InvalidPaymentStatus = new("Invalid payment status");
     }
 
     public static Error NotFound(string entityName, int id)

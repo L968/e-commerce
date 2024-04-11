@@ -1,5 +1,4 @@
 using Ecommerce.Application.DTOs.OrderCheckout;
-using Ecommerce.Order.API.RabbitMqClient;
 using Ecommerce.Order.API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +9,9 @@ namespace Ecommerce.Order.API.Controllers;
 [ApiController]
 [Route("[controller]")]
 [Authorize(Roles = "regular")]
-public class OrderController(IOrderService orderService, IRabbitMqClient publisher) : ControllerBase
+public class OrderController(IOrderService orderService) : ControllerBase
 {
     private readonly IOrderService _orderService = orderService;
-    private readonly IRabbitMqClient _publisher = publisher;
 
     [HttpGet("pending")]
     [Authorize(Roles = "admin")]
@@ -41,10 +39,10 @@ public class OrderController(IOrderService orderService, IRabbitMqClient publish
     }
 
     [HttpPost]
-    public IActionResult CreateOrder([FromBody] OrderCheckoutDto orderCheckout)
+    public async Task<IActionResult> CreateOrder([FromBody] OrderCheckoutDto orderCheckout)
     {
         orderCheckout.UserId = int.Parse(User.FindFirstValue("id")!);
-        _publisher.PublishOrder(orderCheckout);
-        return Ok();
+        string response = await _orderService.CreateOrderAsync(orderCheckout);
+        return Ok(response);
     }
 }
