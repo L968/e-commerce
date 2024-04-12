@@ -2,19 +2,18 @@ import moment from 'moment';
 import api from '@/services/apiOrder';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
+import { Order } from '@/interfaces/Order';
 import { useEffect, useState } from 'react';
 import { CircularProgress } from '@mui/material';
 import currencyFormat from '@/utils/currencyFormat';
-import getTotalAmount from '@/utils/getTotalAmount';
 import PrivateRoute from '@/components/PrivateRoute';
-import PaymentMethod from '@/interfaces/PaymentMethod';
-import { OrderListResponse } from '@/interfaces/api/responses/OrderListResponse';
 import { FeedbackContainer, HelpContainer, ProductContainer } from '@/components/pages/order/OrderContainers';
 import { Aside, AsideContent, Container, Divider, Main, PurchaseSummaryRow, PurchaseSummarySubtitle, PurchaseSummaryTitle } from './styles';
 
-function Order() {
+function OrderComponent() {
     const router = useRouter();
-    const [order, setOrder] = useState<OrderListResponse | null>(null);
+
+    const [order, setOrder] = useState<Order | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
@@ -22,7 +21,7 @@ function Order() {
 
         if (!orderId) return;
 
-        api.get<OrderListResponse>('/order/' + orderId)
+        api.get<Order>('/order/' + orderId)
             .then(response => setOrder(response.data))
             .catch(error => toast.error('Error 500'))
             .finally(() => setLoading(false));
@@ -41,7 +40,7 @@ function Order() {
         <Main>
             <Container>
                 <ProductContainer items={order.items} />
-                <FeedbackContainer status={order.status} totalAmount={order.totalAmount} paymentMethod={PaymentMethod.Pix} />
+                <FeedbackContainer status={order.status} totalAmount={order.totalAmount} paymentMethod={order.paymentMethod} />
                 <HelpContainer status={order.status} />
             </Container>
             <Aside>
@@ -78,7 +77,7 @@ function Order() {
 export default function Private() {
     return (
         <PrivateRoute>
-            <Order />
+            <OrderComponent />
         </PrivateRoute>
     )
 }
