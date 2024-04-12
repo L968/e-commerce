@@ -100,10 +100,10 @@ public sealed class Order : AuditableEntity
             if (!product.Active)
                 return Result.Fail(DomainErrors.Order.InactiveProduct);
 
-            var reduceStockResult = productCombination.Inventory.ReduceStock(cartItem.Quantity);
+            var validateStockResult = productCombination.Inventory.ValidateStock(cartItem.Quantity);
 
-            if (reduceStockResult.IsFailed)
-                return reduceStockResult;
+            if (validateStockResult.IsFailed)
+                return validateStockResult;
 
             var discountResult = productCombination.GetDiscount();
             if (discountResult.IsFailed)

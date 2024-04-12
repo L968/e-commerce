@@ -18,10 +18,18 @@ public sealed class ProductInventory : AuditableEntity
 
     public Result ReduceStock(int quantity)
     {
+        var result = ValidateStock(quantity);
+        if (result.IsFailed) return result;
+
+        Stock -= quantity;
+        return Result.Ok();
+    }
+
+    public Result ValidateStock(int quantity)
+    {
         if (quantity <= 0) return Result.Fail(DomainErrors.ProductInventory.InvalidQuantity);
         if (Stock < quantity) return Result.Fail(DomainErrors.ProductInventory.InsufficientStock);
 
-        Stock -= quantity;
         return Result.Ok();
     }
 }
