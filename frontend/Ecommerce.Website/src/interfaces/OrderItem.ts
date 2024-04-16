@@ -1,12 +1,12 @@
 export interface OrderItem {
     id: number
     productCombinationId: string
-    quantity: number
     productName: string
     productSku: string
     productImagePath: string
+    description: string
+    totalAmount: number
     productUnitPrice: number
     productDiscount: any
-    description: string
-    totalPrice: number
+    quantity: number
 }

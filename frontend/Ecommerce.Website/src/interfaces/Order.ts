@@ -7,12 +7,13 @@ export interface Order {
     id: string
     status: OrderStatus
     paymentMethod: PaymentMethod
-    shippingCost: number
-    discount: number
     subtotal: number
+    shippingCost: number
     totalAmount: number
+    totalDiscount: number
     shippingAddress: string
     createdAt: Date
-    history: OrderHistory[]
+
     items: OrderItem[]
+    history: OrderHistory[]
 }

@@ -53,7 +53,7 @@ function OrderComponent() {
                     {order.items.map(item =>
                         <PurchaseSummaryRow>
                             <span>{item.productName} ({item.quantity})</span>
-                            <span>{currencyFormat(item.totalPrice)}</span>
+                            <span>{currencyFormat(item.totalAmount)}</span>
                         </PurchaseSummaryRow>
                     )}
 
