@@ -1,4 +1,4 @@
-﻿namespace Ecommerce.Application.DTOs.Products;
+﻿namespace Ecommerce.Application.DTOs.Products.Admin;
 
 public record GetProductCombinationAdminDto
 {

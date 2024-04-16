@@ -5,7 +5,7 @@ namespace Ecommerce.Application.Features.Products.Queries;
 public record GetProductByIdQuery(Guid Id) : IRequest<GetProductDto?>;
 
 public class GetProductByIdQueryHandler(
-    IMapper mapper, 
+    IMapper mapper,
     IProductRepository productRepository
     ) : IRequestHandler<GetProductByIdQuery, GetProductDto?>
 {

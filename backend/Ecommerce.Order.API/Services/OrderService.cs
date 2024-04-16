@@ -1,12 +1,15 @@
 ﻿using AutoMapper;
 using Ecommerce.Application.DTOs;
 using Ecommerce.Application.DTOs.OrderCheckout;
+using Ecommerce.Domain.DTOs;
 using Ecommerce.Domain.Entities;
+using Ecommerce.Domain.Entities.ProductEntities;
 using Ecommerce.Domain.Enums;
+using Ecommerce.Domain.Errors;
 using Ecommerce.Order.API.Models.PayPal;
-using Ecommerce.Order.API.RabbitMqClient;
 using Ecommerce.Order.API.Repositories;
 using FluentResults;
+using Address = Ecommerce.Domain.Entities.Address;
 
 namespace Ecommerce.Order.API.Services;
 
@@ -14,13 +17,13 @@ public class OrderService(
     IMapper mapper,
     IOrderRepository repository,
     IPayPalService payPalService,
-    IRabbitMqClient publisher
+    IEcommerceService ecommerceService
     ) : IOrderService
 {
     private readonly IMapper _mapper = mapper;
     private readonly IOrderRepository _repository = repository;
     private readonly IPayPalService _payPalService = payPalService;
-    private readonly IRabbitMqClient _publisher = publisher;
+    private readonly IEcommerceService _ecommerceService = ecommerceService;
 
     public async Task<OrderDto?> GetByIdAsync(Guid id, int userId)
     {
@@ -46,22 +49,87 @@ public class OrderService(
         return _mapper.Map<IEnumerable<OrderDto>>(orders);
     }
 
-    public async Task<string> CreateOrderAsync(OrderCheckoutDto orderCheckout)
+    public async Task<Result<string>> CreateOrderAsync(OrderCheckoutDto orderCheckout)
     {
+        var validator = new OrderCheckoutDtoValidator();
+        var validatorResult = validator.Validate(orderCheckout);
+
+        if (!validatorResult.IsValid)
+        {
+            var errorMessage = "Invalid order checkout. Errors:" + Environment.NewLine +
+            $"{string.Join(Environment.NewLine, validatorResult.Errors.Select(error => $"{error.PropertyName}: {error.ErrorMessage}"))}";
+
+            return Result.Fail(errorMessage);
+        }
+
+        CreateOrderAddressDto? address = await _ecommerceService.GetAddressByIdAsync(orderCheckout.ShippingAddressId);
+
+        if (address is null)
+            return Result.Fail(DomainErrors.NotFound(nameof(Address), orderCheckout.ShippingAddressId));
+
+        var cartItems = new List<CreateOrderCartItemDto>();
+
+        foreach (var cartItemDto in orderCheckout.OrderCheckoutItems)
+        {
+            CreateOrderProductCombinationDto? productCombinationDto = await _ecommerceService.GetProductCombinationByIdAsync(cartItemDto.ProductCombinationId);
+
+            if (productCombinationDto is null)
+                return Result.Fail(DomainErrors.NotFound(nameof(ProductCombination), cartItemDto.ProductCombinationId));
+
+            if (!productCombinationDto.Product.Active)
+                return Result.Fail($"Product {productCombinationDto.Product.Id} is inactive");
+
+            ProductCombination productCombination = _mapper.Map<ProductCombination>(productCombinationDto);
+
+            cartItems.Add(new CreateOrderCartItemDto
+            {
+                ProductCombination = productCombination,
+                Quantity = cartItemDto.Quantity
+            });
+        }
+
+        var result = Domain.Entities.OrderEntities.Order.Create(
+            userId: orderCheckout.UserId,
+            cartItems: cartItems,
+            paymentMethod: orderCheckout.PaymentMethod,
+            shippingCost: 20, // TODO: Implement shipping cost service
+            shippingPostalCode: address.PostalCode,
+            shippingStreetName: address.StreetName,
+            shippingBuildingNumber: address.BuildingNumber,
+            shippingComplement: address.Complement,
+            shippingNeighborhood: address.Neighborhood,
+            shippingCity: address.City,
+            shippingState: address.State,
+            shippingCountry: address.Country
+        );
+
+        if (result.IsFailed)
+            return Result.Fail(result.Errors);
+
+        var order = result.Value;
+
+        // Payment ==================================================================================================
+
         string checkoutUrl = "";
-        orderCheckout.ExternalPaymentId = null;
 
         if (orderCheckout.PaymentMethod == PaymentMethod.PayPal)
         {
-            CreateOrderResponse response = await _payPalService.CreateOrderAsync();
+            decimal totalAmount = order.GetTotalAmount();
+            CreateOrderResponse response = await _payPalService.CreateOrderAsync(totalAmount, "CAD");
 
-            orderCheckout.ExternalPaymentId = response.id;
-            checkoutUrl = response.links.FirstOrDefault(link => link.rel == "payer-action")?.href!;
+            order.SetExternalPaymentId(response.id);
+            string? paypalCheckoutUrl = response.links.FirstOrDefault(link => link.rel == "payer-action")?.href;
+
+            if (string.IsNullOrEmpty(paypalCheckoutUrl))
+                return Result.Fail("Paypal checkout url not found");
+
+            checkoutUrl = paypalCheckoutUrl;
         }
 
-        _publisher.PublishOrder(orderCheckout);
+        await _repository.CreateAsync(order);
+        await _ecommerceService.ClearCartAsync(orderCheckout.OrderCheckoutItems.Select(i => i.ProductCombinationId));
 
-        return checkoutUrl;
+        return Result.Ok(checkoutUrl);
     }
 
     public async Task<Result> ProcessPayPalReturnAsync(string token)

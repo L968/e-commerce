@@ -18,6 +18,8 @@ public sealed class Address : AuditableEntity
     public string Country { get; private set; }
     public string? AdditionalInformation { get; private set; }
 
+    private Address() { }
+
     private Address(
         int userId,
         string recipientFullName,

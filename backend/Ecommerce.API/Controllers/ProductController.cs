@@ -1,4 +1,5 @@
 using Ecommerce.Application.DTOs.Products;
+using Ecommerce.Application.DTOs.Products.Admin;
 using Ecommerce.Application.Features.Products.Commands.CreateProduct;
 using Ecommerce.Application.Features.Products.Commands.DeleteProduct;
 using Ecommerce.Application.Features.Products.Commands.UpdateProduct;

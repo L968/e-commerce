@@ -1,4 +1,4 @@
-﻿using Ecommerce.Application.DTOs.Products;
+﻿using Ecommerce.Application.DTOs.Products.Admin;
 
 namespace Ecommerce.Application.Features.Products.Queries;
 

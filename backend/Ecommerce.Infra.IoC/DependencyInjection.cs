@@ -44,6 +44,8 @@ public static class DependencyInjection
 
         new Config(configuration).Init();
 
+        services.AddHttpContextAccessor();
+
         services.AddControllers().AddJsonOptions(options =>
         {
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -56,16 +58,16 @@ public static class DependencyInjection
         services.AddScoped<IBlobStorageService, BlobStorageService>();
         services.AddHttpClient<IAuthorizationService, AuthorizationService>((serviceProvider, client) =>
         {
-            string? timeout = configuration["AuthorizationTimeout"];
+            string? timeout = configuration["AuthorizationService:Timeout"];
 
             if (string.IsNullOrEmpty(timeout))
-                throw new InvalidOperationException("AuthorizationTimeout configuration is missing or empty");
+                throw new InvalidOperationException("AuthorizationService:Timeout configuration is missing or empty");
 
             if (!int.TryParse(timeout, out int timeoutSeconds))
-                throw new InvalidOperationException("AuthorizationTimeout configuration is not a valid integer");
+                throw new InvalidOperationException("AuthorizationService:Timeout configuration is not a valid integer");
 
             client.Timeout = TimeSpan.FromSeconds(timeoutSeconds);
-            client.BaseAddress = new Uri(configuration["AuthorizationBaseUrl"] ?? throw new InvalidOperationException("AuthorizationBaseUrl configuration is missing or empty"));
+            client.BaseAddress = new Uri(configuration["AuthorizationService:BaseUrl"] ?? throw new InvalidOperationException("AuthorizationService:BaseUrl configuration is missing or empty"));
         })
         .AddHttpMessageHandler(provider =>
         {

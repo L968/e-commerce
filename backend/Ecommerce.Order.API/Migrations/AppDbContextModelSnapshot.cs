@@ -17,7 +17,7 @@ namespace Ecommerce.Order.API.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.3")
+                .HasAnnotation("ProductVersion", "8.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
@@ -32,11 +32,6 @@ namespace Ecommerce.Order.API.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("created_at");
-
-                    b.Property<decimal?>("Discount")
-                        .HasPrecision(65, 2)
-                        .HasColumnType("decimal(65,2)")
-                        .HasColumnName("discount");
 
                     b.Property<string>("ExternalPaymentId")
                         .HasColumnType("longtext")
@@ -89,11 +84,6 @@ namespace Ecommerce.Order.API.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int")
                         .HasColumnName("status");
-
-                    b.Property<decimal>("TotalAmount")
-                        .HasPrecision(65, 2)
-                        .HasColumnType("decimal(65,2)")
-                        .HasColumnName("total_amount");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)")

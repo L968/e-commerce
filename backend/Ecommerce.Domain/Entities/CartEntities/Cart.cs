@@ -46,4 +46,17 @@ public sealed class Cart
     {
         _cartItems.Clear();
     }
+
+    public void ClearItems(Guid[] productCombinationIds)
+    {
+        foreach (Guid id in productCombinationIds)
+        {
+            var cartItemToRemove = _cartItems.FirstOrDefault(ci => ci.ProductCombinationId == id);
+
+            if (cartItemToRemove is not null)
+            {
+                _cartItems.Remove(cartItemToRemove);
+            }
+        }
+    }
 }

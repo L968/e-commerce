@@ -53,86 +53,86 @@ async void Process(object? model, BasicDeliverEventArgs ea)
 
         OrderCheckoutDto orderCheckout = JsonSerializer.Deserialize<OrderCheckoutDto>(message)!;
 
-        var validator = new OrderCheckoutDtoValidator();
-        var validatorResult = validator.Validate(orderCheckout);
+        //var validator = new OrderCheckoutDtoValidator();
+        //var validatorResult = validator.Validate(orderCheckout);
 
-        if (!validatorResult.IsValid)
-        {
-            WriteLine("Invalid order checkout. Errors:", ConsoleColor.Red);
-            WriteLine(string.Join(Environment.NewLine, validatorResult.Errors.Select(error => $"{error.PropertyName}: {error.ErrorMessage}")), ConsoleColor.Red);
-            return;
-        }
+        //if (!validatorResult.IsValid)
+        //{
+        //    WriteLine("Invalid order checkout. Errors:", ConsoleColor.Red);
+        //    WriteLine(string.Join(Environment.NewLine, validatorResult.Errors.Select(error => $"{error.PropertyName}: {error.ErrorMessage}")), ConsoleColor.Red);
+        //    return;
+        //}
 
-        Address? address = await GetAddressById(orderCheckout.ShippingAddressId, orderCheckout.UserId);
+        //Address? address = await GetAddressById(orderCheckout.ShippingAddressId, orderCheckout.UserId);
 
-        if (address == null)
-        {
-            WriteLine($"Address with id {orderCheckout.ShippingAddressId} not found", ConsoleColor.Red);
-            return;
-        }
+        //if (address == null)
+        //{
+        //    WriteLine($"Address with id {orderCheckout.ShippingAddressId} not found", ConsoleColor.Red);
+        //    return;
+        //}
 
-        var cartItems = new List<CartItem>();
+        //var cartItems = new List<CartItem>();
 
-        foreach (var cartItemDto in orderCheckout.OrderCheckoutItems)
-        {
-            ProductCombination? productCombination = await GetProductCombinationById(cartItemDto.ProductCombinationId);
+        //foreach (var cartItemDto in orderCheckout.OrderCheckoutItems)
+        //{
+        //    ProductCombination? productCombination = await GetProductCombinationById(cartItemDto.ProductCombinationId);
 
-            if (productCombination is null)
-            {
-                WriteLine($"Product combination {cartItemDto.ProductCombinationId} not found", ConsoleColor.Red);
-                return;
-            }
+        //    if (productCombination is null)
+        //    {
+        //        WriteLine($"Product combination {cartItemDto.ProductCombinationId} not found", ConsoleColor.Red);
+        //        return;
+        //    }
 
-            if (!productCombination.Product.Active)
-            {
-                WriteLine($"Product combination {productCombination.Product.Id} is inactive", ConsoleColor.Red);
-                return;
-            }
+        //    if (!productCombination.Product.Active)
+        //    {
+        //        WriteLine($"Product combination {productCombination.Product.Id} is inactive", ConsoleColor.Red);
+        //        return;
+        //    }
 
-            var createResult = CartItem.Create(
-                cartId: Guid.Empty,
-                productCombinationId: cartItemDto.ProductCombinationId,
-                quantity: cartItemDto.Quantity,
-                isSelectedForCheckout: true,
-                productCombination
-            );
+        //    var createResult = CartItem.Create(
+        //        cartId: Guid.Empty,
+        //        productCombinationId: cartItemDto.ProductCombinationId,
+        //        quantity: cartItemDto.Quantity,
+        //        isSelectedForCheckout: true,
+        //        productCombination
+        //    );
 
-            if (createResult.IsFailed)
-            {
-                WriteLine("Invalid cart item. Errors:", ConsoleColor.Red);
-                Console.WriteLine(string.Join(Environment.NewLine, createResult.Errors));
-                return;
-            }
+        //    if (createResult.IsFailed)
+        //    {
+        //        WriteLine("Invalid cart item. Errors:", ConsoleColor.Red);
+        //        Console.WriteLine(string.Join(Environment.NewLine, createResult.Errors));
+        //        return;
+        //    }
 
-            cartItems.Add(createResult.Value);
-        }
+        //    cartItems.Add(createResult.Value);
+        //}
 
-        var result = Order.Create(
-            orderCheckout.UserId,
-            cartItems,
-            orderCheckout.PaymentMethod,
-            orderCheckout.ExternalPaymentId,
-            address.PostalCode,
-            address.StreetName,
-            address.BuildingNumber,
-            address.Complement,
-            address.Neighborhood,
-            address.City,
-            address.State,
-            address.Country
-        );
+        //var result = Order.Create(
+        //    orderCheckout.UserId,
+        //    cartItems,
+        //    orderCheckout.PaymentMethod,
+        //    orderCheckout.ExternalPaymentId,
+        //    address.PostalCode,
+        //    address.StreetName,
+        //    address.BuildingNumber,
+        //    address.Complement,
+        //    address.Neighborhood,
+        //    address.City,
+        //    address.State,
+        //    address.Country
+        //);
 
-        if (result.IsFailed)
-        {
-            Console.WriteLine(result.Errors[0]);
-            return;
-        }
+        //if (result.IsFailed)
+        //{
+        //    Console.WriteLine(result.Errors[0]);
+        //    return;
+        //}
 
-        ClearCart(orderCheckout.UserId);
+        //ClearCart(orderCheckout.UserId);
 
-        using var db = new AppDbContext();
-        await db.Orders.AddAsync(result.Value);
-        await db.SaveChangesAsync();
+        //using var db = new AppDbContext();
+        //await db.Orders.AddAsync(result.Value);
+        //await db.SaveChangesAsync();
 
         channel.BasicAck(ea.DeliveryTag, false);
         WriteLine("Order processed successfully", ConsoleColor.Green);

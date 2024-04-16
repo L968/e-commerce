@@ -21,16 +21,16 @@ namespace Ecommerce.Domain.UnitTests
         {
             var product1 = Product.Create("Smartphone XYZ", "High-end smartphone with advanced features", true, true, Guid.NewGuid()).Value;
             var productCombination1 = ProductCombination.Create(
-                productId: product1.Id, 
-                existingCombinations: product1.Combinations, 
-                variantOptions: [], 
-                sku: "XYZ-128GB-BLACK", 
-                price: 1000, 
-                stock: 100, 
-                length: 5.5f, 
-                width: 2.8f, 
-                height: 0.3f, 
-                weight: 0.5f, 
+                productId: product1.Id,
+                existingCombinations: product1.Combinations,
+                variantOptions: [],
+                sku: "XYZ-128GB-BLACK",
+                price: 1000,
+                stock: 100,
+                length: 5.5f,
+                width: 2.8f,
+                height: 0.3f,
+                weight: 0.5f,
                 imagePaths: ["/images/smartphone_xyz_black.jpg"]
             ).Value;
             SetPrivateProperty(productCombination1, "Product", product1);
@@ -110,9 +110,9 @@ namespace Ecommerce.Domain.UnitTests
 
             return
             [
-                CartItem.Create(carts[0].Id, products[0].Combinations[0].Id, 2, true, products[0].Combinations[0]).Value,
-                CartItem.Create(carts[0].Id, products[1].Combinations[0].Id, 1, true, products[1].Combinations[0]).Value,
-                CartItem.Create(carts[0].Id, products[2].Combinations[0].Id, 3, true, products[2].Combinations[0]).Value
+                CartItem.Create(carts[0].Id, products[0].Combinations[0].Id, 2).Value,
+                CartItem.Create(carts[0].Id, products[1].Combinations[0].Id, 1).Value,
+                CartItem.Create(carts[0].Id, products[2].Combinations[0].Id, 3).Value
             ];
         }
 

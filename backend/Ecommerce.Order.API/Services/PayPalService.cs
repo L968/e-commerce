@@ -1,4 +1,5 @@
 using Ecommerce.Order.API.Models.PayPal;
+using System.Globalization;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
@@ -27,43 +28,21 @@ public class PayPalService(HttpClient httpClient) : IPayPalService
     /// Creates a PayPal payment for the specified order.
     /// </summary>
     /// <returns>The approval URL for the created payment</returns>
-    public async Task<CreateOrderResponse> CreateOrderAsync()
+    public async Task<CreateOrderResponse> CreateOrderAsync(decimal totalAmount, string currencyCode)
     {
         await RefreshAccessToken();
 
-        var order = new CreateOrderRequest
+        var orderRequest = new CreateOrderRequest
         {
             intent = "CAPTURE",
             purchase_units =
             [
                 new PurchaseUnit
                 {
-                    items =
-                    [
-                        new Item
-                        {
-                            name = "T-Shirt",
-                            description = "Green XL",
-                            quantity = "1",
-                            unit_amount = new UnitAmount
-                            {
-                                currency_code = "CAD",
-                                value = "100.00"
-                            }
-                        }
-                    ],
                     amount = new Amount
                     {
-                        currency_code = "CAD",
-                        value = "100.00",
-                        breakdown = new Breakdown
-                        {
-                            item_total = new ItemTotal
-                            {
-                                currency_code = "CAD",
-                                value = "100.00"
-                            }
-                        }
+                        currency_code = currencyCode,
+                        value = totalAmount.ToString(CultureInfo.InvariantCulture)
                     }
                 }
             ],
@@ -80,7 +59,7 @@ public class PayPalService(HttpClient httpClient) : IPayPalService
             }
         };
 
-        string paymentJson = JsonSerializer.Serialize(order);
+        string paymentJson = JsonSerializer.Serialize(orderRequest);
         var content = new StringContent(paymentJson, Encoding.UTF8, "application/json");
 
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);

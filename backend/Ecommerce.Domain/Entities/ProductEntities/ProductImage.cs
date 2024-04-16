@@ -8,6 +8,8 @@ public sealed class ProductImage
 
     public ProductCombination? ProductCombination { get; private set; }
 
+    private ProductImage() { }
+
     public ProductImage(Guid productCombinationId, string imagePath)
     {
         ProductCombinationId = productCombinationId;

@@ -60,5 +60,15 @@ namespace Ecommerce.API.Controllers
 
             return NoContent();
         }
+
+        [HttpPatch("clear-items")]
+        public async Task<IActionResult> ClearCartItems([FromBody] Guid[] productCombinationIds)
+        {
+            Result result = await _mediator.Send(new ClearCartItemsCommand(productCombinationIds));
+
+            if (result.IsFailed) return BadRequest(result.Reasons);
+
+            return NoContent();
+        }
     }
 }

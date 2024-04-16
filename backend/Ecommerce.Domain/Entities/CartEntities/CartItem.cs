@@ -6,32 +6,27 @@ public sealed class CartItem : AuditableEntity
     public Guid CartId { get; private set; }
     public Guid ProductCombinationId { get; private set; }
     public int Quantity { get; private set; }
-    public bool IsSelectedForCheckout { get; private set; }
 
     public Cart? Cart { get; private set; }
     public ProductCombination? ProductCombination { get; private set; } = null!;
 
     private CartItem() { }
 
-    private CartItem(Guid cartId, Guid productCombinationId, int quantity, bool isSelectedForCheckout, ProductCombination? productCombination)
+    private CartItem(Guid cartId, Guid productCombinationId, int quantity)
     {
         CartId = cartId;
         ProductCombinationId = productCombinationId;
         Quantity = quantity;
-        IsSelectedForCheckout = isSelectedForCheckout;
-        ProductCombination = productCombination;
     }
 
-    public static Result<CartItem> Create(Guid cartId, Guid productCombinationId, int quantity, bool isSelectedForCheckout, ProductCombination? productCombination = null)
+    public static Result<CartItem> Create(Guid cartId, Guid productCombinationId, int quantity)
     {
         if (quantity <= 0) return Result.Fail(DomainErrors.CartItem.InvalidQuantity);
 
         return Result.Ok(new CartItem(
             cartId,
             productCombinationId,
-            quantity,
-            isSelectedForCheckout,
-            productCombination
+            quantity
         ));
     }
 
@@ -43,10 +38,5 @@ public sealed class CartItem : AuditableEntity
     public void SetQuantity(int quantity)
     {
         Quantity = quantity;
-    }
-
-    public void SetIsSelectedForCheckout(bool isSelectedForCheckout)
-    {
-        IsSelectedForCheckout = isSelectedForCheckout;
     }
 }

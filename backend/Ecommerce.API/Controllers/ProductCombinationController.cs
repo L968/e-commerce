@@ -2,17 +2,29 @@
 using Ecommerce.Application.Features.ProductCombinations.Commands.AddProductCombination;
 using Ecommerce.Application.Features.ProductCombinations.Commands.DeleteProductCombination;
 using Ecommerce.Application.Features.ProductCombinations.Commands.UpdateProductCombination;
+using Ecommerce.Application.Features.ProductCombinations.Queries;
 
 namespace Ecommerce.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-[Authorize(Roles = "admin")]
 public class ProductCombinationController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
 
+    [HttpGet("{id}")]
+    [Authorize(Roles = "regular")]
+    public async Task<IActionResult> GetById(Guid id)
+    {
+        GetProductCombinationByIdDto? product = await _mediator.Send(new GetProductCombinationByIdQuery(id));
+
+        if (product is null) return NotFound();
+
+        return Ok(product);
+    }
+
     [HttpPost]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Create([FromForm] CreateProductCombinationCommand command)
     {
         Result<GetProductCombinationDto> result = await _mediator.Send(command);
@@ -23,6 +35,7 @@ public class ProductCombinationController(IMediator mediator) : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Update(Guid id, [FromForm] UpdateProductCombinationCommand command)
     {
         command.Id = id;
@@ -42,6 +55,7 @@ public class ProductCombinationController(IMediator mediator) : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Delete(Guid id)
     {
         Result result = await _mediator.Send(new DeleteProductCombinationCommand(id));

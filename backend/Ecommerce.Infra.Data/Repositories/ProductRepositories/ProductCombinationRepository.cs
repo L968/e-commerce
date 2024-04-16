@@ -7,6 +7,9 @@ public class ProductCombinationRepository(AppDbContext context) : BaseRepository
         return await _context.ProductCombinations
             .Include(pc => pc.Product)
                 .ThenInclude(p => p.Combinations)
+            .Include(pc => pc.Product)
+                .ThenInclude(p => p.Discounts)
+            .Include(pc => pc.Inventory)
             .Include(pc => pc.Images)
             .FirstOrDefaultAsync(pc => pc.Id == id);
     }

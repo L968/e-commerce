@@ -8,9 +8,9 @@ public record CreateCartItemCommand : IRequest<Result>
 }
 
 public class CreateCartItemCommandHandler(
-    IUnitOfWork unitOfWork, 
-    ICurrentUserService currentUserService, 
-    ICartRepository cartRepository, 
+    IUnitOfWork unitOfWork,
+    ICurrentUserService currentUserService,
+    ICartRepository cartRepository,
     IProductCombinationRepository productCombinationRepository
     ) : IRequestHandler<CreateCartItemCommand, Result>
 {
@@ -34,7 +34,7 @@ public class CreateCartItemCommandHandler(
         if (productCombination is null)
             return DomainErrors.NotFound(nameof(ProductCombination), request.ProductCombinationId);
 
-        Result<CartItem> createResult = CartItem.Create(cart.Id, request.ProductCombinationId, request.Quantity, true);
+        Result<CartItem> createResult = CartItem.Create(cart.Id, request.ProductCombinationId, request.Quantity);
         if (createResult.IsFailed) return Result.Fail(createResult.Errors);
 
         CartItem cartItem = createResult.Value;

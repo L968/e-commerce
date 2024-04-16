@@ -7,7 +7,7 @@ public record CreateCartCommand : IRequest<Result<GetCartDto>>;
 
 public class CreateCartCommandHandler(
     IMapper mapper,
-    IUnitOfWork unitOfWork, 
+    IUnitOfWork unitOfWork,
     ICartRepository cartRepository,
     ICurrentUserService currentUserService
     ) : IRequestHandler<CreateCartCommand, Result<GetCartDto>>

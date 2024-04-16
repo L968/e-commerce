@@ -3,6 +3,7 @@ using System;
 using Ecommerce.Infra.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -16,8 +17,10 @@ namespace Ecommerce.Infra.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.2")
+                .HasAnnotation("ProductVersion", "8.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
             modelBuilder.Entity("Ecommerce.Domain.Entities.Address", b =>
                 {
@@ -120,6 +123,8 @@ namespace Ecommerce.Infra.Data.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
                     b.Property<Guid>("CartId")
                         .HasColumnType("char(36)")
                         .HasColumnName("cart_id");
@@ -127,10 +132,6 @@ namespace Ecommerce.Infra.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("created_at");
-
-                    b.Property<bool>("IsSelectedForCheckout")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("is_selected_for_checkout");
 
                     b.Property<Guid>("ProductCombinationId")
                         .HasColumnType("char(36)")
@@ -298,6 +299,8 @@ namespace Ecommerce.Infra.Data.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("created_at");
@@ -353,6 +356,8 @@ namespace Ecommerce.Infra.Data.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
                     b.Property<string>("ImagePath")
                         .IsRequired()
                         .HasColumnType("longtext")
@@ -377,6 +382,8 @@ namespace Ecommerce.Infra.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)")
@@ -410,6 +417,8 @@ namespace Ecommerce.Infra.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)")
@@ -478,6 +487,8 @@ namespace Ecommerce.Infra.Data.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
                     b.Property<Guid>("ProductId")
                         .HasColumnType("char(36)")
                         .HasColumnName("product_id");
@@ -522,6 +533,8 @@ namespace Ecommerce.Infra.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()

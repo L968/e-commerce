@@ -37,11 +37,17 @@ public sealed class OrderItem
         ProductDiscount = productDiscount;
     }
 
-    public void SetOrderId(Guid orderId)
+    public decimal GetTotalAmount()
     {
-        if (OrderId == Guid.Empty)
-        {
-            OrderId = orderId;
-        }
+        decimal discountedPrice = ProductDiscount.HasValue
+            ? ProductUnitPrice - ProductDiscount.Value
+            : ProductUnitPrice;
+
+        return discountedPrice * Quantity;
+    }
+
+    public decimal GetTotalDiscount()
+    {
+        return (ProductDiscount ?? 0) * Quantity;
     }
 }

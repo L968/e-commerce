@@ -45,6 +45,12 @@ public class OrderRepository(AppDbContext context) : IOrderRepository
         return await _context.Orders.FirstOrDefaultAsync(o => o.ExternalPaymentId == externalPaymentId);
     }
 
+    public async Task CreateAsync(Domain.Entities.OrderEntities.Order order)
+    {
+        await _context.Orders.AddAsync(order);
+        await _context.SaveChangesAsync();
+    }
+
     public async Task UpdateAsync(Domain.Entities.OrderEntities.Order order)
     {
         _context.Orders.Update(order);

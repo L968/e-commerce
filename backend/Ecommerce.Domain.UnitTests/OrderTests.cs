@@ -14,9 +14,9 @@ public class OrderTests
         // Act
         var result = Order.Create(
             userId: 3,
+            cartItems: [],
             paymentMethod: PaymentMethod.PayPal,
-            cartItems: cartItems,
-            externalPaymentId: null,
+            shippingCost: 20,
             shippingPostalCode: "12345-678",
             shippingStreetName: "Main Street",
             shippingBuildingNumber: "123",
@@ -32,8 +32,8 @@ public class OrderTests
 
         Order order = result.Value;
         Assert.NotNull(order);
-        Assert.Equal(3650, order.TotalAmount);
-        Assert.Equal(0, order.Discount);
+        Assert.Equal(3650, order.GetTotalAmount());
+        Assert.Equal(0, order.GetTotalDiscount());
         Assert.Equal(30, order.ShippingCost);
     }
 }

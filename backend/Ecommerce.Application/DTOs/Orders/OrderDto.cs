@@ -2,15 +2,16 @@
 
 public record OrderDto
 {
-    public Guid Id { get; set; }
-    public string Status { get; set; } = "";
-    public decimal ShippingCost { get; set; }
-    public decimal? Discount { get; set; }
-    public decimal Subtotal => Items.Sum(item => item.Quantity * item.ProductUnitPrice);
-    public decimal TotalAmount => Subtotal + ShippingCost;
-    public string ShippingAddress { get; set; } = "";
-    public DateTime CreatedAt { get; set; }
+    public Guid Id { get; init; }
+    public string Status { get; init; } = "";
+    public string PaymentMethod { get; set; } = "";
+    public decimal Subtotal { get; init; }
+    public decimal ShippingCost { get; init; }
+    public decimal TotalAmount { get; init; }
+    public decimal? TotalDiscount { get; init; }
+    public string ShippingAddress { get; init; } = "";
+    public DateTime CreatedAt { get; init; }
 
-    public List<OrderHistoryDto> History { get; set; } = [];
-    public List<OrderItemDto> Items { get; set; } = [];
+    public List<OrderItemDto> Items { get; init; } = [];
+    public List<OrderHistoryDto> History { get; init; } = [];
 }

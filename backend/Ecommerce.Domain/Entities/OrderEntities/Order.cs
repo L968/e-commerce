@@ -1,4 +1,5 @@
-﻿using Ecommerce.Domain.Enums;
+﻿using Ecommerce.Domain.DTOs;
+using Ecommerce.Domain.Enums;
 
 namespace Ecommerce.Domain.Entities.OrderEntities;
 
@@ -9,8 +10,6 @@ public sealed class Order : AuditableEntity
     public OrderStatus Status { get; private set; }
     public PaymentMethod PaymentMethod{ get; set; }
     public decimal ShippingCost { get; private set; }
-    public decimal? Discount { get; private set; }
-    public decimal TotalAmount { get; private set; }
     public string? ExternalPaymentId { get; private set; }
     public string ShippingPostalCode { get; private set; } = "";
     public string ShippingStreetName { get; private set; } = "";
@@ -31,11 +30,9 @@ public sealed class Order : AuditableEntity
 
     private Order(
         int userId,
+        IEnumerable<CreateOrderItemDto> items,
         PaymentMethod paymentMethod,
         decimal shippingCost,
-        decimal? discount,
-        decimal totalAmount,
-        string? externalPaymentId,
         string shippingPostalCode,
         string shippingStreetName,
         string shippingBuildingNumber,
@@ -51,9 +48,6 @@ public sealed class Order : AuditableEntity
         Status = OrderStatus.PendingPayment;
         PaymentMethod = paymentMethod;
         ShippingCost = shippingCost;
-        Discount = discount;
-        TotalAmount = totalAmount;
-        ExternalPaymentId = externalPaymentId;
         ShippingPostalCode = shippingPostalCode;
         ShippingStreetName = shippingStreetName;
         ShippingBuildingNumber = shippingBuildingNumber;
@@ -62,13 +56,28 @@ public sealed class Order : AuditableEntity
         ShippingCity = shippingCity;
         ShippingState = shippingState;
         ShippingCountry = shippingCountry;
+
+        foreach (var item in items)
+        {
+            _items.Add(new OrderItem(
+                Id,
+                item.ProductCombinationId,
+                item.Quantity,
+                item.ProductName,
+                item.ProductSku,
+                item.ProductImagePath,
+                item.ProductUnitPrice,
+                item.ProductDiscount
+                )
+            );
+        }
     }
 
     public static Result<Order> Create(
         int userId,
-        IEnumerable<CartItem> cartItems,
+        IEnumerable<CreateOrderCartItemDto> cartItems,
         PaymentMethod paymentMethod,
-        string? externalPaymentId,
+        decimal shippingCost,
         string shippingPostalCode,
         string shippingStreetName,
         string shippingBuildingNumber,
@@ -82,26 +91,23 @@ public sealed class Order : AuditableEntity
         if (userId <= 0)
             return Result.Fail(DomainErrors.Order.InvalidUserId);
 
-        var selectedCartItems = cartItems.Where(ci => ci.IsSelectedForCheckout);
-
-        if (!selectedCartItems.Any())
+        if (!cartItems.Any())
             return Result.Fail(DomainErrors.Order.EmptyProductList);
 
-        decimal totalAmount = 0;
-        decimal totalDiscount = 0;
-        var orderItems = new List<OrderItem>();
+        var orderItems = new List<CreateOrderItemDto>();
 
-        foreach (CartItem cartItem in selectedCartItems)
+        foreach (CreateOrderCartItemDto cartItem in cartItems)
         {
-            ProductCombination productCombination = cartItem.ProductCombination!;
+            ProductCombination productCombination = cartItem.ProductCombination;
             Product product = productCombination.Product;
-            decimal productPrice = productCombination.Price;
 
             if (!product.Active)
                 return Result.Fail(DomainErrors.Order.InactiveProduct);
 
-            var validateStockResult = productCombination.Inventory.ValidateStock(cartItem.Quantity);
+            if (cartItem.Quantity <= 0)
+                return Result.Fail(DomainErrors.CartItem.InvalidQuantity);
 
+            var validateStockResult = productCombination.Inventory.ValidateStock(cartItem.Quantity);
             if (validateStockResult.IsFailed)
                 return validateStockResult;
 
@@ -110,31 +116,23 @@ public sealed class Order : AuditableEntity
                 return Result.Fail(discountResult.Errors);
 
             decimal productDiscount = discountResult.Value;
-            productPrice -= productDiscount;
-            totalDiscount += productDiscount;
-            totalAmount += (productPrice * cartItem.Quantity);
 
-            orderItems.Add(new OrderItem(
-                orderId: Guid.Empty,
-                productCombinationId: cartItem.ProductCombinationId,
-                quantity: cartItem.Quantity,
-                productName: productCombination.Product.Name,
-                productSku: productCombination.Sku,
-                productImagePath: productCombination.Images.ElementAt(0).ImagePath,
-                productUnitPrice: productPrice,
-                productDiscount: productDiscount == 0 ? null : productDiscount
-            ));
+            orderItems.Add(new CreateOrderItemDto {
+                ProductCombinationId = cartItem.ProductCombination.Id,
+                Quantity = cartItem.Quantity,
+                ProductName = product.Name,
+                ProductSku = productCombination.Sku,
+                ProductImagePath = productCombination.Images.ElementAt(0).ImagePath,
+                ProductUnitPrice = productCombination.Price,
+                ProductDiscount = productDiscount == 0 ? null : productDiscount
+            });
         }
-
-        decimal shippingCost = CalculateShippingCost(selectedCartItems.Count());
 
         var order = new Order(
             userId,
+            orderItems,
             paymentMethod,
             shippingCost,
-            totalDiscount,
-            totalAmount,
-            externalPaymentId,
             shippingPostalCode,
             shippingStreetName,
             shippingBuildingNumber,
@@ -145,15 +143,20 @@ public sealed class Order : AuditableEntity
             shippingCountry
         );
 
-        foreach (OrderItem orderItem in orderItems)
-        {
-            var result = order.AddItem(orderItem);
-            if (result.IsFailed) return result;
-        }
-
         order.AddHistory(OrderStatus.PendingPayment, "Order created, awaiting payment");
 
         return Result.Ok(order);
+    }
+
+    public decimal GetTotalAmount()
+    {
+        decimal itemsTotal = _items.Sum(item => item.GetTotalAmount());
+        return itemsTotal + ShippingCost;
+    }
+
+    public decimal GetTotalDiscount()
+    {
+        return _items.Sum(item => item.GetTotalDiscount());
     }
 
     public Result CompletePayment()
@@ -167,32 +170,21 @@ public sealed class Order : AuditableEntity
         return Result.Ok();
     }
 
-    public void AddHistory(OrderStatus status, string? notes = null)
-    {
-        _history.Add(new OrderHistory(Id, status, notes));
-    }
-
-    public Result AddItem(OrderItem orderItem)
-    {
-        if (Status == OrderStatus.Cancelled)
-            return Result.Fail(DomainErrors.Order.CannotAddItemToCancelledOrder);
-
-        orderItem.SetOrderId(Id);
-        _items.Add(orderItem);
-        return Result.Ok();
-    }
-
-    private static decimal CalculateShippingCost(int orderItems)
-    {
-        // TODO: Calculate Shipping
-        return orderItems * 10;
-    }
-
     public void Cancel()
     {
         if (Status == OrderStatus.Cancelled) return;
 
         Status = OrderStatus.Cancelled;
         AddHistory(OrderStatus.Cancelled, "Order cancelled");
+    }
+
+    public void SetExternalPaymentId(string externalPaymentId)
+    {
+        ExternalPaymentId = externalPaymentId;
+    }
+
+    private void AddHistory(OrderStatus status, string? notes = null)
+    {
+        _history.Add(new OrderHistory(Id, status, notes));
     }
 }

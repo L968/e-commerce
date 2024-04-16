@@ -1,13 +1,12 @@
 ﻿namespace Ecommerce.Application.DTOs.Products;
 
-public record GetProductAdminDto
+public record GetProductByIdDto
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = "";
     public string Description { get; set; } = "";
     public bool Active { get; set; }
-    public bool Visible { get; set; }
+    public float Rating { get; set; }
 
-    public GetProductCategoryDto? Category { get; set; }
-    public List<GetProductCombinationAdminDto> Combinations { get; set; } = [];
+    public List<GetProductDiscountDto> Discounts { get; set; } = [];
 }
