@@ -5,7 +5,7 @@ namespace Ecommerce.Authorization.Services;
 
 public class EmailService : IEmailService
 {
-    public void SendEmailConfirmationEmail(string to, int userId, string confirmationToken)
+    public async Task SendEmailConfirmationEmail(string to, int userId, string confirmationToken)
     {
         var mailboxAdressess = new List<MailboxAddress> { new("", to) };
 
@@ -18,10 +18,10 @@ public class EmailService : IEmailService
             Text = $"To verify your email address, please use the following link: \n\nhttps://localhost:7252/user/activate?id={userId}&confirmationCode={confirmationToken}"
         };
 
-        Send(emailMessage);
+        await Send(emailMessage);
     }
 
-    public void SendResetPasswordEmail(string to, string passwordResetToken)
+    public async Task SendResetPasswordEmail(string to, string passwordResetToken)
     {
         var mailboxAdressess = new List<MailboxAddress> { new("", to) };
 
@@ -36,10 +36,10 @@ public class EmailService : IEmailService
 
         emailMessage.Body = bodyBuilder.ToMessageBody();
 
-        Send(emailMessage);
+        await Send(emailMessage);
     }
 
-    private void Send(MimeMessage emailMessage)
+    private async Task Send(MimeMessage emailMessage)
     {
         using var client = new SmtpClient();
 
@@ -47,6 +47,6 @@ public class EmailService : IEmailService
         client.AuthenticationMechanisms.Remove("XOUATH2");
         client.Authenticate(Config.EmailSettingsFrom, Config.EmailSettingsPassword);
 
-        client.Send(emailMessage);
+        await client.SendAsync(emailMessage);
     }
 }

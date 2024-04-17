@@ -12,12 +12,13 @@ public class LoginService(
     private readonly IEmailService _emailService = emailService;
     private readonly ISmsService _smsService = smsService;
 
-    public Result Login(LoginRequest loginRequest)
+    public async Task<Result> Login(LoginRequest loginRequest)
     {
-        var identityUser = GetIdentityUserByEmailOrPhoneNumber(loginRequest.EmailOrPhoneNumber!);
-        if (identityUser == null) return Result.Fail("Your login credentials don't match an account in our system");
+        var identityUser = await GetIdentityUserByEmailOrPhoneNumber(loginRequest.EmailOrPhoneNumber!);
+        if (identityUser is null)
+            return Result.Fail("Your login credentials don't match an account in our system");
 
-        var signInResult = _signInManager.PasswordSignInAsync(identityUser, loginRequest.Password, false, true).Result;
+        var signInResult = await _signInManager.PasswordSignInAsync(identityUser, loginRequest.Password, false, true);
 
         if (!signInResult.Succeeded)
         {
@@ -28,31 +29,32 @@ public class LoginService(
             {
                 if (string.IsNullOrWhiteSpace(identityUser.PhoneNumber)) return Result.Fail("Two factor login requires phoneNumber");
 
-                var twoFactorToken = _signInManager.UserManager.GenerateTwoFactorTokenAsync(identityUser, "Phone").Result;
-                _smsService.SendTwoFactorTokenSms(identityUser.PhoneNumber, twoFactorToken);
+                var twoFactorToken = await _signInManager.UserManager.GenerateTwoFactorTokenAsync(identityUser, "Phone");
+                await _smsService.SendTwoFactorTokenSms(identityUser.PhoneNumber, twoFactorToken);
                 return Result.Fail("User requires two factor authentication");
             }
 
             return Result.Fail("Your login credentials don't match an account in our system");
         }
 
-        var role = _signInManager.UserManager.GetRolesAsync(identityUser).Result.FirstOrDefault();
-        var token = _tokenService.CreateToken(identityUser, role!);
+        var roles = await _signInManager.UserManager.GetRolesAsync(identityUser);
+        var token = _tokenService.CreateToken(identityUser, roles.FirstOrDefault()!);
 
         return Result.Ok().WithSuccess(token.Value);
     }
 
-    public Result TwoFactorLogin(TwoFactorLoginRequest twoFactorLoginRequest)
+    public async Task<Result> TwoFactorLogin(TwoFactorLoginRequest twoFactorLoginRequest)
     {
-        var identityUser = _signInManager.UserManager.Users.FirstOrDefault(user => user.Id == twoFactorLoginRequest.UserId);
-        if (identityUser == null) return Result.Fail("Error in two factor login");
+        var identityUser = await _signInManager.UserManager.Users.FirstOrDefaultAsync(user => user.Id == twoFactorLoginRequest.UserId);
+        if (identityUser is null)
+            return Result.Fail("Error in two factor login");
 
-        var signInResult = _signInManager.TwoFactorSignInAsync(
+        var signInResult = await _signInManager.TwoFactorSignInAsync(
             "Phone",
             twoFactorLoginRequest.TwoFactorToken,
             false,
             true
-        ).Result;
+        );
 
         if (!signInResult.Succeeded)
         {
@@ -69,52 +71,51 @@ public class LoginService(
             return Result.Fail("Your login credentials don't match an account in our system");
         }
 
-        var role = _signInManager.UserManager.GetRolesAsync(identityUser).Result.FirstOrDefault();
-        var token = _tokenService.CreateToken(identityUser, role!);
+        var roles = await _signInManager.UserManager.GetRolesAsync(identityUser);
+        var token = _tokenService.CreateToken(identityUser, roles.FirstOrDefault()!);
 
         return Result.Ok().WithSuccess(token.Value);
     }
 
-    public Result RequestPasswordReset(RequestPasswordResetRequest request)
+    public async Task<Result> RequestPasswordReset(RequestPasswordResetRequest request)
     {
-        var identityUser = GetIdentityUserByEmail(request.Email!);
-        if (identityUser == null) return Result.Ok();
+        var identityUser = await GetIdentityUserByEmail(request.Email!);
+        if (identityUser is null) return Result.Ok();
 
-        string passwordResetToken = _signInManager.UserManager.GeneratePasswordResetTokenAsync(identityUser).Result;
-        _emailService.SendResetPasswordEmail(request.Email!, passwordResetToken);
+        string passwordResetToken = await _signInManager.UserManager.GeneratePasswordResetTokenAsync(identityUser);
+        await _emailService.SendResetPasswordEmail(request.Email!, passwordResetToken);
 
         return Result.Ok();
     }
 
-    public Result PasswordReset(PasswordResetRequest request)
+    public async Task<Result> PasswordReset(PasswordResetRequest request)
     {
-        var identityUser = GetIdentityUserByEmail(request.Email!);
-        if (identityUser == null) return Result.Fail("Error in password reset");
+        var identityUser = await GetIdentityUserByEmail(request.Email!);
+        if (identityUser is null) return Result.Fail("Error in password reset");
 
-        var identityResult = _signInManager
+        var identityResult = await _signInManager
             .UserManager
-            .ResetPasswordAsync(identityUser, request.Token, request.Password)
-            .Result;
+            .ResetPasswordAsync(identityUser, request.Token, request.Password);
 
         return identityResult.Succeeded
             ? Result.Ok()
             : Result.Fail("Error in password reset");
     }
 
-    private CustomIdentityUser? GetIdentityUserByEmail(string email)
+    private async Task<CustomIdentityUser?> GetIdentityUserByEmail(string email)
     {
-        return _signInManager
+        return await _signInManager
             .UserManager
             .Users
-            .FirstOrDefault(user => user.NormalizedEmail == email.ToUpper());
+            .FirstOrDefaultAsync(user => user.NormalizedEmail == email.ToUpper());
     }
 
-    private CustomIdentityUser? GetIdentityUserByEmailOrPhoneNumber(string emailOrPhoneNumber)
+    private async Task<CustomIdentityUser?> GetIdentityUserByEmailOrPhoneNumber(string emailOrPhoneNumber)
     {
-        return _signInManager
+        return await _signInManager
             .UserManager
             .Users
-            .FirstOrDefault(user =>
+            .FirstOrDefaultAsync(user =>
                 user.NormalizedEmail == emailOrPhoneNumber.ToUpper() ||
                 user.PhoneNumber == emailOrPhoneNumber
             );

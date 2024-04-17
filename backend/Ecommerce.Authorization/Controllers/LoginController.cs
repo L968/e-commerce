@@ -7,9 +7,9 @@ public class LoginController(ILoginService loginService) : ControllerBase
     private readonly ILoginService _loginService = loginService;
 
     [HttpPost]
-    public IActionResult Login([FromBody] LoginRequest loginRequest)
+    public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
     {
-        Result result = _loginService.Login(loginRequest);
+        Result result = await _loginService.Login(loginRequest);
 
         if (result.IsFailed) return Unauthorized(result.Errors[0]);
 
@@ -17,9 +17,9 @@ public class LoginController(ILoginService loginService) : ControllerBase
     }
 
     [HttpPost("twoFactorLogin")]
-    public IActionResult TwoFactorLogin([FromBody] TwoFactorLoginRequest twoFactorLoginRequest)
+    public async Task<IActionResult> TwoFactorLogin([FromBody] TwoFactorLoginRequest twoFactorLoginRequest)
     {
-        Result result = _loginService.TwoFactorLogin(twoFactorLoginRequest);
+        Result result = await _loginService.TwoFactorLogin(twoFactorLoginRequest);
 
         if (result.IsFailed) return Unauthorized(result.Errors[0]);
 
@@ -27,16 +27,16 @@ public class LoginController(ILoginService loginService) : ControllerBase
     }
 
     [HttpPost("/request-password-reset")]
-    public IActionResult RequestPasswordReset([FromBody] RequestPasswordResetRequest request)
+    public async Task<IActionResult> RequestPasswordReset([FromBody] RequestPasswordResetRequest request)
     {
-        _loginService.RequestPasswordReset(request);
+        await _loginService.RequestPasswordReset(request);
         return NoContent();
     }
 
     [HttpPost("/password-reset")]
-    public IActionResult PasswordReset([FromBody] PasswordResetRequest request)
+    public async Task<IActionResult> PasswordReset([FromBody] PasswordResetRequest request)
     {
-        Result result = _loginService.PasswordReset(request);
+        Result result = await _loginService.PasswordReset(request);
 
         if (result.IsFailed) return Unauthorized(result.Errors[0]);
 

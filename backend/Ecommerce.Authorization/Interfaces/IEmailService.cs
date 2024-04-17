@@ -2,6 +2,6 @@ namespace Ecommerce.Authorization.Interfaces;
 
 public interface IEmailService
 {
-    void SendEmailConfirmationEmail(string to, int userId, string confirmationToken);
-    void SendResetPasswordEmail(string to, string passwordResetToken);
+    Task SendEmailConfirmationEmail(string to, int userId, string confirmationToken);
+    Task SendResetPasswordEmail(string to, string passwordResetToken);
 }

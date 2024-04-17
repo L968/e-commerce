@@ -6,17 +6,17 @@ namespace Ecommerce.Authorization.Services;
 
 public class SmsService : ISmsService
 {
-    public void SendPhoneNumberConfirmationSms(string to, string confirmationToken)
+    public async Task SendPhoneNumberConfirmationSms(string to, string confirmationToken)
     {
-        Send(to, $"Confirm your phone number: {confirmationToken}");
+        await Send(to, $"Confirm your phone number: {confirmationToken}");
     }
 
-    public void SendTwoFactorTokenSms(string to, string twoFactorToken)
+    public async Task SendTwoFactorTokenSms(string to, string twoFactorToken)
     {
-        Send(to, $"Two factor authentication token: {twoFactorToken}");
+        await Send(to, $"Two factor authentication token: {twoFactorToken}");
     }
 
-    private static void Send(string to, string body)
+    private static async Task Send(string to, string body)
     {
         var username = Config.TwilioSID;
         var password = Config.TwilioAuthToken;
@@ -24,7 +24,7 @@ public class SmsService : ISmsService
 
         TwilioClient.Init(username, password);
 
-        MessageResource.Create(
+        await MessageResource.CreateAsync(
             from: twilioPhoneNumber,
             to: new PhoneNumber(to),
             body: body

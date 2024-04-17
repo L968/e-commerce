@@ -13,7 +13,7 @@ public class UserController(IUserService userService) : ControllerBase
     public async Task<IActionResult> GetDefaultAddress()
     {
         int userId = int.Parse(User.FindFirst("id")!.Value);
-        Guid? addressId = await _userService.GetDefaultAddressId(userId);
+        Guid? addressId = await _userService.GetDefaultAddressIdAsync(userId);
 
         if (addressId is null) return NotFound();
 
@@ -21,9 +21,9 @@ public class UserController(IUserService userService) : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Create([FromBody] CreateUserDto createUserDto)
+    public async Task<IActionResult> Create([FromBody] CreateUserDto createUserDto)
     {
-        Result result = _userService.CreateUser(createUserDto);
+        Result result = _userService.CreateUserAsync(createUserDto);
 
         if (result.IsFailed) return BadRequest(result.Reasons[0]);
 
@@ -32,10 +32,10 @@ public class UserController(IUserService userService) : ControllerBase
 
     [Authorize(Roles = "regular")]
     [HttpPatch("phoneNumber/{phoneNumber}")]
-    public IActionResult UpdatePhoneNumber(string phoneNumber)
+    public async Task<IActionResult> UpdatePhoneNumber(string phoneNumber)
     {
         int userId = int.Parse(User.FindFirst("id")!.Value);
-        Result result = _userService.UpdatePhoneNumber(userId, phoneNumber);
+        Result result = _userService.UpdatePhoneNumberAsync(userId, phoneNumber);
 
         if (result.IsFailed) return BadRequest(result.Reasons[0]);
 
@@ -49,7 +49,7 @@ public class UserController(IUserService userService) : ControllerBase
     public async Task<IActionResult> UpdateDefaultAddress(Guid? addressId)
     {
         int userId = int.Parse(User.FindFirst("id")!.Value);
-        Result result = await _userService.UpdateDefaultAddress(addressId, userId);
+        Result result = await _userService.UpdateDefaultAddressAsync(addressId, userId);
 
         if (result.IsFailed) return BadRequest(result.Reasons[0]);
 
@@ -58,10 +58,10 @@ public class UserController(IUserService userService) : ControllerBase
 
     [Authorize(Roles = "regular")]
     [HttpPost("phoneNumber/confirm")]
-    public IActionResult ConfirmPhoneNumber([Required] string phoneNumber, [Required] string confirmationToken)
+    public async Task<IActionResult> ConfirmPhoneNumber([Required] string phoneNumber, [Required] string confirmationToken)
     {
         int userId = int.Parse(User.FindFirst("id")!.Value);
-        Result result = _userService.ConfirmPhoneNumber(userId, phoneNumber, confirmationToken);
+        Result result = _userService.ConfirmPhoneNumberAsync(userId, phoneNumber, confirmationToken);
 
         if (result.IsFailed) return BadRequest(result.Reasons[0]);
 
@@ -70,10 +70,10 @@ public class UserController(IUserService userService) : ControllerBase
 
     [Authorize(Roles = "regular")]
     [HttpPatch("twoFactorEnabled/{twoFactorEnabled}")]
-    public IActionResult UpdateTwoFactorAuthentication(bool twoFactorEnabled)
+    public async Task<IActionResult> UpdateTwoFactorAuthentication(bool twoFactorEnabled)
     {
         int userId = int.Parse(User.FindFirst("id")!.Value);
-        Result result = _userService.UpdateTwoFactorAuthentication(userId, twoFactorEnabled);
+        Result result = _userService.UpdateTwoFactorAuthenticationAsync(userId, twoFactorEnabled);
 
         if (result.IsFailed) return BadRequest(result.Reasons[0]);
 
@@ -81,9 +81,9 @@ public class UserController(IUserService userService) : ControllerBase
     }
 
     [HttpGet("activate")]
-    public IActionResult Activate([FromQuery] ActivateUserRequest activateUserRequest)
+    public async Task<IActionResult> Activate([FromQuery] ActivateUserRequest activateUserRequest)
     {
-        Result result = _userService.ActivateUser(activateUserRequest);
+        Result result = _userService.ActivateUserAsync(activateUserRequest);
 
         if (result.IsFailed) return StatusCode(500);
 
