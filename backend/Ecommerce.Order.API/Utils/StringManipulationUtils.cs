@@ -6,7 +6,7 @@ public static class StringManipulationUtils
 {
     public static string AddSpacesBeforeUpperCase(string input)
     {
-        StringBuilder result = new StringBuilder();
+        StringBuilder result = new();
 
         foreach (char c in input)
         {

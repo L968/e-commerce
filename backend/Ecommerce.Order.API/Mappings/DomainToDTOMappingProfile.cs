@@ -2,6 +2,7 @@
 using Ecommerce.Application.DTOs;
 using Ecommerce.Domain.DTOs;
 using Ecommerce.Domain.Entities.ProductEntities;
+using Ecommerce.Domain.Enums;
 using Ecommerce.Order.API.Utils;
 
 namespace Ecommerce.Order.API.Mappings;
@@ -13,7 +14,11 @@ public class DomainToDTOMappingProfile : Profile
         CreateMap<Domain.Entities.OrderEntities.Order, OrderDto>()
             .ForMember(dto => dto.ShippingAddress, opt => opt.MapFrom(o => $"{o.ShippingStreetName} {o.ShippingBuildingNumber}, {o.ShippingNeighborhood}, {o.ShippingCity}, {o.ShippingState}"))
             .ForMember(dto => dto.Status, opt => opt.MapFrom(o => StringManipulationUtils.AddSpacesBeforeUpperCase(o.Status.ToString())))
-            .ForMember(dto => dto.PaymentMethod, opt => opt.MapFrom(o => StringManipulationUtils.AddSpacesBeforeUpperCase(o.PaymentMethod.ToString())))
+            .ForMember(dto => dto.PaymentMethod, opt => opt.MapFrom(
+                o => o.PaymentMethod == PaymentMethod.PayPal
+                    ? o.PaymentMethod.ToString()
+                    : StringManipulationUtils.AddSpacesBeforeUpperCase(o.PaymentMethod.ToString())
+             ))
             .ForMember(dto => dto.TotalAmount, opt => opt.MapFrom(o => o.GetTotalAmount()))
             .ForMember(dto => dto.Subtotal, opt => opt.MapFrom(o => o.Items.Sum(oi => oi.GetTotalAmount())));
 
