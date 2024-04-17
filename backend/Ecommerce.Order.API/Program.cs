@@ -24,16 +24,8 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 builder.Services.AddHttpClient<IEcommerceService, EcommerceService>((serviceProvider, client) =>
 {
-    string? timeout = builder.Configuration["EcommerceService:Timeout"];
-
-    if (string.IsNullOrEmpty(timeout))
-        throw new InvalidOperationException("EcommerceService:Timeout configuration is missing or empty");
-
-    if (!int.TryParse(timeout, out int timeoutSeconds))
-        throw new InvalidOperationException("EcommerceService:Timeout configuration is not a valid integer");
-
-    client.Timeout = TimeSpan.FromSeconds(timeoutSeconds);
-    client.BaseAddress = new Uri(builder.Configuration["EcommerceService:BaseUrl"] ?? throw new InvalidOperationException("EcommerceService:BaseUrl configuration is missing or empty"));
+    client.Timeout = TimeSpan.FromSeconds(Config.EcommerceServiceTimeout);
+    client.BaseAddress = new Uri(Config.EcommerceServiceBaseUrl);
 })
 .AddHttpMessageHandler(provider =>
 {
@@ -73,7 +65,7 @@ builder.Services.AddAuthentication(auth =>
     token.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Config.JwtKey)),
         ValidateIssuer = false,
         ValidateAudience = false,
         ClockSkew = TimeSpan.Zero,
@@ -82,9 +74,9 @@ builder.Services.AddAuthentication(auth =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(builder =>
+    options.AddDefaultPolicy(corsBuilder =>
         {
-            builder.WithOrigins("http://localhost:3000")
+            corsBuilder.WithOrigins(Config.AllowedOrigins)
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowAnyOrigin();
