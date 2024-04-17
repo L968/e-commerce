@@ -9,8 +9,8 @@ interface ProductContainerProps {
 export default function ProductContainer({ items }: ProductContainerProps) {
     return (
         <Container>
-            {items.map(item => (
-                <Product key={item.id}>
+            {items.map((item, i) => (
+                <Product key={i}>
                     <ProductName variant='h1'>{item.productName}</ProductName>
 
                     <Image

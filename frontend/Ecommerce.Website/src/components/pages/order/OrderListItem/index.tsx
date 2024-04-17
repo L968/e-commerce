@@ -21,8 +21,8 @@ export default function OrderListItem({ orderId, status, createdAt, items }: Ord
                 <CreatedAt variant='h2'>{moment(createdAt).format('LL')}</CreatedAt>
             </Header>
 
-            {items.map(item => (
-                <Order key={item.id}>
+            {items.map((item, i) => (
+                <Order key={i}>
                     <Item>
                         <Image
                             src={item.productImagePath}

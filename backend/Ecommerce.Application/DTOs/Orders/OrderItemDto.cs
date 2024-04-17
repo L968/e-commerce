@@ -2,7 +2,6 @@
 
 public record OrderItemDto
 {
-    public int Id { get; set; }
     public Guid ProductCombinationId { get; set; }
     public string ProductName { get; set; } = "";
     public string ProductSku { get; set; } = "";

@@ -1,5 +1,4 @@
 export interface OrderItem {
-    id: number
     productCombinationId: string
     productName: string
     productSku: string
