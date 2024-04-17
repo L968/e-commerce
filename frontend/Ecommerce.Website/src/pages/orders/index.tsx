@@ -26,7 +26,7 @@ function Orders() {
 
     return (
         <Main>
-            <Title variant='h1'>Orders</Title>
+            <Title variant='h1'>Your Orders</Title>
 
             {loading || !orders
                 ? <CircularProgress />
