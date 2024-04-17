@@ -23,7 +23,7 @@ public class UserController(IUserService userService) : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateUserDto createUserDto)
     {
-        Result result = _userService.CreateUserAsync(createUserDto);
+        Result result = await _userService.CreateUserAsync(createUserDto);
 
         if (result.IsFailed) return BadRequest(result.Reasons[0]);
 
@@ -35,7 +35,7 @@ public class UserController(IUserService userService) : ControllerBase
     public async Task<IActionResult> UpdatePhoneNumber(string phoneNumber)
     {
         int userId = int.Parse(User.FindFirst("id")!.Value);
-        Result result = _userService.UpdatePhoneNumberAsync(userId, phoneNumber);
+        Result result = await _userService.UpdatePhoneNumberAsync(userId, phoneNumber);
 
         if (result.IsFailed) return BadRequest(result.Reasons[0]);
 
@@ -61,7 +61,7 @@ public class UserController(IUserService userService) : ControllerBase
     public async Task<IActionResult> ConfirmPhoneNumber([Required] string phoneNumber, [Required] string confirmationToken)
     {
         int userId = int.Parse(User.FindFirst("id")!.Value);
-        Result result = _userService.ConfirmPhoneNumberAsync(userId, phoneNumber, confirmationToken);
+        Result result = await _userService.ConfirmPhoneNumberAsync(userId, phoneNumber, confirmationToken);
 
         if (result.IsFailed) return BadRequest(result.Reasons[0]);
 
@@ -73,7 +73,7 @@ public class UserController(IUserService userService) : ControllerBase
     public async Task<IActionResult> UpdateTwoFactorAuthentication(bool twoFactorEnabled)
     {
         int userId = int.Parse(User.FindFirst("id")!.Value);
-        Result result = _userService.UpdateTwoFactorAuthenticationAsync(userId, twoFactorEnabled);
+        Result result = await _userService.UpdateTwoFactorAuthenticationAsync(userId, twoFactorEnabled);
 
         if (result.IsFailed) return BadRequest(result.Reasons[0]);
 
@@ -83,7 +83,7 @@ public class UserController(IUserService userService) : ControllerBase
     [HttpGet("activate")]
     public async Task<IActionResult> Activate([FromQuery] ActivateUserRequest activateUserRequest)
     {
-        Result result = _userService.ActivateUserAsync(activateUserRequest);
+        Result result = await _userService.ActivateUserAsync(activateUserRequest);
 
         if (result.IsFailed) return StatusCode(500);
 
