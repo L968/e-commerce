@@ -1,6 +1,6 @@
 using Ecommerce.Order.API.Models.PayPal;
 
-namespace Ecommerce.Order.API.Services;
+namespace Ecommerce.Order.API.Interfaces;
 
 public interface IPayPalService
 {

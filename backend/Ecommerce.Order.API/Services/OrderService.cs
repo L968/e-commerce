@@ -6,6 +6,7 @@ using Ecommerce.Domain.Entities;
 using Ecommerce.Domain.Entities.ProductEntities;
 using Ecommerce.Domain.Enums;
 using Ecommerce.Domain.Errors;
+using Ecommerce.Order.API.Interfaces;
 using Ecommerce.Order.API.Models.PayPal;
 using Ecommerce.Order.API.Repositories;
 using FluentResults;
@@ -15,25 +16,25 @@ namespace Ecommerce.Order.API.Services;
 
 public class OrderService(
     IMapper mapper,
-    IOrderRepository repository,
+    IOrderRepository orderRepository,
     IPayPalService payPalService,
     IEcommerceService ecommerceService
     ) : IOrderService
 {
     private readonly IMapper _mapper = mapper;
-    private readonly IOrderRepository _repository = repository;
+    private readonly IOrderRepository _orderRepository = orderRepository;
     private readonly IPayPalService _payPalService = payPalService;
     private readonly IEcommerceService _ecommerceService = ecommerceService;
 
     public async Task<OrderDto?> GetByIdAsync(Guid id, int userId)
     {
-        var order = await _repository.GetByIdAsync(id, userId);
+        var order = await _orderRepository.GetByIdAsync(id, userId);
         return _mapper.Map<OrderDto>(order);
     }
 
     public async Task<Pagination<OrderDto>> GetByUserIdAsync(int userId, int page, int pageSize)
     {
-        var (orders, totalItems) = await _repository.GetByUserIdAsync(userId, page, pageSize);
+        var (orders, totalItems) = await _orderRepository.GetByUserIdAsync(userId, page, pageSize);
 
         return new Pagination<OrderDto>(
             page,
@@ -45,7 +46,7 @@ public class OrderService(
 
     public async Task<IEnumerable<OrderDto>> GetPendingOrdersAsync()
     {
-        var orders = await _repository.GetPendingOrdersAsync();
+        var orders = await _orderRepository.GetPendingOrdersAsync();
         return _mapper.Map<IEnumerable<OrderDto>>(orders);
     }
 
@@ -126,7 +127,7 @@ public class OrderService(
             checkoutUrl = paypalCheckoutUrl;
         }
 
-        await _repository.CreateAsync(order);
+        await _orderRepository.CreateAsync(order);
         await _ecommerceService.ClearCartAsync(orderCheckout.OrderCheckoutItems.Select(i => i.ProductCombinationId));
 
         return Result.Ok(checkoutUrl);
@@ -142,7 +143,7 @@ public class OrderService(
         if (paypalOrder.status != "APPROVED")
             return Result.Fail("The PayPal order status is not approved. Cannot process payment");
 
-        var order = await _repository.GetByExternalPaymentIdAsync(token);
+        var order = await _orderRepository.GetByExternalPaymentIdAsync(token);
 
         if (order is null)
             return Result.Fail("Failed to find an order with the provided PayPal token");
@@ -152,20 +153,20 @@ public class OrderService(
         if (result.IsFailed)
             return result;
 
-        await _repository.UpdateAsync(order);
+        await _orderRepository.UpdateAsync(order);
 
         return Result.Ok();
     }
 
     public async Task<Result> ProcessPayPalCancelAsync(string token)
     {
-        var order = await _repository.GetByExternalPaymentIdAsync(token);
+        var order = await _orderRepository.GetByExternalPaymentIdAsync(token);
 
         if (order is null)
             return Result.Fail("Failed to find an order with the provided PayPal token");
 
         order.Cancel();
-        await _repository.UpdateAsync(order);
+        await _orderRepository.UpdateAsync(order);
         return Result.Ok();
     }
 }

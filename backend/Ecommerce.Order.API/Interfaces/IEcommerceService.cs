@@ -1,6 +1,6 @@
 using Ecommerce.Domain.DTOs;
 
-namespace Ecommerce.Order.API.Services;
+namespace Ecommerce.Order.API.Interfaces;
 
 public interface IEcommerceService
 {

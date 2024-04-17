@@ -1,6 +1,7 @@
 using Ecommerce.Application.Common.Handlers;
 using Ecommerce.Order.API;
 using Ecommerce.Order.API.Context;
+using Ecommerce.Order.API.Interfaces;
 using Ecommerce.Order.API.Mappings;
 using Ecommerce.Order.API.Repositories;
 using Ecommerce.Order.API.Services;

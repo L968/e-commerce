@@ -6,8 +6,8 @@ namespace Ecommerce.Application.Features.Addresses.Queries;
 public record GetAddressByIdAndUserIdQuery(Guid Id) : IRequest<GetAddressDto?>;
 
 public class GetAddressByIdAndUserIdQueryHandler(
-    IMapper mapper, 
-    IAddressRepository addressRepository, 
+    IMapper mapper,
+    IAddressRepository addressRepository,
     ICurrentUserService currentUserService
     ) : IRequestHandler<GetAddressByIdAndUserIdQuery, GetAddressDto?>
 {

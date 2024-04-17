@@ -1,4 +1,5 @@
 using Ecommerce.Domain.DTOs;
+using Ecommerce.Order.API.Interfaces;
 using Newtonsoft.Json;
 using System.Net;
 using System.Text;

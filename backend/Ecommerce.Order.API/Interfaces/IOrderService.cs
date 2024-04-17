@@ -3,7 +3,7 @@ using Ecommerce.Application.DTOs.OrderCheckout;
 using Ecommerce.Domain.Entities;
 using FluentResults;
 
-namespace Ecommerce.Order.API.Services;
+namespace Ecommerce.Order.API.Interfaces;
 
 public interface IOrderService
 {
