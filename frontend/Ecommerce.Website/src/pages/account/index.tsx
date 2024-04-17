@@ -45,8 +45,8 @@ function Account() {
 
             <Container>
                 <List>
-                    {menus.map(menu => (
-                        <Link href={menu.url} style={{ textDecoration: 'none', color: 'inherit' }}>
+                    {menus.map((menu, i) => (
+                        <Link key={i} href={menu.url} style={{ textDecoration: 'none', color: 'inherit' }}>
                             <ListItem>
                                 <Avatar sx={{ bgcolor: 'primary.main' }}>
                                     {menu.icon}

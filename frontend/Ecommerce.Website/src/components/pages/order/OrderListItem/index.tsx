@@ -22,7 +22,7 @@ export default function OrderListItem({ orderId, status, createdAt, items }: Ord
             </Header>
 
             {items.map(item => (
-                <Order>
+                <Order key={item.id}>
                     <Item>
                         <Image
                             src={item.productImagePath}

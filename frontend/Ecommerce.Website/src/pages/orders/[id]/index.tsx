@@ -51,7 +51,7 @@ function OrderComponent() {
                     <Divider />
 
                     {order.items.map(item =>
-                        <PurchaseSummaryRow>
+                        <PurchaseSummaryRow key={item.id}>
                             <span>{item.productName} ({item.quantity})</span>
                             <span>{currencyFormat(item.totalAmount)}</span>
                         </PurchaseSummaryRow>

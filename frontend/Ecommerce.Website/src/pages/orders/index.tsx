@@ -33,6 +33,7 @@ function Orders() {
                 : <>
                     {orders.items.map(order =>
                         <OrderListItem
+                            key={order.id}
                             orderId={order.id}
                             status={order.status}
                             createdAt={order.createdAt}

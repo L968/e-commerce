@@ -10,7 +10,7 @@ export default function ProductContainer({ items }: ProductContainerProps) {
     return (
         <Container>
             {items.map(item => (
-                <Product>
+                <Product key={item.id}>
                     <ProductName variant='h1'>{item.productName}</ProductName>
 
                     <Image
