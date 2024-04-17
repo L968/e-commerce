@@ -39,7 +39,7 @@ public class EmailService : IEmailService
         await Send(emailMessage);
     }
 
-    private async Task Send(MimeMessage emailMessage)
+    private static async Task Send(MimeMessage emailMessage)
     {
         using var client = new SmtpClient();
 
