@@ -1,9 +1,9 @@
 ﻿namespace Ecommerce.Authorization.Services;
 
 public class LoginService(
-    SignInManager<CustomIdentityUser> signInManager, 
-    TokenService tokenService, 
-    EmailService emailService, 
+    SignInManager<CustomIdentityUser> signInManager,
+    TokenService tokenService,
+    EmailService emailService,
     SmsService smsService
     )
 {

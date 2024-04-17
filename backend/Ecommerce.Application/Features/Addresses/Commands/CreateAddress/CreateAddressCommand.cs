@@ -20,18 +20,18 @@ public record CreateAddressCommand : IRequest<Result<GetAddressDto>>
 }
 
 public class CreateAddressCommandHandler(
-    IMapper mapper, 
-    IUnitOfWork unitOfWork, 
-    ICurrentUserService currentUserService, 
-    IAuthorizationService authorizationService,
-    IAddressRepository addressRepository
+    IMapper mapper,
+    IUnitOfWork unitOfWork,
+    IAddressRepository addressRepository,
+    ICurrentUserService currentUserService,
+    IAuthorizationService authorizationService
     ) : IRequestHandler<CreateAddressCommand, Result<GetAddressDto>>
 {
     private readonly IMapper _mapper = mapper;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IAddressRepository _addressRepository = addressRepository;
     private readonly ICurrentUserService _currentUserService = currentUserService;
     private readonly IAuthorizationService _authorizationService = authorizationService;
-    private readonly IAddressRepository _addressRepository = addressRepository;
 
     public async Task<Result<GetAddressDto>> Handle(CreateAddressCommand request, CancellationToken cancellationToken)
     {
@@ -60,7 +60,7 @@ public class CreateAddressCommandHandler(
         {
             await _authorizationService.UpdateDefaultAddressIdAsync(address.Id);
         }
-        
+
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         var dto = _mapper.Map<GetAddressDto>(address);

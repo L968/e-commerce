@@ -7,7 +7,7 @@ public class EmailService
 {
     public void SendEmailConfirmationEmail(string to, int userId, string confirmationToken)
     {
-        var mailboxAdressess = new List<MailboxAddress> { new MailboxAddress("", to) };
+        var mailboxAdressess = new List<MailboxAddress> { new("", to) };
 
         var emailMessage = new MimeMessage();
         emailMessage.From.Add(new MailboxAddress("", Config.EmailSettingsFrom));
@@ -23,7 +23,7 @@ public class EmailService
 
     public void SendResetPasswordEmail(string to, string passwordResetToken)
     {
-        var mailboxAdressess = new List<MailboxAddress> { new MailboxAddress("", to) };
+        var mailboxAdressess = new List<MailboxAddress> { new("", to) };
 
         var emailMessage = new MimeMessage();
         emailMessage.From.Add(new MailboxAddress("", Config.EmailSettingsFrom));
