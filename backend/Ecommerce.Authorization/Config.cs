@@ -1,10 +1,11 @@
 ﻿namespace Ecommerce.Authorization;
 
-public class Config
+public class Config(IConfiguration configuration)
 {
-    private readonly IConfiguration _configuration;
+    private readonly IConfiguration _configuration = configuration;
 
     public static string JwtKey { get; set; } = "";
+    public static string[] AllowedOrigins { get; private set; } = [];
     public static string AdminInfoPassword { get; set; } = "";
 
     public static string EmailSettingsFrom { get; set; } = "";
@@ -16,14 +17,10 @@ public class Config
     public static string TwilioAuthToken { get; set; } = "";
     public static string TwilioPhoneNumber { get; set; } = "";
 
-    public Config(IConfiguration configuration)
-    {
-        _configuration = configuration;
-    }
-
     public void Init()
     {
         JwtKey = _configuration["Jwt:Key"] ?? throw new ArgumentNullException("Jwt:Key");
+        AllowedOrigins = _configuration.GetSection("AllowedOrigins").Get<string[]>() ?? throw new ArgumentNullException("AllowedOrigins");
         AdminInfoPassword = _configuration.GetValue<string>("AdminInfo:Password") ?? throw new ArgumentNullException("AdminInfo:Password");
 
         EmailSettingsFrom = _configuration.GetValue<string>("EmailSettings:From") ?? throw new ArgumentNullException("EmailSettings:From");
