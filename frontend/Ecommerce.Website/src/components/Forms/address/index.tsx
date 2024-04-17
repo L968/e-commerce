@@ -60,7 +60,7 @@ function AddressForm({ crudType, onClose }: AddressFormProps) {
             if (onClose) {
                 onClose();
             } else {
-                router.push('/profile/addresses');
+                router.push('/account/addresses');
             }
         }
 

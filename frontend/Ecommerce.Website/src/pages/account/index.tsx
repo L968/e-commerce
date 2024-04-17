@@ -9,26 +9,26 @@ import { Container, List, ListItem, ListItemContent, ListItemDescription, Main, 
 
 const menus = [
     {
-        url: '/profile/personal-data',
+        url: '/account/personal-data',
         icon: <PersonIcon />,
         header: 'Personal data',
         description: 'Data representing the account on this website',
     },
     {
-        url: '/profile/addresses',
+        url: '/account/addresses',
         icon: <PlaceIcon />,
         header: 'Addresses',
         description: 'Saved addresses in your account',
     },
     {
-        url: '/profile/credit-cards',
+        url: '/account/credit-cards',
         icon: <CreditCardIcon />,
         header: 'Cards',
         description: 'Cards saved in your account',
     },
 ];
 
-function Profile() {
+function Account() {
     return (
         <Main>
             <Container>
@@ -70,7 +70,7 @@ function Profile() {
 export default function Private() {
     return (
         <PrivateRoute>
-            <Profile />
+            <Account />
         </PrivateRoute>
     )
 }

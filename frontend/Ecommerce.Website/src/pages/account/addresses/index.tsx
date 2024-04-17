@@ -49,7 +49,7 @@ function Addresses() {
     }
 
     function handleEdit(addressId: string): void {
-        router.push(`/profile/addresses/update/${addressId}`);
+        router.push(`/account/addresses/update/${addressId}`);
     }
 
     function handleOpenDeleteDialog(address: Address): void {
@@ -154,7 +154,7 @@ function Addresses() {
                         </>
                     }
 
-                    <Link href='/profile/addresses/create'>
+                    <Link href='/account/addresses/create'>
                         <Button fullWidth>
                             Add Address
                         </Button>
