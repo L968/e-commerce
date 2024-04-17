@@ -3,11 +3,15 @@ using System.Web;
 
 namespace Ecommerce.Authorization.Services;
 
-public class UserService(UserManager<CustomIdentityUser> userManager, EmailService emailService, SmsService smsService)
+public class UserService(
+    UserManager<CustomIdentityUser> userManager,
+    IEmailService emailService,
+    ISmsService smsService
+    ) : IUserService
 {
     private readonly UserManager<CustomIdentityUser> _userManager = userManager;
-    private readonly EmailService _emailService = emailService;
-    private readonly SmsService _smsService = smsService;
+    private readonly IEmailService _emailService = emailService;
+    private readonly ISmsService _smsService = smsService;
 
     public Result CreateUser(CreateUserDto createUserDto)
     {

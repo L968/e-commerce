@@ -2,9 +2,9 @@
 
 [ApiController]
 [Route("[controller]")]
-public class LoginController(LoginService loginService) : ControllerBase
+public class LoginController(ILoginService loginService) : ControllerBase
 {
-    private readonly LoginService _loginService = loginService;
+    private readonly ILoginService _loginService = loginService;
 
     [HttpPost]
     public IActionResult Login([FromBody] LoginRequest loginRequest)

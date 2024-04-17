@@ -4,9 +4,9 @@ namespace Ecommerce.Authorization.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UserController(UserService userService) : ControllerBase
+public class UserController(IUserService userService) : ControllerBase
 {
-    private readonly UserService _userService = userService;
+    private readonly IUserService _userService = userService;
 
     [Authorize(Roles = "regular")]
     [HttpGet("defaultAddressId")]

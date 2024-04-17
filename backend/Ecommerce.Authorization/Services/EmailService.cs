@@ -1,9 +1,9 @@
-﻿using MimeKit;
-using MailKit.Net.Smtp;
+﻿using MailKit.Net.Smtp;
+using MimeKit;
 
 namespace Ecommerce.Authorization.Services;
 
-public class EmailService
+public class EmailService : IEmailService
 {
     public void SendEmailConfirmationEmail(string to, int userId, string confirmationToken)
     {

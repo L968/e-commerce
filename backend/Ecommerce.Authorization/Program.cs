@@ -8,7 +8,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 new Config(builder.Configuration).Init();
 
-// Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -51,11 +50,11 @@ builder.Services.AddAuthentication(auth =>
     };
 });
 
-builder.Services.AddScoped<UserService, UserService>();
-builder.Services.AddScoped<LoginService, LoginService>();
-builder.Services.AddScoped<TokenService, TokenService>();
-builder.Services.AddScoped<EmailService, EmailService>();
-builder.Services.AddScoped<SmsService, SmsService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ILoginService, LoginService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<ISmsService, SmsService>();
 
 builder.Services.AddCors(options =>
 {

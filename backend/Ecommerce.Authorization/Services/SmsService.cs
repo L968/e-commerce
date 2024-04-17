@@ -4,7 +4,7 @@ using Twilio.Rest.Api.V2010.Account;
 
 namespace Ecommerce.Authorization.Services;
 
-public class SmsService
+public class SmsService : ISmsService
 {
     public void SendPhoneNumberConfirmationSms(string to, string confirmationToken)
     {

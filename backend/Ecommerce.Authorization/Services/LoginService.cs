@@ -2,15 +2,15 @@
 
 public class LoginService(
     SignInManager<CustomIdentityUser> signInManager,
-    TokenService tokenService,
-    EmailService emailService,
-    SmsService smsService
-    )
+    ITokenService tokenService,
+    IEmailService emailService,
+    ISmsService smsService
+    ) : ILoginService
 {
     private readonly SignInManager<CustomIdentityUser> _signInManager = signInManager;
-    private readonly TokenService _tokenService = tokenService;
-    private readonly EmailService _emailService = emailService;
-    private readonly SmsService _smsService = smsService;
+    private readonly ITokenService _tokenService = tokenService;
+    private readonly IEmailService _emailService = emailService;
+    private readonly ISmsService _smsService = smsService;
 
     public Result Login(LoginRequest loginRequest)
     {
