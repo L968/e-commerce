@@ -1,10 +1,9 @@
 import { ReactNode } from 'react';
-import { Button } from '@mui/material';
 import OrderStatus from '@/interfaces/OrderStatus';
+import currencyFormat from '@/utils/currencyFormat';
 import PaymentMethod from '@/interfaces/PaymentMethod';
 import getOrderStatusColor from '@/utils/getOrderStatusColor';
-import { Container, Content, Status, UserActions } from './styles';
-import currencyFormat from '@/utils/currencyFormat';
+import { Button, Container, Content, Status, UserActions } from './styles';
 
 interface FeedbackContainerProps {
     status: OrderStatus
@@ -22,12 +21,27 @@ export default function FeedbackContainer({ status, totalAmount, paymentMethod }
             case 'Pending Payment':
                 return (
                     <>
-                        <h2>Pay {currencyFormat(totalAmount)} via Pix to secure your purchase</h2>
+                        <h2>Pay {currencyFormat(totalAmount)} via {paymentMethod} to secure your purchase</h2>
                         <p>The payment will be approved instantly.</p>
                         <p>Follow the instructions to pay and secure your product.</p>
                     </>
                 )
-            default: break;
+            case 'Processing':
+                return (
+                    <>
+                        <h2>Your order is being processed</h2>
+                        <p>We are preparing your order for shipment.</p>
+                        <p>Once your order is shipped, you will receive a tracking number to track your package.</p>
+                    </>
+                )
+            case 'Cancelled':
+                return (
+                    <>
+                        <h2>The deadline for paying your purchase has expired</h2>
+                        <p>We canceled the purchase because the deadline for payment has expired</p>
+                    </>
+                )
+            default: throw new Error('Payment status not parameterized');
         }
     }
 
@@ -36,17 +50,26 @@ export default function FeedbackContainer({ status, totalAmount, paymentMethod }
             case 'Pending Payment':
                 return (
                     <>
-                        <Button size='small' variant='contained' sx={{ textTransform: 'none' }}>View instructions</Button>
-                        <Button size='small' sx={{ textTransform: 'none' }}>Pay by another method</Button>
+                        <Button size='small' variant='contained'>View instructions</Button>
+                        <Button size='small'>Pay by another method</Button>
                     </>
                 )
-            default: break;
+            case 'Processing':
+                return (
+                    <>
+                        <Button size='small' variant='contained'>Shipping details</Button>
+                        <Button size='small'>Cancel purchase</Button>
+                    </>
+                )
+            case 'Cancelled':
+                return <Button size='small' variant='contained'>Buy again</Button>
+            default: throw new Error('Payment status not parameterized');
         }
     }
 
     return (
         <Container>
-            <Content isPendingPayment={status === 'Pending Payment'}>
+            <Content orderStatus={status}>
                 <Status color={getOrderStatusColor(status)}>{status}</Status>
                 {getContent()}
             </Content>

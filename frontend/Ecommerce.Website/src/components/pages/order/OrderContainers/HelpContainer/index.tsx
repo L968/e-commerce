@@ -23,6 +23,13 @@ export default function HelpContainer({ status }: HelpContainerProps) {
                         <div>When will I receive the purchase</div>
                     </>
                 )
+            case 'Processing':
+                return (
+                    <>
+                        <div>I want to change the shipping address</div>
+                        <div>I need help with the invoice</div>
+                    </>
+                )
             case 'Shipped':
                 return (
                     <>
@@ -30,7 +37,13 @@ export default function HelpContainer({ status }: HelpContainerProps) {
                         <div>What if I'm not there to receive the purchase?</div>
                         <div>What happens if I cancel the purchase</div>
                         <div>How to take care of the product if I need to return it</div>
-                        <div>I need help with the NF-e</div>
+                        <div>I need help with the invoice</div>
+                    </>
+                )
+            case 'Cancelled':
+                return (
+                    <>
+                        <div>I need help with the invoice</div>
                     </>
                 )
             default: throw new Error('Payment status not parameterized');
