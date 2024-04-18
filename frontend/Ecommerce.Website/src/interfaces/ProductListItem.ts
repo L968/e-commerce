@@ -1,6 +1,6 @@
 import Variant from './Variant';
 
-export default interface Product {
+export default interface ProductListItem {
     id: string
     name: string
     categoryName: string

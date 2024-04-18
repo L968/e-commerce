@@ -4,7 +4,8 @@ import { useRouter } from 'next/router';
 import Rating from '@mui/material/Rating';
 import { useEffect, useState } from 'react';
 import Divider from '@mui/material/Divider';
-import { CircularProgress, Grid, IconButton } from '@mui/material';
+import ErrorIcon from '@mui/icons-material/Error';
+import { CircularProgress, Grid, IconButton, Stack } from '@mui/material';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 
@@ -17,14 +18,14 @@ import currencyFormat from '@/utils/currencyFormat';
 import VariantSelector from '@/components/VariantSelector';
 import ProductCombination from '@/interfaces/ProductCombination';
 import { useOrderCheckout } from '@/contexts/orderCheckoutContext';
-import ProductResponse from '@/interfaces/api/responses/ProductResponse';
-import { Availability, AvailabilityValue, ButtonsContainer, CarouselImageContainer, CarouselIndicators, Header, ImageContainer, ProductContainer, ProductDescription, ProductInfo, ProductName, ProductPrice, RatingContainer, RatingSpan, BuyNowButton, SelectedImageContainer, VariantsContainer, ReviewsSection, ReviewsTitle, RatingAverage, ReviewsRating, ReviewsRatingInfo } from './styles';
+import ProductDetails from '@/interfaces/ProductDetails';
+import { Availability, AvailabilityValue, ButtonsContainer, CarouselImageContainer, CarouselIndicators, Header, ImageContainer, ProductContainer, ProductDescription, ProductInfo, ProductName, ProductPrice, RatingContainer, RatingSpan, BuyNowButton, SelectedImageContainer, VariantsContainer, ReviewsSection, ReviewsTitle, RatingAverage, ReviewsRating, ReviewsRatingInfo, InactiveProductContainer } from './styles';
 
 export default function Product() {
     const router = useRouter();
     const { setOrderCheckout } = useOrderCheckout();
 
-    const [product, setProduct] = useState<ProductResponse>();
+    const [product, setProduct] = useState<ProductDetails>();
     const [loading, setLoading] = useState<boolean>(true);
     const [selectedImage, setSelectedImage] = useState<string>('');
     const [selectedProductCombination, setSelectedProductCombination] = useState<ProductCombination>();
@@ -36,7 +37,7 @@ export default function Product() {
 
         if (!productId) return;
 
-        api.get<ProductResponse>('/product/' + productId)
+        api.get<ProductDetails>('/product/' + productId)
             .then(response => {
                 setProduct(response.data);
                 setSelectedProductCombination(response.data.combinations[0]);
@@ -255,25 +256,40 @@ export default function Product() {
 
                     <Divider />
 
-                    <VariantsContainer>
-                        {product.variants.map((variant) => (
-                            <VariantSelector
-                                key={variant.id}
-                                variant={variant}
-                                selectedVariant={selectedVariants[variant.name]}
-                                onSelectVariant={selectedOption => handleSelectVariant(variant.name, selectedOption)}
-                                validOptions={getValidOptions(variant)}
-                            />
-                        ))}
-                    </VariantsContainer>
+                    {product.active
+                        ? <>
+                            {product.combinations.length > 1 &&
+                                <VariantsContainer>
+                                    {product.variants.map((variant) => (
+                                        <VariantSelector
+                                            key={variant.id}
+                                            variant={variant}
+                                            selectedVariant={selectedVariants[variant.name]}
+                                            onSelectVariant={selectedOption => handleSelectVariant(variant.name, selectedOption)}
+                                            validOptions={getValidOptions(variant)}
+                                        />
+                                    ))}
+                                </VariantsContainer>
+                            }
 
-                    <ButtonsContainer>
-                        <BuyNowButton variant='contained' onClick={handleBuyNow}>BUY NOW</BuyNowButton>
-                        <FavoriteBorderOutlinedIcon />
-                        <IconButton onClick={handleAddToCart}>
-                            <ShoppingCartOutlinedIcon />
-                        </IconButton>
-                    </ButtonsContainer>
+                            <ButtonsContainer>
+                                <BuyNowButton variant='contained' onClick={handleBuyNow}>BUY NOW</BuyNowButton>
+                                <FavoriteBorderOutlinedIcon />
+                                <IconButton onClick={handleAddToCart}>
+                                    <ShoppingCartOutlinedIcon />
+                                </IconButton>
+                            </ButtonsContainer>
+                        </>
+                        : <>
+                            <InactiveProductContainer>
+                                <Stack direction='row' spacing={2}>
+                                    <ErrorIcon style={{ color: '#F73' }} />
+                                    <div>Inactive Product</div>
+                                </Stack>
+                            </InactiveProductContainer>
+                        </>
+                    }
+
                 </ProductInfo>
             </ProductContainer>
 

@@ -2,7 +2,6 @@ import { styled } from '@mui/system';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { Grid } from '@mui/material';
 
 export const Header = styled(Box)({
     display: 'flex',
@@ -146,12 +145,22 @@ export const ReviewsRatingInfo = styled(Box)({
     flexDirection: 'column',
 })
 
-export const ReviewsTitle= styled(Typography)({
+export const ReviewsTitle = styled(Typography)({
     fontSize: '24px',
     fontWeight: 600,
 }) as typeof Typography
 
-export const RatingAverage= styled(Typography)({
+export const RatingAverage = styled(Typography)({
     fontSize: '48px',
     fontWeight: 600,
 }) as typeof Typography
+
+export const InactiveProductContainer = styled(Box)({
+    backgroundColor: '#F5F5F5',
+    width: '100%',
+    borderRadius: '6px',
+    padding: '16px',
+    marginTop: '16px',
+    fontSize: '18px',
+    borderLeft: '4px solid #F73',
+})
