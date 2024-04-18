@@ -9,6 +9,18 @@ public class UserController(IUserService userService) : ControllerBase
     private readonly IUserService _userService = userService;
 
     [Authorize(Roles = "regular")]
+    [HttpGet]
+    public async Task<IActionResult> GetUser()
+    {
+        int userId = int.Parse(User.FindFirst("id")!.Value);
+        CustomIdentityUser? user = await _userService.GetUserByIdAsync(userId);
+
+        if (user is null) return NotFound();
+
+        return Ok(user);
+    }
+
+    [Authorize(Roles = "regular")]
     [HttpGet("defaultAddressId")]
     public async Task<IActionResult> GetDefaultAddress()
     {
@@ -31,18 +43,6 @@ public class UserController(IUserService userService) : ControllerBase
     }
 
     [Authorize(Roles = "regular")]
-    [HttpPatch("phoneNumber/{phoneNumber}")]
-    public async Task<IActionResult> UpdatePhoneNumber(string phoneNumber)
-    {
-        int userId = int.Parse(User.FindFirst("id")!.Value);
-        Result result = await _userService.UpdatePhoneNumberAsync(userId, phoneNumber);
-
-        if (result.IsFailed) return BadRequest(result.Reasons[0]);
-
-        return NoContent();
-    }
-
-    [Authorize(Roles = "regular")]
     [Route("defaultAddressId/")]
     [Route("defaultAddressId/{addressId}")]
     [HttpPatch]
@@ -50,6 +50,18 @@ public class UserController(IUserService userService) : ControllerBase
     {
         int userId = int.Parse(User.FindFirst("id")!.Value);
         Result result = await _userService.UpdateDefaultAddressAsync(addressId, userId);
+
+        if (result.IsFailed) return BadRequest(result.Reasons[0]);
+
+        return NoContent();
+    }
+
+    [Authorize(Roles = "regular")]
+    [HttpPatch("phoneNumber/{phoneNumber}")]
+    public async Task<IActionResult> UpdatePhoneNumber(string phoneNumber)
+    {
+        int userId = int.Parse(User.FindFirst("id")!.Value);
+        Result result = await _userService.UpdatePhoneNumberAsync(userId, phoneNumber);
 
         if (result.IsFailed) return BadRequest(result.Reasons[0]);
 

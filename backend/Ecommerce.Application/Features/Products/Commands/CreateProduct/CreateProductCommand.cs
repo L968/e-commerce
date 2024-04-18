@@ -13,9 +13,9 @@ public record CreateProductCommand : IRequest<Result<GetProductDto>>
 }
 
 public class CreateProductCommandHandler(
-    IMapper mapper, 
+    IMapper mapper,
     IUnitOfWork unitOfWork,
-    IProductRepository productRepository, 
+    IProductRepository productRepository,
     IProductCategoryRepository productCategoryRepository
     ) : IRequestHandler<CreateProductCommand, Result<GetProductDto>>
 {

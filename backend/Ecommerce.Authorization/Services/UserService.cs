@@ -13,6 +13,19 @@ public class UserService(
     private readonly IEmailService _emailService = emailService;
     private readonly ISmsService _smsService = smsService;
 
+    public async Task<CustomIdentityUser?> GetUserByIdAsync(int userId)
+    {
+        return await _userManager.Users.FirstOrDefaultAsync(user => user.Id == userId);
+    }
+
+    public async Task<Guid?> GetDefaultAddressIdAsync(int userId)
+    {
+        var identityUser = await _userManager.Users.FirstOrDefaultAsync(user => user.Id == userId);
+        if (identityUser is null) return null;
+
+        return identityUser.DefaultAddressId;
+    }
+
     public async Task<Result> CreateUserAsync(CreateUserDto createUserDto)
     {
         using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
@@ -40,18 +53,20 @@ public class UserService(
         return Result.Ok();
     }
 
-    public async Task<Result> UpdatePhoneNumberAsync(int userId, string phoneNumber)
+    public async Task<Result> UpdateDefaultAddressAsync(Guid? addressId, int userId)
     {
-        if (string.IsNullOrWhiteSpace(phoneNumber)) return Result.Fail("Phone number is required");
-
-        bool IsPhoneAlreadyRegistered = await _userManager.Users.AnyAsync(user => user.PhoneNumber == phoneNumber);
-        if (IsPhoneAlreadyRegistered) return Result.Fail("Phone number is already taken");
+        if (addressId is not null)
+        {
+            if (addressId == Guid.Empty)
+                return Result.Fail("Invalid address id value");
+        }
 
         var identityUser = await _userManager.Users.FirstOrDefaultAsync(user => user.Id == userId);
-        if (identityUser is null) return Result.Fail("Error in updating phone number");
+        if (identityUser is null)
+            return Result.Fail("User not found");
 
-        string confirmationToken = await _userManager.GenerateChangePhoneNumberTokenAsync(identityUser, phoneNumber);
-        await _smsService.SendPhoneNumberConfirmationSms(phoneNumber, confirmationToken);
+        identityUser.DefaultAddressId = addressId;
+        await _userManager.UpdateAsync(identityUser);
 
         return Result.Ok();
     }
@@ -67,6 +82,22 @@ public class UserService(
 
         identityUser.TwoFactorEnabled = twoFactorEnabled;
         var result = await _userManager.UpdateAsync(identityUser);
+
+        return Result.Ok();
+    }
+
+    public async Task<Result> UpdatePhoneNumberAsync(int userId, string phoneNumber)
+    {
+        if (string.IsNullOrWhiteSpace(phoneNumber)) return Result.Fail("Phone number is required");
+
+        bool IsPhoneAlreadyRegistered = await _userManager.Users.AnyAsync(user => user.PhoneNumber == phoneNumber);
+        if (IsPhoneAlreadyRegistered) return Result.Fail("Phone number is already taken");
+
+        var identityUser = await _userManager.Users.FirstOrDefaultAsync(user => user.Id == userId);
+        if (identityUser is null) return Result.Fail("Error in updating phone number");
+
+        string confirmationToken = await _userManager.GenerateChangePhoneNumberTokenAsync(identityUser, phoneNumber);
+        await _smsService.SendPhoneNumberConfirmationSms(phoneNumber, confirmationToken);
 
         return Result.Ok();
     }
@@ -94,32 +125,6 @@ public class UserService(
         var identityResult = await _userManager.ConfirmEmailAsync(identityUser, activateUserRequest.ConfirmationCode);
         if (!identityResult.Succeeded)
             return Result.Fail("Error in activating user");
-
-        return Result.Ok();
-    }
-
-    public async Task<Guid?> GetDefaultAddressIdAsync(int userId)
-    {
-        var identityUser = await _userManager.Users.FirstOrDefaultAsync(user => user.Id == userId);
-        if (identityUser is null) return null;
-
-        return identityUser.DefaultAddressId;
-    }
-
-    public async Task<Result> UpdateDefaultAddressAsync(Guid? addressId, int userId)
-    {
-        if (addressId is not null)
-        {
-            if (addressId == Guid.Empty)
-                return Result.Fail("Invalid address id value");
-        }
-
-        var identityUser = await _userManager.Users.FirstOrDefaultAsync(user => user.Id == userId);
-        if (identityUser is null)
-            return Result.Fail("User not found");
-
-        identityUser.DefaultAddressId = addressId;
-        await _userManager.UpdateAsync(identityUser);
 
         return Result.Ok();
     }
