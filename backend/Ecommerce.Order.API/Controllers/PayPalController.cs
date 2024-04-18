@@ -1,11 +1,13 @@
 using Ecommerce.Order.API.Interfaces;
 using Ecommerce.Order.API.Models.PayPal;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.Order.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[Authorize(Roles = "regular")]
 public class PayPalController(IOrderService orderService) : ControllerBase
 {
     private readonly IOrderService _orderService = orderService;
