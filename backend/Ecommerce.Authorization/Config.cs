@@ -1,9 +1,7 @@
 ﻿namespace Ecommerce.Authorization;
 
-public class Config(IConfiguration configuration)
+public static class Config
 {
-    private readonly IConfiguration _configuration = configuration;
-
     public static string JwtKey { get; set; } = "";
     public static string[] AllowedOrigins { get; private set; } = [];
     public static string AdminInfoPassword { get; set; } = "";
@@ -17,21 +15,21 @@ public class Config(IConfiguration configuration)
     public static string TwilioAuthToken { get; set; } = "";
     public static string TwilioPhoneNumber { get; set; } = "";
 
-    public void Init()
+    public static void Init(IConfiguration configuration)
     {
-        JwtKey = _configuration["Jwt:Key"] ?? throw new ArgumentNullException("Jwt:Key");
-        AllowedOrigins = _configuration.GetSection("AllowedOrigins").Get<string[]>() ?? throw new ArgumentNullException("AllowedOrigins");
-        AdminInfoPassword = _configuration.GetValue<string>("AdminInfo:Password") ?? throw new ArgumentNullException("AdminInfo:Password");
+        JwtKey = configuration["Jwt:Key"] ?? throw new ArgumentNullException("Jwt:Key");
+        AllowedOrigins = configuration.GetSection("AllowedOrigins").Get<string[]>() ?? throw new ArgumentNullException("AllowedOrigins");
+        AdminInfoPassword = configuration.GetValue<string>("AdminInfo:Password") ?? throw new ArgumentNullException("AdminInfo:Password");
 
-        EmailSettingsFrom = _configuration.GetValue<string>("EmailSettings:From") ?? throw new ArgumentNullException("EmailSettings:From");
-        EmailSettingsPassword = _configuration.GetValue<string>("EmailSettings:Password") ?? throw new ArgumentNullException("EmailSettings:Password");
-        EmailSettingsSmtpServer = _configuration.GetValue<string>("EmailSettings:SmtpServer") ?? throw new ArgumentNullException("EmailSettings:SmtpServer");
-        EmailSettingsPort = _configuration.GetValue<int>("EmailSettings:Port");
+        EmailSettingsFrom = configuration.GetValue<string>("EmailSettings:From") ?? throw new ArgumentNullException("EmailSettings:From");
+        EmailSettingsPassword = configuration.GetValue<string>("EmailSettings:Password") ?? throw new ArgumentNullException("EmailSettings:Password");
+        EmailSettingsSmtpServer = configuration.GetValue<string>("EmailSettings:SmtpServer") ?? throw new ArgumentNullException("EmailSettings:SmtpServer");
+        EmailSettingsPort = configuration.GetValue<int>("EmailSettings:Port");
 
         if (EmailSettingsPort <= 0) throw new ArgumentNullException("EmailSettings:Port");
 
-        TwilioSID = _configuration.GetValue<string>("Twilio:SID") ?? throw new ArgumentNullException("Twilio:SID");
-        TwilioAuthToken = _configuration.GetValue<string>("Twilio:AuthToken") ?? throw new ArgumentNullException("Twilio:AuthToken");
-        TwilioPhoneNumber = _configuration.GetValue<string>("Twilio:PhoneNumber") ?? throw new ArgumentNullException("Twilio:PhoneNumber");
+        TwilioSID = configuration.GetValue<string>("Twilio:SID") ?? throw new ArgumentNullException("Twilio:SID");
+        TwilioAuthToken = configuration.GetValue<string>("Twilio:AuthToken") ?? throw new ArgumentNullException("Twilio:AuthToken");
+        TwilioPhoneNumber = configuration.GetValue<string>("Twilio:PhoneNumber") ?? throw new ArgumentNullException("Twilio:PhoneNumber");
     }
 }

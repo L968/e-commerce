@@ -1,9 +1,7 @@
 ﻿namespace Ecommerce.Order.API;
 
-public class Config(IConfiguration configuration)
+public static class Config
 {
-    private readonly IConfiguration _configuration = configuration;
-
     public static string JwtKey { get; private set; } = "";
     public static string[] AllowedOrigins { get; private set; } = [];
 
@@ -16,18 +14,18 @@ public class Config(IConfiguration configuration)
     public static string PayPalClientId { get; private set; } = "";
     public static string PayPalClientSecret { get; private set; } = "";
 
-    public void Init()
+    public static void Init(IConfiguration configuration)
     {
-        JwtKey = _configuration.GetValue<string>("Jwt:Key") ?? throw new ArgumentNullException("Jwt:Key");
-        AllowedOrigins = _configuration.GetSection("AllowedOrigins").Get<string[]>() ?? throw new ArgumentNullException("AllowedOrigins");
+        JwtKey = configuration.GetValue<string>("Jwt:Key") ?? throw new ArgumentNullException("Jwt:Key");
+        AllowedOrigins = configuration.GetSection("AllowedOrigins").Get<string[]>() ?? throw new ArgumentNullException("AllowedOrigins");
 
-        EcommerceServiceBaseUrl = _configuration.GetValue<string>("EcommerceService:BaseUrl") ?? throw new ArgumentNullException("EcommerceService:BaseUrl");
-        EcommerceServiceTimeout = _configuration.GetValue<int?>("EcommerceService:Timeout") ?? throw new ArgumentNullException("EcommerceService:Timeout");
+        EcommerceServiceBaseUrl = configuration.GetValue<string>("EcommerceService:BaseUrl") ?? throw new ArgumentNullException("EcommerceService:BaseUrl");
+        EcommerceServiceTimeout = configuration.GetValue<int?>("EcommerceService:Timeout") ?? throw new ArgumentNullException("EcommerceService:Timeout");
 
-        PayPalBaseAddress = _configuration.GetValue<string>("PayPal:BaseAddress") ?? throw new ArgumentNullException("PayPal:BaseAddress");
-        PayPalReturnUrl = _configuration.GetValue<string>("PayPal:ReturnUrl") ?? throw new ArgumentNullException("PayPal:ReturnUrl");
-        PayPalCancelUrl = _configuration.GetValue<string>("PayPal:CancelUrl") ?? throw new ArgumentNullException("PayPal:CancelUrl");
-        PayPalClientId = _configuration.GetValue<string>("PayPal:ClientId") ?? throw new ArgumentNullException("PayPal:ClientId");
-        PayPalClientSecret = _configuration.GetValue<string>("PayPal:ClientSecret") ?? throw new ArgumentNullException("PayPal:ClientSecret");
+        PayPalBaseAddress = configuration.GetValue<string>("PayPal:BaseAddress") ?? throw new ArgumentNullException("PayPal:BaseAddress");
+        PayPalReturnUrl = configuration.GetValue<string>("PayPal:ReturnUrl") ?? throw new ArgumentNullException("PayPal:ReturnUrl");
+        PayPalCancelUrl = configuration.GetValue<string>("PayPal:CancelUrl") ?? throw new ArgumentNullException("PayPal:CancelUrl");
+        PayPalClientId = configuration.GetValue<string>("PayPal:ClientId") ?? throw new ArgumentNullException("PayPal:ClientId");
+        PayPalClientSecret = configuration.GetValue<string>("PayPal:ClientSecret") ?? throw new ArgumentNullException("PayPal:ClientSecret");
     }
 }

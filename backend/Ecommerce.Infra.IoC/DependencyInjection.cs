@@ -42,7 +42,7 @@ public static class DependencyInjection
                 )
         );
 
-        new Config(configuration).Init();
+        Config.Init(configuration);
 
         services.AddHttpContextAccessor();
 

@@ -16,7 +16,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-new Config(builder.Configuration).Init();
+Config.Init(builder.Configuration);
 
 builder.Services.AddHttpContextAccessor();
 
