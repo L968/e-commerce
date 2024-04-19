@@ -26,9 +26,9 @@ public class PayPalService(HttpClient httpClient) : IPayPalService
     }
 
     /// <summary>
-    /// Creates a PayPal payment for the specified order.
+    /// Creates a PayPal order for the specified order.
     /// </summary>
-    /// <returns>The approval URL for the created payment</returns>
+    /// <returns>The approval URL for the created order</returns>
     public async Task<CreateOrderResponse> CreateOrderAsync(decimal totalAmount, string currencyCode)
     {
         await RefreshAccessToken();

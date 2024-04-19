@@ -64,4 +64,16 @@ public class ProductCombinationController(IMediator mediator) : ControllerBase
 
         return NoContent();
     }
+
+    [HttpPost("reduce-stock")]
+    [Authorize(Roles = "admin")]
+    public async Task<IActionResult> ReduceStock(ReduceStockProductCombinationCommand command)
+    {
+        var result = await _mediator.Send(command);
+
+        if (result.IsFailed)
+            return BadRequest(result.Reasons);
+
+        return NoContent();
+    }
 }

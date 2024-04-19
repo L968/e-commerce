@@ -1,3 +1,4 @@
+using Ecommerce.Application.DTOs.Products;
 using Ecommerce.Domain.DTOs;
 using Ecommerce.Order.API.Interfaces;
 using Newtonsoft.Json;
@@ -8,6 +9,8 @@ namespace Ecommerce.Order.API.Services;
 
 public class EcommerceService(HttpClient httpClient) : IEcommerceService
 {
+    private string _accessToken = "";
+    private DateTime _accessTokenExpiration;
     private readonly HttpClient _httpClient = httpClient;
 
     public async Task<CreateOrderAddressDto?> GetAddressByIdAsync(Guid addressId)
@@ -56,5 +59,18 @@ public class EcommerceService(HttpClient httpClient) : IEcommerceService
 
         var response = await _httpClient.PatchAsync(requestUri, httpContent);
         response.EnsureSuccessStatusCode();
+    }
+
+    public async Task ReduceStockProductCombination(IEnumerable<ReduceStockRequest> requests)
+    {
+        await RefreshAdminAccessToken();
+    }
+
+    private async Task RefreshAdminAccessToken()
+    {
+        if (!string.IsNullOrEmpty(_accessToken) && DateTime.Now < _accessTokenExpiration)
+            return;
+
+
     }
 }
