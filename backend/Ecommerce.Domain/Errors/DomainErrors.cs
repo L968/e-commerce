@@ -72,6 +72,13 @@ public static class DomainErrors
         public static readonly Error DiscountUnitNotImplemented = new("Discount unit is not implemented");
         public static readonly Error CannotAddItemToCancelledOrder = new("Cannot add item to a cancelled order");
         public static readonly Error InvalidPaymentStatus = new("Invalid payment status");
+        public static readonly Error OrderNotFoundByExternalPaymentId = new("Failed to find an order with the provided payment token");
+    }
+
+    public static class PayPal
+    {
+        public static readonly Error OrderNotFound = new("Failed to retrieve PayPal order details. Please try again");
+        public static readonly Error OrderNotApproved = new("The PayPal order status is not approved. Cannot process payment");
     }
 
     public static Error NotFound(string entityName, int id)

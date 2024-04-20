@@ -138,15 +138,15 @@ public class OrderService(
         GetOrderResponse? paypalOrder = await _payPalService.GetOrderAsync(token);
 
         if (paypalOrder is null)
-            return Result.Fail("Failed to retrieve PayPal order details. Please try again");
+            return Result.Fail(DomainErrors.PayPal.OrderNotFound);
 
         if (paypalOrder.status != "APPROVED")
-            return Result.Fail("The PayPal order status is not approved. Cannot process payment");
+            return Result.Fail(DomainErrors.PayPal.OrderNotApproved);
 
         var order = await _orderRepository.GetByExternalPaymentIdAsync(token);
 
         if (order is null)
-            return Result.Fail("Failed to find an order with the provided PayPal token");
+            return Result.Fail(DomainErrors.Order.OrderNotFoundByExternalPaymentId);
 
         var result = order.CompletePayment();
 
@@ -163,7 +163,7 @@ public class OrderService(
         var order = await _orderRepository.GetByExternalPaymentIdAsync(token);
 
         if (order is null)
-            return Result.Fail("Failed to find an order with the provided PayPal token");
+            return Result.Fail(DomainErrors.Order.OrderNotFoundByExternalPaymentId);
 
         order.Cancel();
         await _orderRepository.UpdateAsync(order);
