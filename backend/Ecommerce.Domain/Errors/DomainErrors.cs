@@ -27,6 +27,7 @@ public static class DomainErrors
         public static readonly Error InvalidWidthValue = new("Invalid width value");
         public static readonly Error InvalidHeightValue = new("Invalid height value");
         public static readonly Error InvalidWeightValue = new("Invalid weight value");
+        public static Error InactiveProduct(Guid id) => new($"Product {id} is inactive");
     }
 
     public static class ProductCombination
@@ -79,6 +80,7 @@ public static class DomainErrors
     {
         public static readonly Error OrderNotFound = new("Failed to retrieve PayPal order details. Please try again");
         public static readonly Error OrderNotApproved = new("The PayPal order status is not approved. Cannot process payment");
+        public static readonly Error CheckoutUrlNotFound = new("PayPal checkout url not found");
     }
 
     public static Error NotFound(string entityName, int id)

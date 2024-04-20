@@ -78,7 +78,7 @@ public class OrderService(
                 return Result.Fail(DomainErrors.NotFound(nameof(ProductCombination), cartItemDto.ProductCombinationId));
 
             if (!productCombinationDto.Product.Active)
-                return Result.Fail($"Product {productCombinationDto.Product.Id} is inactive");
+                return Result.Fail(DomainErrors.Product.InactiveProduct(productCombinationDto.Product.Id));
 
             ProductCombination productCombination = _mapper.Map<ProductCombination>(productCombinationDto);
 
@@ -122,7 +122,7 @@ public class OrderService(
             string? paypalCheckoutUrl = response.links.FirstOrDefault(link => link.rel == "payer-action")?.href;
 
             if (string.IsNullOrEmpty(paypalCheckoutUrl))
-                return Result.Fail("Paypal checkout url not found");
+                return Result.Fail(DomainErrors.PayPal.CheckoutUrlNotFound);
 
             checkoutUrl = paypalCheckoutUrl;
         }
