@@ -8,11 +8,21 @@ public class OrderRepository(AppDbContext context) : IOrderRepository
 {
     private readonly AppDbContext _context = context;
 
-    public async Task<IEnumerable<Domain.Entities.OrderEntities.Order>> GetPendingOrdersAsync()
+    public async Task<(IEnumerable<Domain.Entities.OrderEntities.Order>, long TotalItems)> GetAllAsync(int page, int pageSize, OrderStatus? status)
     {
-        return await _context.Orders
-            .Where(o => o.Status == OrderStatus.PendingPayment)
+        var query = _context.Orders
+            .Include(o => o.Items)
+            .Where(o => status == null || o.Status == status.Value)
+            .OrderByDescending(o => o.CreatedAt);
+
+        var totalItems = await query.CountAsync();
+
+        var orders = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
+
+        return (orders, totalItems);
     }
 
     public async Task<(IEnumerable<Domain.Entities.OrderEntities.Order>, long TotalItems)> GetByUserIdAsync(int userId, int page, int pageSize)
@@ -30,6 +40,25 @@ public class OrderRepository(AppDbContext context) : IOrderRepository
             .ToListAsync();
 
         return (orders, totalItems);
+    }
+
+    public async Task<OrderStatusCountDto> GetStatusCountAsync()
+    {
+        var statusCounts = await _context.Orders
+            .GroupBy(o => o.Status)
+            .Select(g => new
+            {
+                Status = g.Key,
+                Count = g.Sum(o => o.Status == g.Key ? 1 : 0)
+            })
+            .ToDictionaryAsync(x => x.Status, x => x.Count);
+
+        return new OrderStatusCountDto
+        {
+            PendingPaymentCount = statusCounts.GetValueOrDefault(OrderStatus.PendingPayment),
+            ProcessingCount = statusCounts.GetValueOrDefault(OrderStatus.Processing),
+            ShippedCount = statusCounts.GetValueOrDefault(OrderStatus.Shipped)
+        };
     }
 
     public async Task<Domain.Entities.OrderEntities.Order?> GetByIdAsync(Guid id, int userId)

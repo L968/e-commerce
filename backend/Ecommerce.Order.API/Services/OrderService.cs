@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Ecommerce.Application.DTOs;
-using Ecommerce.Application.DTOs.OrderCheckout;
 using Ecommerce.Domain.DTOs;
 using Ecommerce.Domain.Entities;
 using Ecommerce.Domain.Entities.ProductEntities;
@@ -9,7 +7,6 @@ using Ecommerce.Domain.Errors;
 using Ecommerce.Order.API.Interfaces;
 using Ecommerce.Order.API.Models.PayPal;
 using Ecommerce.Order.API.Repositories;
-using FluentResults;
 using Address = Ecommerce.Domain.Entities.Address;
 
 namespace Ecommerce.Order.API.Services;
@@ -44,10 +41,21 @@ public class OrderService(
         );
     }
 
-    public async Task<IEnumerable<OrderDto>> GetPendingOrdersAsync()
+    public async Task<Pagination<OrderDto>> GetAllAsync(int page, int pageSize, OrderStatus? status)
     {
-        var orders = await _orderRepository.GetPendingOrdersAsync();
-        return _mapper.Map<IEnumerable<OrderDto>>(orders);
+        var (orders, totalItems) = await _orderRepository.GetAllAsync(page, pageSize, status);
+
+        return new Pagination<OrderDto>(
+            page,
+            pageSize,
+            totalItems,
+            _mapper.Map<IEnumerable<OrderDto>>(orders)
+        );
+    }
+
+    public async Task<OrderStatusCountDto> GetStatusCountAsync()
+    {
+        return await _orderRepository.GetStatusCountAsync();
     }
 
     public async Task<Result<string>> CreateOrderAsync(OrderCheckoutDto orderCheckout)
