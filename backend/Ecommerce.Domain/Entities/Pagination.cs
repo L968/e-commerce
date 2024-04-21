@@ -13,7 +13,7 @@ public class Pagination<T>
         Page = page;
         PageSize = pageSize;
         TotalItems = totalItems;
-        TotalPages = ((totalItems != 0L) ? ((int)Math.Round((float)totalItems / pageSize, MidpointRounding.ToPositiveInfinity)) : 0);
+        TotalPages = (totalItems != 0L) ? ((int)Math.Round((float)totalItems / pageSize, MidpointRounding.ToPositiveInfinity)) : 0;
         Items = items;
     }
 }
