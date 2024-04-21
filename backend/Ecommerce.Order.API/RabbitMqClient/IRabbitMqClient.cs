@@ -1,4 +1,4 @@
-﻿using Ecommerce.Application.DTOs.OrderCheckout;
+﻿using Ecommerce.Order.API.DTOs.OrderCheckout;
 
 namespace Ecommerce.Order.API.RabbitMqClient;
 
