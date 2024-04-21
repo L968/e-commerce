@@ -1,5 +1,4 @@
-﻿using Ecommerce.Application.DTOs.OrderCheckout;
-using Ecommerce.Consumers.OrderCheckout.Context;
+﻿using Ecommerce.Consumers.OrderCheckout.Context;
 using Ecommerce.Domain.Entities;
 using Ecommerce.Domain.Entities.CartEntities;
 using Ecommerce.Domain.Entities.OrderEntities;
@@ -51,7 +50,7 @@ async void Process(object? model, BasicDeliverEventArgs ea)
         string message = Encoding.UTF8.GetString(body);
         WriteLine($"\n [x] Received {message}", ConsoleColor.Cyan);
 
-        OrderCheckoutDto orderCheckout = JsonSerializer.Deserialize<OrderCheckoutDto>(message)!;
+        //OrderCheckoutDto orderCheckout = JsonSerializer.Deserialize<OrderCheckoutDto>(message)!;
 
         //var validator = new OrderCheckoutDtoValidator();
         //var validatorResult = validator.Validate(orderCheckout);

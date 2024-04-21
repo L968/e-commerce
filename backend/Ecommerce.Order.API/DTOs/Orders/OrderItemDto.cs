@@ -1,4 +1,4 @@
-﻿namespace Ecommerce.Application.DTOs;
+﻿namespace Ecommerce.Order.API.DTOs.Orders;
 
 public record OrderItemDto
 {

@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using Ecommerce.Application.DTOs;
 using Ecommerce.Domain.DTOs;
 using Ecommerce.Domain.Entities.ProductEntities;
 using Ecommerce.Domain.Enums;
+using Ecommerce.Order.API.DTOs.Orders;
 using Ecommerce.Order.API.Utils;
 
 namespace Ecommerce.Order.API.Mappings;
