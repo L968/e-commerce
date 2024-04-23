@@ -9,6 +9,7 @@ import DeleteConfirmationDialog from './DeleteConfirmationDialog';
 import { Combination } from '@/interfaces/api/responses/GetProductAdminResponse';
 import { Divider, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import GetProductCategoryVariantsResponse, { VariantOption } from '@/interfaces/api/responses/GetProductCategoryVariantsResponse';
+import formatTextToNumber from '@/utils/formatTextToNumber';
 
 interface VariantFormProps {
     formKey: string
@@ -91,7 +92,7 @@ export default function VariantForm({ formKey, defaultData, onDataChange, onRemo
         })
     }
 
-    function setFiles(files: File[]) {
+    function setFiles(files: File[]): void {
         updateCombinationState('images', files);
     }
 
@@ -207,7 +208,7 @@ export default function VariantForm({ formKey, defaultData, onDataChange, onRemo
                         label='SKU'
                         required
                         fullWidth
-                        value={combinationData?.sku}
+                        value={combinationData.sku}
                         onChange={e => updateCombinationState('sku', e.target.value)}
                     />
                 </Grid>
@@ -215,10 +216,11 @@ export default function VariantForm({ formKey, defaultData, onDataChange, onRemo
                 <Grid item xs={6}>
                     <TextField
                         label='Price'
+                        placeholder='0000.00'
                         required
                         fullWidth
-                        value={combinationData?.price}
-                        onChange={e => updateCombinationState('price', e.target.value)}
+                        value={combinationData.price}
+                        onChange={e => updateCombinationState('price', formatTextToNumber(e.target.value))}
                     />
                 </Grid>
 
@@ -228,8 +230,8 @@ export default function VariantForm({ formKey, defaultData, onDataChange, onRemo
                         required
                         disabled={!!defaultData}
                         fullWidth
-                        value={combinationData?.stock}
-                        onChange={e => updateCombinationState('stock', e.target.value)}
+                        value={combinationData.stock}
+                        onChange={e => updateCombinationState('stock', formatTextToNumber(e.target.value, 0, false))}
                     />
                 </Grid>
 
@@ -259,34 +261,34 @@ export default function VariantForm({ formKey, defaultData, onDataChange, onRemo
 
                 <Grid item xs={6}>
                     <TextField
-                        label='Length'
+                        label='Length (cm)'
                         required
-                        value={combinationData?.length}
-                        onChange={e => updateCombinationState('length', e.target.value)}
+                        value={combinationData.length}
+                        onChange={e => updateCombinationState('length', formatTextToNumber(e.target.value))}
                     />
                 </Grid>
                 <Grid item xs={6}>
                     <TextField
-                        label='Width'
+                        label='Width (cm)'
                         required
-                        value={combinationData?.width}
-                        onChange={e => updateCombinationState('width', e.target.value)}
+                        value={combinationData.width}
+                        onChange={e => updateCombinationState('width', formatTextToNumber(e.target.value))}
                     />
                 </Grid>
                 <Grid item xs={6}>
                     <TextField
-                        label='Height'
+                        label='Height (cm)'
                         required
-                        value={combinationData?.height}
-                        onChange={e => updateCombinationState('height', e.target.value)}
+                        value={combinationData.height}
+                        onChange={e => updateCombinationState('height', formatTextToNumber(e.target.value))}
                     />
                 </Grid>
                 <Grid item xs={6}>
                     <TextField
-                        label='Weight'
+                        label='Weight (kg)'
                         required
-                        value={combinationData?.weight}
-                        onChange={e => updateCombinationState('weight', e.target.value)}
+                        value={combinationData.weight}
+                        onChange={e => updateCombinationState('weight', formatTextToNumber(e.target.value))}
                     />
                 </Grid>
             </Grid>
