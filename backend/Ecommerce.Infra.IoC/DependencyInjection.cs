@@ -20,7 +20,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Net.Http;
+using System.Globalization;
 using System.Text.Json.Serialization;
 
 namespace Ecommerce.Infra.IoC;
@@ -29,6 +29,8 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
+
         var connectionString = configuration.GetConnectionString("Connection");
         var serverVersion = ServerVersion.AutoDetect(connectionString);
 
@@ -97,7 +99,7 @@ public static class DependencyInjection
 
         services.AddValidatorsFromAssembly(applicationAssembly);
         services.AddFluentValidationAutoValidation();
-        ValidatorOptions.Global.LanguageManager.Culture = new System.Globalization.CultureInfo("en-US");
+        ValidatorOptions.Global.LanguageManager.Culture = new CultureInfo("en-US");
 
         services.AddHealthChecks()
             .AddDbContextCheck<AppDbContext>()
