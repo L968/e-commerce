@@ -23,10 +23,16 @@ public class OrderService(
     private readonly IPayPalService _payPalService = payPalService;
     private readonly IEcommerceService _ecommerceService = ecommerceService;
 
-    public async Task<OrderDto?> GetByIdAsync(Guid id, int userId)
+    public async Task<Pagination<OrderDto>> GetAllAsync(int page, int pageSize, OrderStatus? status)
     {
-        var order = await _orderRepository.GetByIdAsync(id, userId);
-        return _mapper.Map<OrderDto>(order);
+        var (orders, totalItems) = await _orderRepository.GetAllAsync(page, pageSize, status);
+
+        return new Pagination<OrderDto>(
+            page,
+            pageSize,
+            totalItems,
+            _mapper.Map<IEnumerable<OrderDto>>(orders)
+        );
     }
 
     public async Task<Pagination<OrderDto>> GetByUserIdAsync(int userId, int page, int pageSize)
@@ -41,21 +47,21 @@ public class OrderService(
         );
     }
 
-    public async Task<Pagination<OrderDto>> GetAllAsync(int page, int pageSize, OrderStatus? status)
-    {
-        var (orders, totalItems) = await _orderRepository.GetAllAsync(page, pageSize, status);
-
-        return new Pagination<OrderDto>(
-            page,
-            pageSize,
-            totalItems,
-            _mapper.Map<IEnumerable<OrderDto>>(orders)
-        );
-    }
-
     public async Task<OrderStatusCountDto> GetStatusCountAsync()
     {
         return await _orderRepository.GetStatusCountAsync();
+    }
+
+    public async Task<OrderDto?> GetByIdAsync(Guid id)
+    {
+        var order = await _orderRepository.GetByIdAsync(id);
+        return _mapper.Map<OrderDto>(order);
+    }
+
+    public async Task<OrderDto?> GetByIdAsync(Guid id, int userId)
+    {
+        var order = await _orderRepository.GetByIdAsync(id, userId);
+        return _mapper.Map<OrderDto>(order);
     }
 
     public async Task<Result<string>> CreateOrderAsync(OrderCheckoutDto orderCheckout)
@@ -177,4 +183,6 @@ public class OrderService(
         await _orderRepository.UpdateAsync(order);
         return Result.Ok();
     }
+
+
 }

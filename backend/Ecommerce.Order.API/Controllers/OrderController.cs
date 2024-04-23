@@ -12,11 +12,29 @@ public class OrderController(IOrderService orderService) : ControllerBase
 {
     private readonly IOrderService _orderService = orderService;
 
-    [HttpGet("all")]
+    [HttpGet("admin")]
     [Authorize(Roles = "admin")]
     public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] OrderStatus? status = null)
     {
         return Ok(await _orderService.GetAllAsync(page, pageSize, status));
+    }
+
+    [HttpGet("status-count")]
+    [Authorize(Roles = "admin")]
+    public async Task<IActionResult> GetStatusCount()
+    {
+        return Ok(await _orderService.GetStatusCountAsync());
+    }
+
+    [HttpGet("admin/{id}")]
+    [Authorize(Roles = "admin")]
+    public async Task<IActionResult> GetByIdAdmin(Guid id)
+    {
+        var order = await _orderService.GetByIdAsync(id);
+
+        if (order is null) return NotFound();
+
+        return Ok(order);
     }
 
     [HttpGet]
@@ -25,13 +43,6 @@ public class OrderController(IOrderService orderService) : ControllerBase
     {
         var userId = int.Parse(User.FindFirstValue("id")!);
         return Ok(await _orderService.GetByUserIdAsync(userId, page, pageSize));
-    }
-
-    [HttpGet("status-count")]
-    [Authorize(Roles = "admin")]
-    public async Task<IActionResult> GetStatusCount()
-    {
-        return Ok(await _orderService.GetStatusCountAsync());
     }
 
     [HttpGet("{id}")]

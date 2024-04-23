@@ -61,6 +61,14 @@ public class OrderRepository(AppDbContext context) : IOrderRepository
         };
     }
 
+    public async Task<Domain.Entities.OrderEntities.Order?> GetByIdAsync(Guid id)
+    {
+        return await _context.Orders
+            .Include(o => o.Items)
+            .Include(o => o.History)
+            .FirstOrDefaultAsync(o => o.Id == id);
+    }
+
     public async Task<Domain.Entities.OrderEntities.Order?> GetByIdAsync(Guid id, int userId)
     {
         return await _context.Orders
