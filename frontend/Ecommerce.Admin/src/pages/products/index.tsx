@@ -17,10 +17,6 @@ export default function Products() {
             .finally(() => setLoading(false));
     }, []);
 
-    if (!loading && !products) {
-        return;
-    }
-
     return (
         <Main>
             <Typography variant='h1'>Products</Typography>
@@ -36,14 +32,17 @@ export default function Products() {
 
                 {loading
                     ? <CircularProgress />
-                    :
-                    <ProductsContainer container spacing={3}>
-                        {products!.items.map(product => (
-                            <Grid key={product.id} item sm>
-                                <ProductCard {...product} />
-                            </Grid>
-                        ))}
-                    </ProductsContainer>
+                    : <>
+                        {products &&
+                            <ProductsContainer container spacing={3}>
+                                {products.items.map(product => (
+                                    <Grid key={product.id} item sm>
+                                        <ProductCard {...product} />
+                                    </Grid>
+                                ))}
+                            </ProductsContainer>
+                        }
+                    </>
                 }
             </Container>
         </Main>

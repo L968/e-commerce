@@ -14,10 +14,4 @@ instance.interceptors.request.use(config => {
     return config;
 })
 
-export function setupApi(baseUrl: string | undefined) {
-    return axios.create({
-        baseURL: baseUrl
-    })
-}
-
 export default instance;
