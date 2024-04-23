@@ -7,6 +7,7 @@ namespace Ecommerce.Application.Features.ProductCombinations.Commands.UpdateProd
 [Authorize]
 public record UpdateProductCombinationCommand : IRequest<Result>
 {
+    [JsonIgnore]
     public Guid Id { get; set; }
     public List<int> VariantOptionIds { get; set; } = null!;
     public string Sku { get; set; } = "";

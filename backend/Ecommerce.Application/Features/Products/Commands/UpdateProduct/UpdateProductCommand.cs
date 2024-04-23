@@ -13,8 +13,8 @@ public record UpdateProductCommand : IRequest<Result>
 }
 
 public class UpdateProductCommandHandler(
-    IUnitOfWork unitOfWork, 
-    IProductRepository productRepository, 
+    IUnitOfWork unitOfWork,
+    IProductRepository productRepository,
     IProductCategoryRepository productCategoryRepository
     ) : IRequestHandler<UpdateProductCommand, Result>
 {
