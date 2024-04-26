@@ -2,7 +2,7 @@
 
 namespace Ecommerce.Infra.Data.Utils;
 
-public static class Extensions
+public static class StringExtensions
 {
     public static string ToSnakeCase(this string text)
     {
