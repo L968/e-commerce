@@ -2,11 +2,11 @@
 
 namespace Ecommerce.Order.API.Utils;
 
-public static class Extensions
+public static class StringExtensions
 {
     public static string ToSnakeCase(this string text)
     {
-        if (text == null)
+        if (text is null)
         {
             throw new ArgumentNullException(nameof(text));
         }
@@ -34,5 +34,22 @@ public static class Extensions
         }
 
         return sb.ToString();
+    }
+
+    public static string AddSpacesBeforeUpperCase(this string input)
+    {
+        StringBuilder result = new();
+
+        foreach (char c in input)
+        {
+            if (char.IsUpper(c))
+            {
+                result.Append(' ');
+            }
+
+            result.Append(c);
+        }
+
+        return result.ToString().Trim();
     }
 }
