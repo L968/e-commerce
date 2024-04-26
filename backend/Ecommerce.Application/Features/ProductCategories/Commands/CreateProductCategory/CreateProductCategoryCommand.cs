@@ -11,7 +11,7 @@ public record CreateProductCategoryCommand : IRequest<Result<GetProductCategoryD
 }
 
 public class CreateProductCategoryCommandHandler(
-    IMapper mapper, 
+    IMapper mapper,
     IUnitOfWork unitOfWork,
     IProductCategoryRepository productCategoryRepository
     ) : IRequestHandler<CreateProductCategoryCommand, Result<GetProductCategoryDto>>

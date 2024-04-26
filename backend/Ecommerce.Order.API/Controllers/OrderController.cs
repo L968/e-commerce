@@ -1,4 +1,4 @@
-using Ecommerce.Domain.Enums;
+using Ecommerce.Domain.Entities.Grid;
 using Ecommerce.Order.API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,9 +14,9 @@ public class OrderController(IOrderService orderService) : ControllerBase
 
     [HttpGet("admin")]
     [Authorize(Roles = "admin")]
-    public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] OrderStatus? status = null)
+    public async Task<IActionResult> GetAll([FromQuery] GridParams gridParams)
     {
-        return Ok(await _orderService.GetAllAsync(page, pageSize, status));
+        return Ok(await _orderService.GetAllAsync(gridParams));
     }
 
     [HttpGet("status-count")]

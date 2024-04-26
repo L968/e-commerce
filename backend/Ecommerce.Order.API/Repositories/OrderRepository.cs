@@ -1,30 +1,12 @@
 ﻿using Ecommerce.Domain.Enums;
+using Ecommerce.Infra.Data.Repositories;
 using Ecommerce.Order.API.Context;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.Order.API.Repositories;
 
-public class OrderRepository(AppDbContext context) : IOrderRepository
+public class OrderRepository(AppDbContext context) : BaseRepository<AppDbContext, Domain.Entities.OrderEntities.Order>(context), IOrderRepository
 {
-    private readonly AppDbContext _context = context;
-
-    public async Task<(IEnumerable<Domain.Entities.OrderEntities.Order>, long TotalItems)> GetAllAsync(int page, int pageSize, OrderStatus? status)
-    {
-        var query = _context.Orders
-            .Include(o => o.Items)
-            .Where(o => status == null || o.Status == status.Value)
-            .OrderByDescending(o => o.CreatedAt);
-
-        var totalItems = await query.CountAsync();
-
-        var orders = await query
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync();
-
-        return (orders, totalItems);
-    }
-
     public async Task<(IEnumerable<Domain.Entities.OrderEntities.Order>, long TotalItems)> GetByUserIdAsync(int userId, int page, int pageSize)
     {
         var query = _context.Orders
@@ -61,7 +43,7 @@ public class OrderRepository(AppDbContext context) : IOrderRepository
         };
     }
 
-    public async Task<Domain.Entities.OrderEntities.Order?> GetByIdAsync(Guid id)
+    public override async Task<Domain.Entities.OrderEntities.Order?> GetByIdAsync(Guid id)
     {
         return await _context.Orders
             .Include(o => o.Items)

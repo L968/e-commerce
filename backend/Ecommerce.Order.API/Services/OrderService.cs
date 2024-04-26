@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Ecommerce.Domain.DTOs;
 using Ecommerce.Domain.Entities;
+using Ecommerce.Domain.Entities.Grid;
 using Ecommerce.Domain.Entities.ProductEntities;
 using Ecommerce.Domain.Enums;
 using Ecommerce.Domain.Errors;
@@ -23,13 +24,13 @@ public class OrderService(
     private readonly IPayPalService _payPalService = payPalService;
     private readonly IEcommerceService _ecommerceService = ecommerceService;
 
-    public async Task<Pagination<OrderDto>> GetAllAsync(int page, int pageSize, OrderStatus? status)
+    public async Task<Pagination<OrderDto>> GetAllAsync(GridParams gridParams)
     {
-        var (orders, totalItems) = await _orderRepository.GetAllAsync(page, pageSize, status);
+        var (orders, totalItems) = await _orderRepository.GetAllAsync(gridParams);
 
         return new Pagination<OrderDto>(
-            page,
-            pageSize,
+            gridParams.Page,
+            gridParams.PageSize,
             totalItems,
             _mapper.Map<IEnumerable<OrderDto>>(orders)
         );
@@ -66,17 +67,6 @@ public class OrderService(
 
     public async Task<Result<string>> CreateOrderAsync(OrderCheckoutDto orderCheckout)
     {
-        var validator = new OrderCheckoutDtoValidator();
-        var validatorResult = validator.Validate(orderCheckout);
-
-        if (!validatorResult.IsValid)
-        {
-            var errorMessage = "Invalid order checkout. Errors:" + Environment.NewLine +
-            $"{string.Join(Environment.NewLine, validatorResult.Errors.Select(error => $"{error.PropertyName}: {error.ErrorMessage}"))}";
-
-            return Result.Fail(errorMessage);
-        }
-
         CreateOrderAddressDto? address = await _ecommerceService.GetAddressByIdAsync(orderCheckout.ShippingAddressId);
 
         if (address is null)

@@ -1,13 +1,18 @@
 using Ecommerce.Application.Common.Handlers;
+using Ecommerce.Infra.IoC.Binders;
+using Ecommerce.Infra.IoC.Middlewares;
 using Ecommerce.Order.API;
 using Ecommerce.Order.API.Context;
 using Ecommerce.Order.API.Interfaces;
 using Ecommerce.Order.API.Mappings;
 using Ecommerce.Order.API.Repositories;
 using Ecommerce.Order.API.Services;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Globalization;
+using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -42,8 +47,6 @@ builder.Services.AddHttpClient<IPayPalService, PayPalService>((serviceProvider, 
 var connectionString = builder.Configuration.GetConnectionString("Connection");
 var serverVersion = ServerVersion.AutoDetect(connectionString);
 
-builder.Services.AddAutoMapper(typeof(DomainToDTOMappingProfile));
-
 builder.Services.AddDbContext<AppDbContext>(options =>
     options
         .UseSnakeCaseNamingConvention()
@@ -51,8 +54,18 @@ builder.Services.AddDbContext<AppDbContext>(options =>
             connectionString,
             serverVersion,
             mysqlOptions => mysqlOptions.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)
-        )
-);
+));
+
+builder.Services.AddAutoMapper(typeof(DomainToDTOMappingProfile));
+
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+builder.Services.AddFluentValidationAutoValidation();
+ValidatorOptions.Global.LanguageManager.Culture = new CultureInfo("en-US");
+
+builder.Services.AddMvcCore(options =>
+{
+    options.ModelBinderProviders.Insert(0, new GridParamsBinderProvider());
+});
 
 builder.Services.AddAuthentication(auth =>
 {
@@ -92,6 +105,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<GridParamsExceptionHandler>();
 
 app.UseCors();
 

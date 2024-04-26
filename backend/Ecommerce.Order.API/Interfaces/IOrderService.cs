@@ -1,11 +1,11 @@
 ﻿using Ecommerce.Domain.Entities;
-using Ecommerce.Domain.Enums;
+using Ecommerce.Domain.Entities.Grid;
 
 namespace Ecommerce.Order.API.Interfaces;
 
 public interface IOrderService
 {
-    Task<Pagination<OrderDto>> GetAllAsync(int page, int pageSize, OrderStatus? status);
+    Task<Pagination<OrderDto>> GetAllAsync(GridParams gridParams);
     Task<Pagination<OrderDto>> GetByUserIdAsync(int userId, int page, int pageSize);
     Task<OrderStatusCountDto> GetStatusCountAsync();
     Task<OrderDto?> GetByIdAsync(Guid id);
