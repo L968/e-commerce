@@ -2,9 +2,12 @@
 
 namespace Ecommerce.Infra.Data.Repositories;
 
-public class BaseRepository<T>(AppDbContext context) : IBaseRepository<T> where T : class
+public class BaseRepository<TContext, T>(TContext context)
+    : IBaseRepository<T>
+        where TContext : DbContext
+        where T : class
 {
-    protected readonly AppDbContext _context = context;
+    protected readonly TContext _context = context;
 
     public virtual async Task<IEnumerable<T>> GetAllAsync()
     {

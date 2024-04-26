@@ -1,6 +1,6 @@
 ﻿namespace Ecommerce.Infra.Data.Repositories.ProductRepositories;
 
-public class ProductCategoryRepository(AppDbContext context) : BaseRepository<ProductCategory>(context), IProductCategoryRepository
+public class ProductCategoryRepository(AppDbContext context) : BaseRepository<AppDbContext, ProductCategory>(context), IProductCategoryRepository
 {
     public override async Task<IEnumerable<ProductCategory>> GetAllAsync()
     {

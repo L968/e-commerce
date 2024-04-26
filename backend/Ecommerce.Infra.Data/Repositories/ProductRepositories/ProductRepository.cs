@@ -1,6 +1,6 @@
 ﻿namespace Ecommerce.Infra.Data.Repositories.ProductRepositories;
 
-public class ProductRepository(AppDbContext context) : BaseRepository<Product>(context), IProductRepository
+public class ProductRepository(AppDbContext context) : BaseRepository<AppDbContext, Product>(context), IProductRepository
 {
     public async Task<(IEnumerable<Product> Products, long TotalItems)> GetAllAsync(int page, int pageSize)
     {

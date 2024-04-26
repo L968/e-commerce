@@ -1,6 +1,6 @@
 ﻿namespace Ecommerce.Infra.Data.Repositories.ProductRepositories;
 
-public class ProductCombinationRepository(AppDbContext context) : BaseRepository<ProductCombination>(context), IProductCombinationRepository
+public class ProductCombinationRepository(AppDbContext context) : BaseRepository<AppDbContext, ProductCombination>(context), IProductCombinationRepository
 {
     public async override Task<ProductCombination?> GetByIdAsync(Guid id)
     {
