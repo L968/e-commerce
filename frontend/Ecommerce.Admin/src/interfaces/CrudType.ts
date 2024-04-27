@@ -1,3 +1,3 @@
-export type CrudType = 'Create' | 'Update';
+type CrudType = 'Create' | 'Update';
 
 export default CrudType;
