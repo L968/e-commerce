@@ -4,23 +4,29 @@ import Order from '@/interfaces/Order';
 import { Container, Main } from './styles';
 import apiOrder from '@/services/apiOrder';
 import { FormEvent, useEffect, useState } from 'react';
+import GridParams from '@/interfaces/gridParams/GridParams';
 import getOrderStatusColor from '@/utils/getOrderStatusColor';
-import { DataGrid, GridColDef, GridFilterModel, GridPaginationModel } from '@mui/x-data-grid';
+import convertToSortParams from '@/utils/datagrid/convertToSortParams';
+import convertToFilterParams from '@/utils/datagrid/convertToFilterParams';
 import GetAllOrdersResponse from '@/interfaces/api/responses/GetAllOrdersResponse';
 import { Button, Chip, LinearProgress, Stack, TextField, Typography } from '@mui/material';
+import { getGridDateOperators, getGridSingleSelectOperators } from '@/utils/datagrid/getGridOperators';
+import { DataGrid, GridColDef, GridFilterModel, GridPaginationModel, GridSortModel } from '@mui/x-data-grid';
 
 const columns: GridColDef[] = [
     {
         field: 'id',
         headerName: 'Id',
         sortable: false,
-        flex: 1
+        filterable: false,
+        flex: 1,
     },
     {
         field: 'paymentMethod',
         headerName: 'Payment Method',
         type: 'singleSelect',
         valueOptions: ['PayPal'],
+        filterOperators: getGridSingleSelectOperators(),
         flex: 1,
         renderCell: params => <Chip label={params.value} />
     },
@@ -38,17 +44,14 @@ const columns: GridColDef[] = [
             'Returned'
         ],
         flex: 1,
-        renderCell: params =>
-            <Chip
-                label={params.value}
-                style={{ backgroundColor: getOrderStatusColor(params.value) }}
-            />
+        renderCell: params => <Chip label={params.value} style={{ backgroundColor: getOrderStatusColor(params.value) }} />
     },
     {
         field: 'createdAt',
         headerName: 'Date',
         type: 'date',
         flex: 1,
+        filterOperators: getGridDateOperators(),
         valueFormatter: (params) => moment(params.value).format('DD/MM/YYYY HH:mm:ss'),
         valueGetter: (params) => new Date(params.value)
     },
@@ -59,21 +62,16 @@ export default function Orders() {
     const [orders, setOrders] = useState<Order[]>([]);
     const [totalItems, setTotalItems] = useState<number>(0);
     const [searchId, setSearchId] = useState<string>('');
-    const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
-        page: 0,
-        pageSize: 10,
-    });
+    const [gridParams, setGridParams] = useState<GridParams>({});
 
     useEffect(() => {
         fetchOrders();
-    }, [paginationModel]);
+    }, [gridParams]);
 
     function fetchOrders() {
         setLoading(true);
-        const page = paginationModel.page + 1;
-        const pageSize = paginationModel.pageSize;
 
-        apiOrder.get<GetAllOrdersResponse>(`/order/admin?page=${page}&pageSize=${pageSize}`)
+        apiOrder.get<GetAllOrdersResponse>(`/order/admin?gridParams=${JSON.stringify(gridParams)}`)
             .then(response => {
                 setOrders(response.data.items);
                 setTotalItems(response.data.totalItems);
@@ -82,7 +80,7 @@ export default function Orders() {
             .finally(() => setLoading(false));
     }
 
-    function handleSearchById(e: FormEvent<HTMLFormElement>) {
+    function handleSearchById(e: FormEvent<HTMLFormElement>): void {
         e.preventDefault();
 
         if (!searchId) {
@@ -109,8 +107,26 @@ export default function Orders() {
             .finally(() => setLoading(false));
     }
 
-    function handleOnFilterModelChange(model: GridFilterModel) {
+    function handleOnPaginationModelChange(model: GridPaginationModel): void {
+        setGridParams(prev => ({
+            ...prev,
+            page: model.page + 1,
+            pageSize: model.pageSize,
+        }));
+    }
 
+    function handleOnFilterModelChange(model: GridFilterModel): void {
+        setGridParams(prev => ({
+            ...prev,
+            filters: convertToFilterParams(model.items),
+        }));
+    }
+
+    function handleOnSortModelChange(model: GridSortModel): void {
+        setGridParams(prev => ({
+            ...prev,
+            sorters: convertToSortParams(model),
+        }));
     }
 
     return (
@@ -138,8 +154,9 @@ export default function Orders() {
                     loading={loading}
                     pagination
                     paginationMode='server'
-                    onPaginationModelChange={setPaginationModel}
+                    onPaginationModelChange={handleOnPaginationModelChange}
                     onFilterModelChange={handleOnFilterModelChange}
+                    onSortModelChange={handleOnSortModelChange}
                     rowCount={totalItems}
                     pageSizeOptions={[10, 20, 50, 100]}
                     initialState={{
