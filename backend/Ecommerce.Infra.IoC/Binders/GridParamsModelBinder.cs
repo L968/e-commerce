@@ -36,7 +36,18 @@ public class GridParamsModelBinder : IModelBinder
             return Task.CompletedTask;
         }
 
-        GridParams model = JsonConvert.DeserializeObject<GridParams>(firstValue)!;
+        GridParams model;
+
+        try
+        {
+            model = JsonConvert.DeserializeObject<GridParams>(firstValue)!;
+        }
+        catch (JsonReaderException ex)
+        {
+            bindingContext.Result = ModelBindingResult.Failed();
+            bindingContext.ModelState.AddModelError(modelName, ex.Message);
+            return Task.CompletedTask;
+        }
 
         var validator = new GridParamsValidator();
         var validatorResult = validator.Validate(model);
