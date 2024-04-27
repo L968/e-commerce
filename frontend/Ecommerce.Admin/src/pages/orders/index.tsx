@@ -6,12 +6,10 @@ import apiOrder from '@/services/apiOrder';
 import { FormEvent, useEffect, useState } from 'react';
 import GridParams from '@/interfaces/gridParams/GridParams';
 import getOrderStatusColor from '@/utils/getOrderStatusColor';
-import convertToSortParams from '@/utils/datagrid/convertToSortParams';
-import convertToFilterParams from '@/utils/datagrid/convertToFilterParams';
 import GetAllOrdersResponse from '@/interfaces/api/responses/GetAllOrdersResponse';
 import { Button, Chip, LinearProgress, Stack, TextField, Typography } from '@mui/material';
-import { getGridDateOperators, getGridSingleSelectOperators } from '@/utils/datagrid/getGridOperators';
 import { DataGrid, GridColDef, GridFilterModel, GridPaginationModel, GridSortModel } from '@mui/x-data-grid';
+import { convertToFilterParams, convertToSortParams, getGridDateOperators, getGridSingleSelectOperators } from '@/utils/datagrid';
 
 const columns: GridColDef[] = [
     {

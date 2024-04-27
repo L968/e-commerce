@@ -7,7 +7,6 @@ interface HelpContainerProps {
     children?: ReactNode
 }
 
-
 export default function HelpContainer({ status }: HelpContainerProps) {
     if (!status) {
         throw new Error('Empty status')
