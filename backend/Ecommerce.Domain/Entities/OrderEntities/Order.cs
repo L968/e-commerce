@@ -8,7 +8,7 @@ public sealed class Order : AuditableEntity
     public Guid Id { get; private set; }
     public int UserId { get; private set; }
     public OrderStatus Status { get; private set; }
-    public PaymentMethod PaymentMethod{ get; set; }
+    public PaymentMethod PaymentMethod { get; private set; }
     public decimal ShippingCost { get; private set; }
     public string? ExternalPaymentId { get; private set; }
     public string ShippingPostalCode { get; private set; } = "";

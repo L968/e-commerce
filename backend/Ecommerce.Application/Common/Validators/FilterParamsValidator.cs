@@ -4,7 +4,7 @@ namespace Ecommerce.Application.Common.Validators;
 
 public class FilterParamsValidator : AbstractValidator<FilterParams>
 {
-    private static readonly string[] ValidOperators = ["=", "like", ">", "<", ">=", "<="];
+    private static readonly string[] ValidOperators = ["=", "like", ">", ">=", "<", "<="];
 
     public FilterParamsValidator()
     {
