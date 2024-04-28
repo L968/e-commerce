@@ -1,7 +1,8 @@
 ﻿using Ecommerce.Application.Common.Interfaces;
+using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
-namespace Ecommerce.API.Services;
+namespace Ecommerce.Infra.IoC.Services;
 
 public class CurrentUserService(IHttpContextAccessor httpContextAccessor) : ICurrentUserService
 {
