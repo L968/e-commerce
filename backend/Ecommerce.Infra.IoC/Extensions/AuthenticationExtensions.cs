@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -8,7 +7,7 @@ namespace Ecommerce.Infra.IoC.Extensions;
 
 public static class AuthenticationExtensions
 {
-    public static void ConfigureAuthorization(this IServiceCollection services, IConfiguration configuration)
+    public static void ConfigureAuthentication(this IServiceCollection services)
     {
         services.AddAuthentication(auth =>
         {
@@ -22,7 +21,7 @@ public static class AuthenticationExtensions
             token.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"])),
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Config.JwtKey)),
                 ValidateIssuer = false,
                 ValidateAudience = false,
                 ClockSkew = TimeSpan.Zero,

@@ -10,7 +10,7 @@ public static class CorsPolicyExtensions
         {
             options.AddDefaultPolicy(builder =>
             {
-                builder.WithOrigins("http://localhost:3000") // TODO: Get from app.settings
+                builder.WithOrigins(Config.AllowedOrigins)
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowAnyOrigin();

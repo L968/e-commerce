@@ -1,5 +1,4 @@
-﻿using Ecommerce.Application;
-using Ecommerce.Infra.Data.Context;
+﻿using Ecommerce.Infra.Data.Context;
 using Ecommerce.Infra.IoC.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,13 +11,13 @@ public static class DependencyInjection
     {
         Config.Init(configuration);
 
-        services.ConfigureDatabase(configuration);
+        services.ConfigureDatabase();
         services.AddRepositories("Ecommerce.Infra.Data");
-        services.AddExternalServices(configuration);
+        services.AddExternalServices();
         services.ConfigureLibraries("Ecommerce.Application");
         services.ConfigureApplication();
         services.ConfigureCorsPolicy();
-        services.ConfigureAuthorization(configuration);
+        services.ConfigureAuthentication();
 
         services.AddHealthChecks()
             .AddDbContextCheck<AppDbContext>()

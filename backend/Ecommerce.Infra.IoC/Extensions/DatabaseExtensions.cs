@@ -2,7 +2,6 @@
 using Ecommerce.Infra.Data.Context;
 using Ecommerce.Infra.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -10,16 +9,15 @@ namespace Ecommerce.Infra.IoC.Extensions;
 
 public static partial class DatabaseExtensions
 {
-    public static void ConfigureDatabase(this IServiceCollection services, IConfiguration configuration)
+    public static void ConfigureDatabase(this IServiceCollection services)
     {
-        var connectionString = configuration.GetConnectionString("Connection");
-        var serverVersion = ServerVersion.AutoDetect(connectionString);
+        var serverVersion = ServerVersion.AutoDetect(Config.ConnectionString);
 
         services.AddDbContext<AppDbContext>(options =>
             options
                 .UseSnakeCaseNamingConvention()
                 .UseMySql(
-                    connectionString,
+                    Config.ConnectionString,
                     serverVersion,
                     mysqlOptions => mysqlOptions.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)
                 )

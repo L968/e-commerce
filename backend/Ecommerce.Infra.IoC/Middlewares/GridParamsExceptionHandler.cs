@@ -10,6 +10,7 @@ namespace Ecommerce.Infra.IoC.Middlewares;
 public class GridParamsExceptionHandler(RequestDelegate next)
 {
     private readonly RequestDelegate _next = next;
+    private static readonly JsonSerializerOptions serializerOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
     public async Task Invoke(HttpContext context)
     {
@@ -34,7 +35,7 @@ public class GridParamsExceptionHandler(RequestDelegate next)
             context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
             context.Response.ContentType = "application/json";
 
-            var json = JsonSerializer.Serialize(problemDetails, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            var json = JsonSerializer.Serialize(problemDetails, serializerOptions);
             await context.Response.WriteAsync(json);
         }
     }
