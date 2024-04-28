@@ -2,22 +2,22 @@
 
 public static class Config
 {
-    public static string JwtKey { get; set; } = "";
+    public static string JwtKey { get; private set; } = "";
     public static string[] AllowedOrigins { get; private set; } = [];
-    public static string AdminInfoPassword { get; set; } = "";
+    public static string AdminInfoPassword { get; private set; } = "";
 
-    public static string EmailSettingsFrom { get; set; } = "";
-    public static string EmailSettingsPassword { get; set; } = "";
-    public static string EmailSettingsSmtpServer { get; set; } = "";
-    public static int EmailSettingsPort { get; set; }
+    public static string EmailSettingsFrom { get; private set; } = "";
+    public static string EmailSettingsPassword { get; private set; } = "";
+    public static string EmailSettingsSmtpServer { get; private set; } = "";
+    public static int EmailSettingsPort { get; private set; }
 
-    public static string TwilioSID { get; set; } = "";
-    public static string TwilioAuthToken { get; set; } = "";
-    public static string TwilioPhoneNumber { get; set; } = "";
+    public static string TwilioSID { get; private set; } = "";
+    public static string TwilioAuthToken { get; private set; } = "";
+    public static string TwilioPhoneNumber { get; private set; } = "";
 
     public static void Init(IConfiguration configuration)
     {
-        JwtKey = configuration["Jwt:Key"] ?? throw new ArgumentNullException("Jwt:Key");
+        JwtKey = configuration.GetValue<string>("Jwt:Key") ?? throw new ArgumentNullException("Jwt:Key");
         AllowedOrigins = configuration.GetSection("AllowedOrigins").Get<string[]>() ?? throw new ArgumentNullException("AllowedOrigins");
         AdminInfoPassword = configuration.GetValue<string>("AdminInfo:Password") ?? throw new ArgumentNullException("AdminInfo:Password");
 
