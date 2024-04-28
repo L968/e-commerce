@@ -3,55 +3,52 @@ import { toast } from 'react-toastify';
 import Order from '@/interfaces/Order';
 import { Container, Main } from './styles';
 import apiOrder from '@/services/apiOrder';
+import DataGrid from '@/components/DataGrid';
 import { FormEvent, useEffect, useState } from 'react';
 import GridParams from '@/interfaces/gridParams/GridParams';
 import getOrderStatusColor from '@/utils/getOrderStatusColor';
+import { paymentMethodValues } from '@/interfaces/PaymentMethod';
+import OrderStatus, { orderStatusOptions } from '@/interfaces/OrderStatus';
+import { convertToFilterParams, convertToSortParams } from '@/utils/datagrid';
 import GetAllOrdersResponse from '@/interfaces/api/responses/GetAllOrdersResponse';
 import { Button, Chip, LinearProgress, Stack, TextField, Typography } from '@mui/material';
-import { DataGrid, GridColDef, GridFilterModel, GridPaginationModel, GridSortModel } from '@mui/x-data-grid';
-import { convertToFilterParams, convertToSortParams, getGridDateOperators, getGridSingleSelectOperators } from '@/utils/datagrid';
+import { GridColDef, GridFilterModel, GridPaginationModel, GridSortModel } from '@mui/x-data-grid';
 
 const columns: GridColDef[] = [
     {
         field: 'id',
         headerName: 'Id',
         sortable: false,
-        filterable: false,
+        flex: 1,
+    },
+    {
+        field: 'subTotal',
+        headerName: 'SubTotal',
+        type: 'boolean',
         flex: 1,
     },
     {
         field: 'paymentMethod',
         headerName: 'Payment Method',
         type: 'singleSelect',
-        valueOptions: ['PayPal'],
-        filterOperators: getGridSingleSelectOperators(),
+        valueOptions: paymentMethodValues,
         flex: 1,
-        renderCell: params => <Chip label={params.value} />
+        renderCell: (params) => <Chip label={params.value} />
     },
     {
         field: 'status',
         headerName: 'Status',
         type: 'singleSelect',
-        valueOptions: [
-            'Pending Payment',
-            'Processing',
-            'Shipped',
-            'Delivered',
-            'Cancelled',
-            'Refunded',
-            'Returned'
-        ],
+        valueOptions: orderStatusOptions,
         flex: 1,
-        renderCell: params => <Chip label={params.value} style={{ backgroundColor: getOrderStatusColor(params.value) }} />
+        renderCell: (params) => <Chip label={params.formattedValue} style={{ backgroundColor: getOrderStatusColor(params.formattedValue) }} />,
+        valueGetter: (params) => OrderStatus[params.value.replace(' ', '')]
     },
     {
         field: 'createdAt',
         headerName: 'Date',
-        type: 'date',
         flex: 1,
-        filterOperators: getGridDateOperators(),
-        valueFormatter: (params) => moment(params.value).format('DD/MM/YYYY HH:mm:ss'),
-        valueGetter: (params) => new Date(params.value)
+        valueFormatter: (params) => moment.utc(params.value).local().format('DD/MM/YYYY HH:mm:ss'),
     },
 ];
 
@@ -150,8 +147,6 @@ export default function Orders() {
                     rows={orders}
                     columns={columns}
                     loading={loading}
-                    pagination
-                    paginationMode='server'
                     onPaginationModelChange={handleOnPaginationModelChange}
                     onFilterModelChange={handleOnFilterModelChange}
                     onSortModelChange={handleOnSortModelChange}

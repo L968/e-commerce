@@ -10,11 +10,16 @@ const operatorMap: Record<string, Operator> = {
     before: '<',
     onOrAfter: '>=',
     onOrBefore: '<=',
+    '=': '=',
+    '>': '>',
+    '>=': '>=',
+    '<': '<',
+    '<=': '<=',
 };
 
 export default function convertToFilterParams(gridFilters: GridFilterItem[]): FilterParams[] {
     return gridFilters
-    .filter(({ value }) => !!value)
+    .filter(({ value }) => value !== null && value !== undefined)
     .map(({ field, operator, value }) => {
         const mappedOperator = operatorMap[operator];
 
