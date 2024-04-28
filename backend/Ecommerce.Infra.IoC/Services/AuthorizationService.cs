@@ -1,7 +1,7 @@
 ﻿using Ecommerce.Application.Interfaces;
 using System.Net;
 
-namespace Ecommerce.Application.Services;
+namespace Ecommerce.Infra.IoC.Services;
 
 public class AuthorizationService(HttpClient httpClient) : IAuthorizationService
 {

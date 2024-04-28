@@ -3,7 +3,7 @@ using Azure.Storage.Blobs.Models;
 using Ecommerce.Application.Interfaces;
 using Microsoft.AspNetCore.Http;
 
-namespace Ecommerce.Application.Services;
+namespace Ecommerce.Infra.IoC.Services;
 
 public class BlobStorageService : IBlobStorageService
 {
