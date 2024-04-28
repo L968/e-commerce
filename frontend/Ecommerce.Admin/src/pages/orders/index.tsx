@@ -1,9 +1,11 @@
 import moment from 'moment';
 import { toast } from 'react-toastify';
 import Order from '@/interfaces/Order';
+import { useRouter } from 'next/router';
 import { Container, Main } from './styles';
 import apiOrder from '@/services/apiOrder';
 import DataGrid from '@/components/DataGrid';
+import SearchIcon from '@mui/icons-material/Search';
 import { FormEvent, useEffect, useState } from 'react';
 import GridParams from '@/interfaces/gridParams/GridParams';
 import getOrderStatusColor from '@/utils/getOrderStatusColor';
@@ -11,48 +13,12 @@ import { paymentMethodValues } from '@/interfaces/PaymentMethod';
 import OrderStatus, { orderStatusOptions } from '@/interfaces/OrderStatus';
 import { convertToFilterParams, convertToSortParams } from '@/utils/datagrid';
 import GetAllOrdersResponse from '@/interfaces/api/responses/GetAllOrdersResponse';
-import { Button, Chip, LinearProgress, Stack, TextField, Typography } from '@mui/material';
+import { Button, Chip, IconButton, LinearProgress, Stack, TextField, Typography } from '@mui/material';
 import { GridColDef, GridFilterModel, GridPaginationModel, GridSortModel } from '@mui/x-data-grid';
 
-const columns: GridColDef[] = [
-    {
-        field: 'id',
-        headerName: 'Id',
-        sortable: false,
-        flex: 1,
-    },
-    {
-        field: 'subTotal',
-        headerName: 'SubTotal',
-        type: 'boolean',
-        flex: 1,
-    },
-    {
-        field: 'paymentMethod',
-        headerName: 'Payment Method',
-        type: 'singleSelect',
-        valueOptions: paymentMethodValues,
-        flex: 1,
-        renderCell: (params) => <Chip label={params.value} />
-    },
-    {
-        field: 'status',
-        headerName: 'Status',
-        type: 'singleSelect',
-        valueOptions: orderStatusOptions,
-        flex: 1,
-        renderCell: (params) => <Chip label={params.formattedValue} style={{ backgroundColor: getOrderStatusColor(params.formattedValue) }} />,
-        valueGetter: (params) => OrderStatus[params.value.replace(' ', '')]
-    },
-    {
-        field: 'createdAt',
-        headerName: 'Date',
-        flex: 1,
-        valueFormatter: (params) => moment.utc(params.value).local().format('DD/MM/YYYY HH:mm:ss'),
-    },
-];
-
 export default function Orders() {
+    const router = useRouter();
+
     const [loading, setLoading] = useState<boolean>(false);
     const [orders, setOrders] = useState<Order[]>([]);
     const [totalItems, setTotalItems] = useState<number>(0);
@@ -123,6 +89,50 @@ export default function Orders() {
             sorters: convertToSortParams(model),
         }));
     }
+
+    const columns: GridColDef[] = [
+        {
+            field: 'details',
+            headerName: 'Details',
+            flex: .3,
+            disableReorder: true,
+            disableColumnMenu: true,
+            sortable: false,
+            renderCell: params =>
+                <IconButton onClick={() => router.push(`/order/${params.row.id}/edit`)}>
+                    <SearchIcon />
+                </IconButton>
+        },
+        {
+            field: 'id',
+            headerName: 'Id',
+            sortable: false,
+            flex: 1,
+        },
+        {
+            field: 'paymentMethod',
+            headerName: 'Payment Method',
+            type: 'singleSelect',
+            valueOptions: paymentMethodValues,
+            flex: 1,
+            renderCell: (params) => <Chip label={params.value} />
+        },
+        {
+            field: 'status',
+            headerName: 'Status',
+            type: 'singleSelect',
+            valueOptions: orderStatusOptions,
+            flex: 1,
+            renderCell: (params) => <Chip label={params.formattedValue} style={{ backgroundColor: getOrderStatusColor(params.formattedValue) }} />,
+            valueGetter: (params) => OrderStatus[params.value.replace(' ', '')]
+        },
+        {
+            field: 'createdAt',
+            headerName: 'Date',
+            flex: 1,
+            valueFormatter: (params) => moment.utc(params.value).local().format('DD/MM/YYYY HH:mm:ss'),
+        },
+    ];
 
     return (
         <Main>

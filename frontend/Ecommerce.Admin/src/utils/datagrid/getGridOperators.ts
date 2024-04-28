@@ -6,9 +6,9 @@ import {
 } from '@mui/x-data-grid';
 
 const validStringOperators = ['equals', 'contains'];
-const validSingleSelectOperators = ['is'];
-const validDateOperators = ['is', 'after', 'onOrAfter', 'before', 'onOrBefore'];
 const validNumericOperators = ['=', '>', '>=', '<', '<='];
+const validDateOperators = ['is', 'after', 'onOrAfter', 'before', 'onOrBefore'];
+const validSingleSelectOperators = ['is'];
 
 export const getGridStringOperators = () =>
     MuiGetGridStringOperators()
