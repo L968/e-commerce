@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace Ecommerce.Application.Interfaces;
+namespace Ecommerce.Application.Common.Interfaces;
 
 public interface IBlobStorageService
 {
