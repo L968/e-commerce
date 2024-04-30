@@ -1,4 +1,5 @@
-﻿using System.Transactions;
+﻿using Ecommerce.Authorization.Errors;
+using System.Transactions;
 using System.Web;
 
 namespace Ecommerce.Authorization.Services;
@@ -21,7 +22,9 @@ public class UserService(
     public async Task<Guid?> GetDefaultAddressIdAsync(int userId)
     {
         var identityUser = await _userManager.Users.FirstOrDefaultAsync(user => user.Id == userId);
-        if (identityUser is null) return null;
+
+        if (identityUser is null)
+            return null;
 
         return identityUser.DefaultAddressId;
     }
@@ -55,15 +58,13 @@ public class UserService(
 
     public async Task<Result> UpdateDefaultAddressAsync(Guid? addressId, int userId)
     {
-        if (addressId is not null)
-        {
-            if (addressId == Guid.Empty)
-                return Result.Fail("Invalid address id value");
-        }
+        if (addressId.HasValue && addressId.Value == Guid.Empty)
+            return ServiceErrors.UserService.InvalidAddressIdValue;
 
         var identityUser = await _userManager.Users.FirstOrDefaultAsync(user => user.Id == userId);
+
         if (identityUser is null)
-            return Result.Fail("User not found");
+            return ServiceErrors.NotFound("IdentityUser", userId);
 
         identityUser.DefaultAddressId = addressId;
         await _userManager.UpdateAsync(identityUser);
@@ -74,11 +75,12 @@ public class UserService(
     public async Task<Result> UpdateTwoFactorAuthenticationAsync(int userId, bool twoFactorEnabled)
     {
         var identityUser = await _userManager.Users.FirstOrDefaultAsync(user => user.Id == userId);
+
         if (identityUser is null)
-            return Result.Fail("Error in updating two factor authentication");
+            return ServiceErrors.UserService.ErrorInUpdatingTwoFactorAuthentication;
 
         if (twoFactorEnabled && !identityUser.PhoneNumberConfirmed)
-            return Result.Fail("You must have a confirmed phone number in order to activate two factor authentication");
+            return ServiceErrors.UserService.PhoneNumberConfirmationRequiredForTwoFactorActivation;
 
         identityUser.TwoFactorEnabled = twoFactorEnabled;
         var result = await _userManager.UpdateAsync(identityUser);
@@ -88,13 +90,18 @@ public class UserService(
 
     public async Task<Result> UpdatePhoneNumberAsync(int userId, string phoneNumber)
     {
-        if (string.IsNullOrWhiteSpace(phoneNumber)) return Result.Fail("Phone number is required");
+        if (string.IsNullOrWhiteSpace(phoneNumber))
+            return ServiceErrors.UserService.PhoneNumberIsRequired;
 
         bool IsPhoneAlreadyRegistered = await _userManager.Users.AnyAsync(user => user.PhoneNumber == phoneNumber);
-        if (IsPhoneAlreadyRegistered) return Result.Fail("Phone number is already taken");
+
+        if (IsPhoneAlreadyRegistered)
+            return ServiceErrors.UserService.PhoneNumberIsAlreadyTaken;
 
         var identityUser = await _userManager.Users.FirstOrDefaultAsync(user => user.Id == userId);
-        if (identityUser is null) return Result.Fail("Error in updating phone number");
+
+        if (identityUser is null)
+            return ServiceErrors.UserService.ErrorInUpdatingPhoneNumber;
 
         string confirmationToken = await _userManager.GenerateChangePhoneNumberTokenAsync(identityUser, phoneNumber);
         await _smsService.SendPhoneNumberConfirmationSms(phoneNumber, confirmationToken);
@@ -105,8 +112,9 @@ public class UserService(
     public async Task<Result> ConfirmPhoneNumberAsync(int userId, string phoneNumber, string confirmationToken)
     {
         var identityUser = await _userManager.Users.FirstOrDefaultAsync(user => user.Id == userId);
+
         if (identityUser is null)
-            return Result.Fail("Error in confirming phone number");
+            return ServiceErrors.UserService.ErrorInConfirmingPhoneNumber;
 
         var result = await _userManager.ChangePhoneNumberAsync(identityUser, phoneNumber, confirmationToken);
 
@@ -119,12 +127,13 @@ public class UserService(
     public async Task<Result> ActivateUserAsync(ActivateUserRequest activateUserRequest)
     {
         var identityUser = await _userManager.Users.FirstOrDefaultAsync(user => user.Id == activateUserRequest.Id);
+
         if (identityUser is null)
-            return Result.Fail("Error in activating user");
+            return ServiceErrors.UserService.ErrorInActivatingUser;
 
         var identityResult = await _userManager.ConfirmEmailAsync(identityUser, activateUserRequest.ConfirmationCode);
         if (!identityResult.Succeeded)
-            return Result.Fail("Error in activating user");
+            return ServiceErrors.UserService.ErrorInActivatingUser;
 
         return Result.Ok();
     }

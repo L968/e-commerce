@@ -1,4 +1,6 @@
-﻿namespace Ecommerce.Authorization.Services;
+﻿using Ecommerce.Authorization.Errors;
+
+namespace Ecommerce.Authorization.Services;
 
 public class LoginService(
     SignInManager<CustomIdentityUser> signInManager,
@@ -15,26 +17,32 @@ public class LoginService(
     public async Task<Result> Login(LoginRequest loginRequest)
     {
         var identityUser = await GetIdentityUserByEmailOrPhoneNumber(loginRequest.EmailOrPhoneNumber!);
+
         if (identityUser is null)
-            return Result.Fail("Your login credentials don't match an account in our system");
+            return ServiceErrors.LoginService.InvalidCredentials;
 
         var signInResult = await _signInManager.PasswordSignInAsync(identityUser, loginRequest.Password, false, true);
 
         if (!signInResult.Succeeded)
         {
-            if (signInResult.IsNotAllowed) return Result.Fail("Email isn't confirmed");
-            if (signInResult.IsLockedOut) return Result.Fail("User is currently locked out");
+            if (signInResult.IsNotAllowed)
+                return ServiceErrors.LoginService.EmailNotConfirmed;
+
+            if (signInResult.IsLockedOut)
+                return ServiceErrors.LoginService.UserLockedOut;
 
             if (signInResult.RequiresTwoFactor)
             {
-                if (string.IsNullOrWhiteSpace(identityUser.PhoneNumber)) return Result.Fail("Two factor login requires phoneNumber");
+                if (string.IsNullOrWhiteSpace(identityUser.PhoneNumber))
+                    return ServiceErrors.LoginService.TwoFactorLoginRequiresPhoneNumber;
 
                 var twoFactorToken = await _signInManager.UserManager.GenerateTwoFactorTokenAsync(identityUser, "Phone");
                 await _smsService.SendTwoFactorTokenSms(identityUser.PhoneNumber, twoFactorToken);
-                return Result.Fail("User requires two factor authentication");
+
+                return ServiceErrors.LoginService.UserRequiresTwoFactorAuthentication;
             }
 
-            return Result.Fail("Your login credentials don't match an account in our system");
+            return ServiceErrors.LoginService.InvalidCredentials;
         }
 
         var roles = await _signInManager.UserManager.GetRolesAsync(identityUser);
@@ -46,8 +54,9 @@ public class LoginService(
     public async Task<Result> TwoFactorLogin(TwoFactorLoginRequest twoFactorLoginRequest)
     {
         var identityUser = await _signInManager.UserManager.Users.FirstOrDefaultAsync(user => user.Id == twoFactorLoginRequest.UserId);
+
         if (identityUser is null)
-            return Result.Fail("Error in two factor login");
+            return ServiceErrors.LoginService.ErrorInTwoFactorLogin;
 
         var signInResult = await _signInManager.TwoFactorSignInAsync(
             "Phone",
@@ -59,16 +68,12 @@ public class LoginService(
         if (!signInResult.Succeeded)
         {
             if (signInResult.IsNotAllowed)
-            {
-                return Result.Fail("Email isn't confirmed");
-            }
+                return ServiceErrors.LoginService.EmailNotConfirmed;
 
             if (signInResult.IsLockedOut)
-            {
-                return Result.Fail("User is currently locked out");
-            }
+                return ServiceErrors.LoginService.UserLockedOut;
 
-            return Result.Fail("Your login credentials don't match an account in our system");
+            return ServiceErrors.LoginService.InvalidCredentials;
         }
 
         var roles = await _signInManager.UserManager.GetRolesAsync(identityUser);
@@ -80,7 +85,9 @@ public class LoginService(
     public async Task<Result> RequestPasswordReset(RequestPasswordResetRequest request)
     {
         var identityUser = await GetIdentityUserByEmail(request.Email!);
-        if (identityUser is null) return Result.Ok();
+
+        if (identityUser is null)
+            return Result.Ok();
 
         string passwordResetToken = await _signInManager.UserManager.GeneratePasswordResetTokenAsync(identityUser);
         await _emailService.SendResetPasswordEmail(request.Email!, passwordResetToken);
@@ -91,7 +98,9 @@ public class LoginService(
     public async Task<Result> PasswordReset(PasswordResetRequest request)
     {
         var identityUser = await GetIdentityUserByEmail(request.Email!);
-        if (identityUser is null) return Result.Fail("Error in password reset");
+
+        if (identityUser is null)
+            return ServiceErrors.LoginService.ErrorInPasswordReset;
 
         var identityResult = await _signInManager
             .UserManager
@@ -99,7 +108,7 @@ public class LoginService(
 
         return identityResult.Succeeded
             ? Result.Ok()
-            : Result.Fail("Error in password reset");
+            : ServiceErrors.LoginService.ErrorInPasswordReset;
     }
 
     private async Task<CustomIdentityUser?> GetIdentityUserByEmail(string email)
