@@ -1,4 +1,4 @@
-﻿using Ecommerce.Domain.Repositories;
+﻿using Ecommerce.Common.Infra.Repositories;
 
 namespace Ecommerce.Order.API.Repositories;
 

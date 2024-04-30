@@ -1,6 +1,5 @@
-using Ecommerce.Application.Common.Handlers;
-using Ecommerce.Infra.IoC.Binders;
-using Ecommerce.Infra.IoC.Middlewares;
+using Ecommerce.Common.Infra.Binders;
+using Ecommerce.Common.Infra.Handlers;
 using Ecommerce.Order.API;
 using Ecommerce.Order.API.Context;
 using Ecommerce.Order.API.Interfaces;

@@ -1,5 +1,5 @@
-﻿using Ecommerce.Domain.Enums;
-using Ecommerce.Infra.Data.Repositories;
+﻿using Ecommerce.Common.Infra.Repositories;
+using Ecommerce.Domain.Enums;
 using Ecommerce.Order.API.Context;
 using Microsoft.EntityFrameworkCore;
 

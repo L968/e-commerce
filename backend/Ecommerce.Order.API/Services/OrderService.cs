@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using Ecommerce.Common.Infra.Representation;
+using Ecommerce.Common.Infra.Representation.Grid;
 using Ecommerce.Domain.DTOs;
-using Ecommerce.Domain.Entities;
-using Ecommerce.Domain.Entities.Grid;
 using Ecommerce.Domain.Entities.ProductEntities;
 using Ecommerce.Domain.Enums;
 using Ecommerce.Domain.Errors;

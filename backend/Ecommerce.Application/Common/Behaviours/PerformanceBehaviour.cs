@@ -4,7 +4,7 @@ using System.Diagnostics;
 namespace Ecommerce.Application.Common.Behaviours;
 
 public class PerformanceBehaviour<TRequest, TResponse>(
-    ILogger<TRequest> logger, 
+    ILogger<TRequest> logger,
     ICurrentUserService currentUserService
     ) : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
 {

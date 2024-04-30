@@ -1,6 +1,6 @@
 ﻿using Ecommerce.Application.Common.Behaviours;
-using Ecommerce.Application.Common.Handlers;
 using Ecommerce.Application.Common.Interfaces;
+using Ecommerce.Common.Infra.Handlers;
 using Ecommerce.Infra.IoC.Services;
 using FluentValidation;
 using FluentValidation.AspNetCore;

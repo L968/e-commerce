@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 namespace Ecommerce.Application.Common.Behaviours;
 
 public class LoggingBehaviour<TRequest>(
-    ILogger<TRequest> logger, 
+    ILogger<TRequest> logger,
     ICurrentUserService currentUserService
     ) : IRequestPreProcessor<TRequest> where TRequest : notnull
 {

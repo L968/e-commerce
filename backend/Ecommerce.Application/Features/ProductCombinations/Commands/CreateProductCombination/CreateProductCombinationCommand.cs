@@ -1,6 +1,6 @@
 ﻿using Ecommerce.Application.DTOs.Products;
 using Ecommerce.Application.Interfaces;
-using Ecommerce.Application.Utils.Attributes;
+using Ecommerce.Common.Infra.Attributes;
 using Microsoft.AspNetCore.Http;
 
 namespace Ecommerce.Application.Features.ProductCombinations.Commands.AddProductCombination;
@@ -55,13 +55,9 @@ public class CreateProductCombinationCommandHandler(
             variantOptions.Add(variantOption);
         }
 
-        product.AddVariantOptions(variantOptions);
+        IEnumerable<string> imagePaths = await _blobStorageService.UploadImage(request.Images); // TODO: Treat if create method throws an error (undo?)
 
-        IEnumerable<string> imagePaths = await _blobStorageService.UploadImage(request.Images);
-
-        var createResult = ProductCombination.Create(
-            productId: product.Id,
-            existingCombinations: product.Combinations,
+        var createResult = product.AddCombination(
             variantOptions: variantOptions,
             sku: request.Sku,
             price: request.Price,
@@ -75,7 +71,6 @@ public class CreateProductCombinationCommandHandler(
 
         if (createResult.IsFailed) return Result.Fail(createResult.Errors);
 
-        _productCombinationRepository.Create(createResult.Value);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         var dto = _mapper.Map<GetProductCombinationDto>(createResult.Value);

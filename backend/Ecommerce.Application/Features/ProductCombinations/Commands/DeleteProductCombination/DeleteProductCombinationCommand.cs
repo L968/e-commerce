@@ -6,7 +6,7 @@ namespace Ecommerce.Application.Features.ProductCombinations.Commands.DeleteProd
 public record DeleteProductCombinationCommand(Guid Id) : IRequest<Result>;
 
 public class DeleteProductCombinationCommandHandler(
-    IUnitOfWork unitOfWork, 
+    IUnitOfWork unitOfWork,
     IProductRepository productRepository,
     IBlobStorageService blobStorageService,
     IProductCombinationRepository productCombinationRepository

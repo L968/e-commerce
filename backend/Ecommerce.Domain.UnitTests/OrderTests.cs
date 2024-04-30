@@ -9,7 +9,6 @@ public class OrderTests
     public void GivenValidData_ShouldCreateOrder()
     {
         // Arrange
-        var cartItems = SampleData.GetCartItems();
 
         // Act
         var result = Order.Create(

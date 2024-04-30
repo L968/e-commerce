@@ -1,5 +1,5 @@
-﻿using Ecommerce.Domain.Entities;
-using Ecommerce.Infra.Data.Utils;
+﻿using Ecommerce.Common.Infra.Extensions;
+using Ecommerce.Domain.Entities;
 
 namespace Ecommerce.Infra.Data.Context;
 

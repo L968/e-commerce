@@ -1,5 +1,5 @@
-﻿using Ecommerce.Domain.Entities;
-using Ecommerce.Domain.Entities.Grid;
+﻿using Ecommerce.Common.Infra.Representation;
+using Ecommerce.Common.Infra.Representation.Grid;
 
 namespace Ecommerce.Order.API.Interfaces;
 

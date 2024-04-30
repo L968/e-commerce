@@ -2,7 +2,7 @@
 using Ecommerce.Domain.DTOs;
 using Ecommerce.Domain.Entities.ProductEntities;
 using Ecommerce.Domain.Enums;
-using Ecommerce.Order.API.Utils;
+using Ecommerce.Common.Infra.Extensions;
 
 namespace Ecommerce.Order.API.Mappings;
 

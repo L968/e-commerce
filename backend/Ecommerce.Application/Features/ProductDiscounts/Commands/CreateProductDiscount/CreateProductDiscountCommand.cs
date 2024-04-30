@@ -16,9 +16,9 @@ public record CreateProductDiscountCommand : IRequest<Result<GetProductDiscountD
 }
 
 public class CreateProductDiscountCommandHandler(
-    IMapper mapper, 
-    IUnitOfWork unitOfWork, 
-    IProductRepository productRepository, 
+    IMapper mapper,
+    IUnitOfWork unitOfWork,
+    IProductRepository productRepository,
     IProductDiscountRepository productDiscountRepository
     ) : IRequestHandler<CreateProductDiscountCommand, Result<GetProductDiscountDto>>
 {

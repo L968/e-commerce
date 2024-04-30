@@ -15,6 +15,8 @@ public sealed class ProductDiscount : AuditableEntity
 
     public Product? Product { get; private set; }
 
+    private ProductDiscount() { }
+
     private ProductDiscount(
         Guid productId,
         string name,
@@ -69,7 +71,8 @@ public sealed class ProductDiscount : AuditableEntity
         decimal productPrice
     )
     {
-        if (HasExpired()) return Result.Fail(DomainErrors.ProductDiscount.CannotUpdateExpiredDiscount);
+        if (HasExpired())
+            return Result.Fail(DomainErrors.ProductDiscount.CannotUpdateExpiredDiscount);
 
         var validationResult = ValidateDomain(discountValue, discountUnit, maximumDiscountAmount, validFrom, validUntil, productPrice);
         if (validationResult.IsFailed) return validationResult;
@@ -130,25 +133,31 @@ public sealed class ProductDiscount : AuditableEntity
 
     private static Result ValidateDomain(decimal discountValue, DiscountUnit discountUnit, decimal? maximumDiscountAmount, DateTime validFrom, DateTime? validUntil, decimal productPrice)
     {
-        if (validFrom < DateTime.UtcNow) return Result.Fail(DomainErrors.ProductDiscount.DiscountStartDateInPast);
+        if (validFrom < DateTime.UtcNow)
+            return Result.Fail(DomainErrors.ProductDiscount.DiscountStartDateInPast);
 
-        if (validFrom >= validUntil) return Result.Fail(DomainErrors.ProductDiscount.DiscountEndDateMustBeAfterStartDate);
+        if (validFrom >= validUntil)
+            return Result.Fail(DomainErrors.ProductDiscount.DiscountEndDateMustBeAfterStartDate);
 
-        if (discountValue <= 0) return Result.Fail(DomainErrors.ProductDiscount.InvalidDiscountValue);
+        if (discountValue <= 0)
+            return Result.Fail(DomainErrors.ProductDiscount.InvalidDiscountValue);
 
-        if (validUntil is not null && validUntil <= validFrom.AddMinutes(5)) return Result.Fail(DomainErrors.ProductDiscount.DiscountDurationTooShort);
+        if (validUntil is not null && validUntil <= validFrom.AddMinutes(5))
+            return Result.Fail(DomainErrors.ProductDiscount.DiscountDurationTooShort);
 
-        if (discountUnit == DiscountUnit.Percentage && discountValue >= 80) return Result.Fail(DomainErrors.ProductDiscount.DiscountPercentageExceedsLimit);
+        if (discountUnit == DiscountUnit.Percentage && discountValue >= 80)
+            return Result.Fail(DomainErrors.ProductDiscount.DiscountPercentageExceedsLimit);
 
         if (discountUnit == DiscountUnit.FixedAmount)
         {
             decimal maxDiscountAmount = productPrice * 0.8m;
-            if (discountValue >= maxDiscountAmount) return Result.Fail(DomainErrors.ProductDiscount.MaximumFixedDiscountExceeded);
+            if (discountValue >= maxDiscountAmount)
+                return Result.Fail(DomainErrors.ProductDiscount.MaximumFixedDiscountExceeded);
         }
 
-        if (maximumDiscountAmount is not null &&
-            discountUnit == DiscountUnit.FixedAmount &&
-            maximumDiscountAmount >= discountValue
+        if (maximumDiscountAmount is not null
+         && discountUnit == DiscountUnit.FixedAmount
+         && maximumDiscountAmount >= discountValue
         )
         {
             return Result.Fail(DomainErrors.ProductDiscount.MaximumDiscountAmountExceedsValue);

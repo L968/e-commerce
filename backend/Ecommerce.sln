@@ -46,6 +46,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker-compose", "docker-co
 		docker-compose.yaml = docker-compose.yaml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{7E9DB91C-FCB1-4F05-B3BE-E2A20192D0E5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecommerce.Common.Infra", "Common\Ecommerce.Common.Infra\Ecommerce.Common.Infra.csproj", "{F7C574E3-C7EA-4586-ACFA-7B9CFFB8571E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -100,6 +104,10 @@ Global
 		{EEF5578D-E05C-4EAC-9C28-CAB2EEE95378}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EEF5578D-E05C-4EAC-9C28-CAB2EEE95378}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EEF5578D-E05C-4EAC-9C28-CAB2EEE95378}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7C574E3-C7EA-4586-ACFA-7B9CFFB8571E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7C574E3-C7EA-4586-ACFA-7B9CFFB8571E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7C574E3-C7EA-4586-ACFA-7B9CFFB8571E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7C574E3-C7EA-4586-ACFA-7B9CFFB8571E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -122,6 +130,8 @@ Global
 		{9D8A5B2C-46BB-43FE-94CB-FA7622A0E0B0} = {C5A74936-DDD1-489D-8E35-153666831638}
 		{B5E8036C-95E8-46CC-9B9A-9545558ECD07} = {9D4FEA1E-937E-446E-8727-C4248D6AC8A1}
 		{EEF5578D-E05C-4EAC-9C28-CAB2EEE95378} = {B5E8036C-95E8-46CC-9B9A-9545558ECD07}
+		{7E9DB91C-FCB1-4F05-B3BE-E2A20192D0E5} = {9D4FEA1E-937E-446E-8727-C4248D6AC8A1}
+		{F7C574E3-C7EA-4586-ACFA-7B9CFFB8571E} = {7E9DB91C-FCB1-4F05-B3BE-E2A20192D0E5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4667238D-291A-455F-9BA3-5123DA06325C}

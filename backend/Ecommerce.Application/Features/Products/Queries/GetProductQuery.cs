@@ -1,11 +1,12 @@
 ﻿using Ecommerce.Application.DTOs.Products;
+using Ecommerce.Common.Infra.Representation;
 
 namespace Ecommerce.Application.Features.Products.Queries;
 
 public record GetProductQuery(int Page, int PageSize) : IRequest<Pagination<GetProductListDto>>;
 
 public class GetProductQueryHandler(
-    IMapper mapper, 
+    IMapper mapper,
     IProductRepository productRepository
     ) : IRequestHandler<GetProductQuery, Pagination<GetProductListDto>>
 {

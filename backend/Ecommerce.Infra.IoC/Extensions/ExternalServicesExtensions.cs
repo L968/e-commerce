@@ -1,5 +1,5 @@
-﻿using Ecommerce.Application.Common.Handlers;
-using Ecommerce.Application.Interfaces;
+﻿using Ecommerce.Application.Interfaces;
+using Ecommerce.Common.Infra.Handlers;
 using Ecommerce.Infra.IoC.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;

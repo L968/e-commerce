@@ -1,5 +1,5 @@
-﻿using Ecommerce.Domain.Entities;
-using Ecommerce.Order.API.Utils;
+﻿using Ecommerce.Common.Infra.Extensions;
+using Ecommerce.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.Order.API.Context;

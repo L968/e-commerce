@@ -1,4 +1,4 @@
-using Ecommerce.Domain.Entities.Grid;
+using Ecommerce.Common.Infra.Representation.Grid;
 using Ecommerce.Order.API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

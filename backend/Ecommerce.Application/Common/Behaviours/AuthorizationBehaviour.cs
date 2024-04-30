@@ -2,7 +2,9 @@
 
 namespace Ecommerce.Application.Common.Behaviours;
 
-public class AuthorizationBehaviour<TRequest, TResponse>(ICurrentUserService currentUserService) : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
+public class AuthorizationBehaviour<TRequest, TResponse>(
+    ICurrentUserService currentUserService
+    ) : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
 {
     private readonly ICurrentUserService _currentUserService = currentUserService;
 

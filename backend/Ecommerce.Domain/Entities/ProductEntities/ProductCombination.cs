@@ -1,5 +1,6 @@
 ﻿using Ecommerce.Domain.Entities.VariantEntities;
 using Ecommerce.Domain.Enums;
+using static Ecommerce.Domain.Errors.DomainErrors;
 
 namespace Ecommerce.Domain.Entities.ProductEntities;
 
@@ -51,7 +52,6 @@ public sealed class ProductCombination : AuditableEntity
 
     public static Result<ProductCombination> Create(
         Guid productId,
-        IEnumerable<ProductCombination> existingCombinations,
         IEnumerable<VariantOption> variantOptions,
         string sku,
         decimal price,
@@ -66,12 +66,11 @@ public sealed class ProductCombination : AuditableEntity
         var validationResult = ValidateDomain(price, imagePaths, length, width, height, weight);
         if (validationResult.IsFailed) return validationResult;
 
-        Result<string> combinationStringResult = GenerateCombinationString(existingCombinations, variantOptions);
-        if (combinationStringResult.IsFailed) return Result.Fail(combinationStringResult.Errors);
+        string combinationString = GenerateCombinationString(variantOptions);
 
         var productCombination = new ProductCombination(
             productId,
-            combinationString: combinationStringResult.Value,
+            combinationString,
             sku,
             price,
             stock,
@@ -99,12 +98,18 @@ public sealed class ProductCombination : AuditableEntity
         Result validationResult = ValidateDomain(price, imagePaths, length, width, height, weight);
         if (validationResult.IsFailed) return validationResult;
 
+        Product.RemoveVariantOptionsByCombination(Id);
+        Product.AddVariantOptions(variantOptions.Select(vo => vo.Id));
+
         var existingCombinations = Product.Combinations.Where(pc => pc.Id != Id);
 
-        Result<string> combinationStringResult = GenerateCombinationString(existingCombinations, variantOptions);
-        if (combinationStringResult.IsFailed) return Result.Fail(combinationStringResult.Errors);
+        string combinationString = GenerateCombinationString(variantOptions);
+        bool combinationAlreadyExists = existingCombinations.Any(pc => pc.CombinationString == combinationString);
 
-        CombinationString = combinationStringResult.Value;
+        if (combinationAlreadyExists)
+            return Result.Fail(DomainErrors.ProductCombination.CombinationAlreadyExists);
+
+        CombinationString = combinationString;
         Sku = sku;
         Price = price;
         Length = length;
@@ -145,17 +150,10 @@ public sealed class ProductCombination : AuditableEntity
         return Math.Round(discountedPrice, 2, MidpointRounding.AwayFromZero);
     }
 
-    private static Result<string> GenerateCombinationString(IEnumerable<ProductCombination> existingCombinations, IEnumerable<VariantOption> variantOptions)
+    private static string GenerateCombinationString(IEnumerable<VariantOption> variantOptions)
     {
-        var combinationStrings = variantOptions.Select(vo => $"{vo.Variant!.Name}={vo.Name}");
-        var combinationString = string.Join("/", combinationStrings);
-
-        bool combinationAlreadyExists = existingCombinations.Any(pc => pc.CombinationString == combinationString);
-
-        if (combinationAlreadyExists)
-            return Result.Fail(DomainErrors.ProductCombination.CombinationAlreadyExists);
-
-        return Result.Ok(combinationString);
+        IEnumerable<string> combinationStrings = variantOptions.Select(vo => $"{vo.Variant!.Name}={vo.Name}");
+        return string.Join("/", combinationStrings);
     }
 
     private static Result ValidateDomain(decimal price, IEnumerable<string> imagePaths, float length, float width, float height, float weight)

@@ -1,5 +1,5 @@
 ﻿using Ecommerce.Application.Interfaces;
-using Ecommerce.Application.Utils.Attributes;
+using Ecommerce.Common.Infra.Attributes;
 using Microsoft.AspNetCore.Http;
 
 namespace Ecommerce.Application.Features.ProductCombinations.Commands.UpdateProductCombination;
@@ -45,9 +45,6 @@ public class UpdateProductCombinationCommandHandler(
         ProductCombination? productCombination = await _productCombinationRepository.GetByIdAsync(request.Id);
         if (productCombination is null) return Result.Fail(DomainErrors.NotFound(nameof(ProductCombination), request.Id));
 
-        Product? product = await _productRepository.GetByIdAsync(productCombination.ProductId);
-        if (product is null) return Result.Fail(DomainErrors.NotFound(nameof(Product), productCombination.ProductId));
-
         var variantOptions = new List<VariantOption>();
 
         foreach (var variantOptionId in request.VariantOptionIds)
@@ -58,10 +55,7 @@ public class UpdateProductCombinationCommandHandler(
             variantOptions.Add(variantOption);
         }
 
-        product.RemoveVariantOptionsByCombination(productCombination.Id);
-        product.AddVariantOptions(variantOptions);
-
-        await _blobStorageService.RemoveImage(productCombination.Images.Select(i => i.ImagePath));
+        await _blobStorageService.RemoveImage(productCombination.Images.Select(i => i.ImagePath));  // TODO: Treat if update method throws an error (undo?)
         IEnumerable<string> imagePaths = await _blobStorageService.UploadImage(request.Images);
 
         var updateResult = productCombination.Update(

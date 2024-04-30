@@ -32,7 +32,7 @@ public static class DomainErrors
 
     public static class ProductCombination
     {
-        public static readonly Error CombinationAlreadyExists = new("Combination already exists for the product");
+        public static readonly Error CombinationAlreadyExists = new("Combination already exists for this product");
     }
 
     public static class ProductCategory

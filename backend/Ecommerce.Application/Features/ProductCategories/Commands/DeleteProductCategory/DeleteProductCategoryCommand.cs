@@ -4,7 +4,7 @@
 public record DeleteProductCategoryCommand(Guid Guid) : IRequest<Result>;
 
 public class DeleteProductCategoryCommandHandler(
-    IUnitOfWork unitOfWork, 
+    IUnitOfWork unitOfWork,
     IProductCategoryRepository productCategoryRepository
     ) : IRequestHandler<DeleteProductCategoryCommand, Result>
 {
