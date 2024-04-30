@@ -1,5 +1,4 @@
 ﻿using Ecommerce.Application.DTOs.Products;
-using Ecommerce.Application.Interfaces;
 using Ecommerce.Common.Infra.Attributes;
 using Microsoft.AspNetCore.Http;
 
@@ -43,14 +42,14 @@ public class CreateProductCombinationCommandHandler(
     public async Task<Result<GetProductCombinationDto>> Handle(CreateProductCombinationCommand request, CancellationToken cancellationToken)
     {
         Product? product = await _productRepository.GetByIdAsync(request.ProductId);
-        if (product is null) return Result.Fail(DomainErrors.NotFound(nameof(Product), request.ProductId));
+        if (product is null) return DomainErrors.NotFound(nameof(Product), request.ProductId);
 
         var variantOptions = new List<VariantOption>();
 
         foreach (var variantOptionId in request.VariantOptionIds)
         {
             VariantOption? variantOption = await _variantOptionRepository.GetByIdAsync(variantOptionId);
-            if (variantOption is null) return Result.Fail(DomainErrors.NotFound(nameof(VariantOption), variantOptionId));
+            if (variantOption is null) return DomainErrors.NotFound(nameof(VariantOption), variantOptionId);
 
             variantOptions.Add(variantOption);
         }

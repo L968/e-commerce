@@ -23,7 +23,7 @@ public class ReduceStockProductCombinationCommandHandler(
         foreach (var reduceStockRequest in request.Requests)
         {
             ProductCombination? productCombination = await _productCombinationRepository.GetByIdAsync(reduceStockRequest.ProductCombinationId);
-            if (productCombination is null) return Result.Fail(DomainErrors.NotFound(nameof(ProductCombination), reduceStockRequest.ProductCombinationId));
+            if (productCombination is null) return DomainErrors.NotFound(nameof(ProductCombination), reduceStockRequest.ProductCombinationId);
 
             var result = productCombination.Inventory.ReduceStock(reduceStockRequest.Quantity);
 

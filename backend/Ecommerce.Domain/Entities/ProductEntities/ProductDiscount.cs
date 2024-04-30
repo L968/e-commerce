@@ -72,7 +72,7 @@ public sealed class ProductDiscount : AuditableEntity
     )
     {
         if (HasExpired())
-            return Result.Fail(DomainErrors.ProductDiscount.CannotUpdateExpiredDiscount);
+            return DomainErrors.ProductDiscount.CannotUpdateExpiredDiscount;
 
         var validationResult = ValidateDomain(discountValue, discountUnit, maximumDiscountAmount, validFrom, validUntil, productPrice);
         if (validationResult.IsFailed) return validationResult;
@@ -134,25 +134,25 @@ public sealed class ProductDiscount : AuditableEntity
     private static Result ValidateDomain(decimal discountValue, DiscountUnit discountUnit, decimal? maximumDiscountAmount, DateTime validFrom, DateTime? validUntil, decimal productPrice)
     {
         if (validFrom < DateTime.UtcNow)
-            return Result.Fail(DomainErrors.ProductDiscount.DiscountStartDateInPast);
+            return DomainErrors.ProductDiscount.DiscountStartDateInPast;
 
         if (validFrom >= validUntil)
-            return Result.Fail(DomainErrors.ProductDiscount.DiscountEndDateMustBeAfterStartDate);
+            return DomainErrors.ProductDiscount.DiscountEndDateMustBeAfterStartDate;
 
         if (discountValue <= 0)
-            return Result.Fail(DomainErrors.ProductDiscount.InvalidDiscountValue);
+            return DomainErrors.ProductDiscount.InvalidDiscountValue;
 
         if (validUntil is not null && validUntil <= validFrom.AddMinutes(5))
-            return Result.Fail(DomainErrors.ProductDiscount.DiscountDurationTooShort);
+            return DomainErrors.ProductDiscount.DiscountDurationTooShort;
 
         if (discountUnit == DiscountUnit.Percentage && discountValue >= 80)
-            return Result.Fail(DomainErrors.ProductDiscount.DiscountPercentageExceedsLimit);
+            return DomainErrors.ProductDiscount.DiscountPercentageExceedsLimit;
 
         if (discountUnit == DiscountUnit.FixedAmount)
         {
             decimal maxDiscountAmount = productPrice * 0.8m;
             if (discountValue >= maxDiscountAmount)
-                return Result.Fail(DomainErrors.ProductDiscount.MaximumFixedDiscountExceeded);
+                return DomainErrors.ProductDiscount.MaximumFixedDiscountExceeded;
         }
 
         if (maximumDiscountAmount is not null
@@ -160,7 +160,7 @@ public sealed class ProductDiscount : AuditableEntity
          && maximumDiscountAmount >= discountValue
         )
         {
-            return Result.Fail(DomainErrors.ProductDiscount.MaximumDiscountAmountExceedsValue);
+            return DomainErrors.ProductDiscount.MaximumDiscountAmountExceedsValue;
         }
 
         return Result.Ok();

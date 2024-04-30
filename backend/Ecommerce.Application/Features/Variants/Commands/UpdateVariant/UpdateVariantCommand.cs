@@ -10,7 +10,7 @@ public record UpdateVariantCommand : IRequest<Result>
 }
 
 public class UpdateVariantCommandHandler(
-    IUnitOfWork unitOfWork, 
+    IUnitOfWork unitOfWork,
     IVariantRepository variantRepository
     ) : IRequestHandler<UpdateVariantCommand, Result>
 {
@@ -20,7 +20,7 @@ public class UpdateVariantCommandHandler(
     public async Task<Result> Handle(UpdateVariantCommand request, CancellationToken cancellationToken)
     {
         Variant? variant = await _variantRepository.GetByIdAsync(request.Id);
-        if (variant is null) return Result.Fail(DomainErrors.NotFound(nameof(variant), request.Id));
+        if (variant is null) return DomainErrors.NotFound(nameof(variant), request.Id);
 
         var result = variant.Update(request.Name, request.Options);
         if (result.IsFailed) return result;

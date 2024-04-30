@@ -64,7 +64,8 @@ public sealed class ProductCombination : AuditableEntity
     )
     {
         var validationResult = ValidateDomain(price, imagePaths, length, width, height, weight);
-        if (validationResult.IsFailed) return validationResult;
+        if (validationResult.IsFailed)
+            return validationResult;
 
         string combinationString = GenerateCombinationString(variantOptions);
 
@@ -107,7 +108,7 @@ public sealed class ProductCombination : AuditableEntity
         bool combinationAlreadyExists = existingCombinations.Any(pc => pc.CombinationString == combinationString);
 
         if (combinationAlreadyExists)
-            return Result.Fail(DomainErrors.ProductCombination.CombinationAlreadyExists);
+            return DomainErrors.ProductCombination.CombinationAlreadyExists;
 
         CombinationString = combinationString;
         Sku = sku;
@@ -137,7 +138,7 @@ public sealed class ProductCombination : AuditableEntity
                     productDiscount = activeProductDiscount.DiscountValue;
                     break;
                 default:
-                    return Result.Fail(DomainErrors.Order.DiscountUnitNotImplemented);
+                    return DomainErrors.Order.DiscountUnitNotImplemented;
             }
         }
 

@@ -89,10 +89,10 @@ public sealed class Order : AuditableEntity
     )
     {
         if (userId <= 0)
-            return Result.Fail(DomainErrors.Order.InvalidUserId);
+            return DomainErrors.Order.InvalidUserId;
 
         if (!cartItems.Any())
-            return Result.Fail(DomainErrors.Order.EmptyProductList);
+            return DomainErrors.Order.EmptyProductList;
 
         var orderItems = new List<CreateOrderItemDto>();
 
@@ -102,10 +102,10 @@ public sealed class Order : AuditableEntity
             Product product = productCombination.Product;
 
             if (!product.Active)
-                return Result.Fail(DomainErrors.Order.InactiveProduct);
+                return DomainErrors.Order.InactiveProduct;
 
             if (cartItem.Quantity <= 0)
-                return Result.Fail(DomainErrors.CartItem.InvalidQuantity);
+                return DomainErrors.CartItem.InvalidQuantity;
 
             var validateStockResult = productCombination.Inventory.ValidateStock(cartItem.Quantity);
             if (validateStockResult.IsFailed)
@@ -162,7 +162,7 @@ public sealed class Order : AuditableEntity
     public Result CompletePayment()
     {
         if (Status != OrderStatus.PendingPayment)
-            return Result.Fail(DomainErrors.Order.InvalidPaymentStatus);
+            return DomainErrors.Order.InvalidPaymentStatus;
 
         Status = OrderStatus.Processing;
         AddHistory(OrderStatus.Processing, "Payment completed, order processing");

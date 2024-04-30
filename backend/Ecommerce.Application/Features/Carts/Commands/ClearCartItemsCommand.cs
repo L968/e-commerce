@@ -18,7 +18,7 @@ public class ClearCartItemsCommandHandler(
         int userId = _currentUserService.UserId;
 
         Cart? cart = await _cartRepository.GetByUserIdAsync(userId);
-        if (cart is null) return Result.Fail(DomainErrors.NotFound(nameof(Cart), userId));
+        if (cart is null) return DomainErrors.NotFound(nameof(Cart), userId);
 
         cart.ClearItems(request.ProductCombinationIds);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

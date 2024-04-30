@@ -5,8 +5,8 @@ namespace Ecommerce.Application.Features.ProductCategories.Queries;
 public record GetVariantsByProductCategoryIdQuery(Guid Id) : IRequest<Result<IEnumerable<GetVariantDto>>>;
 
 public class GetVariantsByProductCategoryIdQueryHandler(
-    IMapper mapper, 
-    IProductCategoryRepository productCategoryRepository, 
+    IMapper mapper,
+    IProductCategoryRepository productCategoryRepository,
     IProductCategoryVariantRepository productCategoryVariantRepository
     ) : IRequestHandler<GetVariantsByProductCategoryIdQuery, Result<IEnumerable<GetVariantDto>>>
 {
@@ -17,7 +17,7 @@ public class GetVariantsByProductCategoryIdQueryHandler(
     public async Task<Result<IEnumerable<GetVariantDto>>> Handle(GetVariantsByProductCategoryIdQuery request, CancellationToken cancellationToken)
     {
         ProductCategory? productCategory = await _productCategoryRepository.GetByIdAsync(request.Id);
-        if (productCategory is null) return Result.Fail(DomainErrors.NotFound(nameof(ProductCategory), request.Id));
+        if (productCategory is null) return DomainErrors.NotFound(nameof(ProductCategory), request.Id);
 
         var productCategoryVariants = await _productCategoryVariantRepository.GetByProductCategoryIdAsync(productCategory.Id);
 

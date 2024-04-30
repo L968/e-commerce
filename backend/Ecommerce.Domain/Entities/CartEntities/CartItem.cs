@@ -21,7 +21,8 @@ public sealed class CartItem : AuditableEntity
 
     public static Result<CartItem> Create(Guid cartId, Guid productCombinationId, int quantity)
     {
-        if (quantity <= 0) return Result.Fail(DomainErrors.CartItem.InvalidQuantity);
+        if (quantity <= 0)
+            return DomainErrors.CartItem.InvalidQuantity;
 
         return Result.Ok(new CartItem(
             cartId,

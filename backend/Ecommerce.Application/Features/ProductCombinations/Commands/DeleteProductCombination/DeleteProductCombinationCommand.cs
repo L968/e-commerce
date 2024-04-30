@@ -1,6 +1,4 @@
-﻿using Ecommerce.Application.Interfaces;
-
-namespace Ecommerce.Application.Features.ProductCombinations.Commands.DeleteProductCombination;
+﻿namespace Ecommerce.Application.Features.ProductCombinations.Commands.DeleteProductCombination;
 
 [Authorize]
 public record DeleteProductCombinationCommand(Guid Id) : IRequest<Result>;
@@ -21,10 +19,10 @@ public class DeleteProductCombinationCommandHandler(
     {
         // TODO: Block if product has orders
         ProductCombination? productCombination = await _productCombinationRepository.GetByIdAsync(request.Id);
-        if (productCombination is null) return Result.Fail(DomainErrors.NotFound(nameof(ProductCombination), request.Id));
+        if (productCombination is null) return DomainErrors.NotFound(nameof(ProductCombination), request.Id);
 
         Product? product = await _productRepository.GetByIdAsync(productCombination.ProductId);
-        if (product is null) return Result.Fail(DomainErrors.NotFound(nameof(product), productCombination.ProductId));
+        if (product is null) return DomainErrors.NotFound(nameof(product), productCombination.ProductId);
 
         product.RemoveVariantOptionsByCombination(productCombination.Id);
 

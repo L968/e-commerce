@@ -119,7 +119,7 @@ public sealed class Address : AuditableEntity
     {
         if (!Regex.IsMatch(recipientPhoneNumber, @"^[0-9]+$"))
         {
-            return Result.Fail(DomainErrors.Address.InvalidRecipientPhoneNumber);
+            return DomainErrors.Address.InvalidRecipientPhoneNumber;
         }
 
         return Result.Ok();

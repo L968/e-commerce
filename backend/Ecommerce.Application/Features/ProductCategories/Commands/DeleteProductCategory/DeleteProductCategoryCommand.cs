@@ -14,8 +14,7 @@ public class DeleteProductCategoryCommandHandler(
     public async Task<Result> Handle(DeleteProductCategoryCommand request, CancellationToken cancellationToken)
     {
         ProductCategory? productCategory = await _productCategoryRepository.GetByIdAsync(request.Guid);
-
-        if (productCategory is null) return Result.Fail(DomainErrors.NotFound(nameof(ProductCategory), request.Guid));
+        if (productCategory is null) return DomainErrors.NotFound(nameof(ProductCategory), request.Guid);
 
         // TODO: Should not delete if category has active products
 

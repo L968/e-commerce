@@ -10,7 +10,7 @@ public record UpdateCartItemQuantityCommand : IRequest<Result>
 
 public class UpdateCartItemQuantityCommandHandler(
     IUnitOfWork unitOfWork,
-    ICartRepository cartRepository, 
+    ICartRepository cartRepository,
     ICurrentUserService currentUserService
     ) : IRequestHandler<UpdateCartItemQuantityCommand, Result>
 {
@@ -21,10 +21,10 @@ public class UpdateCartItemQuantityCommandHandler(
     public async Task<Result> Handle(UpdateCartItemQuantityCommand request, CancellationToken cancellationToken)
     {
         Cart? cart = await _cartRepository.GetByUserIdAsync(_currentUserService.UserId);
-        if (cart is null) return Result.Fail(DomainErrors.Cart.CartNotFound);
+        if (cart is null) return DomainErrors.Cart.CartNotFound;
 
         CartItem? cartItem = cart.CartItems.FirstOrDefault(ci => ci.Id == request.Id);
-        if (cartItem is null) return Result.Fail(DomainErrors.NotFound(nameof(CartItem), request.Id));
+        if (cartItem is null) return DomainErrors.NotFound(nameof(CartItem), request.Id);
 
         cartItem.SetQuantity(request.Quantity);
 

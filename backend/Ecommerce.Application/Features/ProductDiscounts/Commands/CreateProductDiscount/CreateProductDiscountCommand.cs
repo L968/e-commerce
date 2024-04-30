@@ -30,12 +30,12 @@ public class CreateProductDiscountCommandHandler(
     public async Task<Result<GetProductDiscountDto>> Handle(CreateProductDiscountCommand request, CancellationToken cancellationToken)
     {
         var product = await _productRepository.GetByIdAsync(request.ProductId);
-        if (product is null) return Result.Fail(DomainErrors.NotFound(nameof(Product), request.ProductId));
+        if (product is null) return DomainErrors.NotFound(nameof(Product), request.ProductId);
 
         var productDiscounts = await _productDiscountRepository.GetByProductIdAsync(request.ProductId); // TODO: Remove after product entity loads discounts from get method
 
         bool hasOverlap = ProductDiscount.HasOverlap(request.ValidFrom, request.ValidUntil, productDiscounts);
-        if (hasOverlap) return Result.Fail(DomainErrors.ProductDiscount.DiscountHasOverlap);
+        if (hasOverlap) return DomainErrors.ProductDiscount.DiscountHasOverlap;
 
         var createResult = ProductDiscount.Create(
             request.ProductId,

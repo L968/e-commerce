@@ -1,5 +1,4 @@
-﻿using Ecommerce.Application.Interfaces;
-using Ecommerce.Common.Infra.Attributes;
+﻿using Ecommerce.Common.Infra.Attributes;
 using Microsoft.AspNetCore.Http;
 
 namespace Ecommerce.Application.Features.ProductCombinations.Commands.UpdateProductCombination;
@@ -43,14 +42,14 @@ public class UpdateProductCombinationCommandHandler(
     public async Task<Result> Handle(UpdateProductCombinationCommand request, CancellationToken cancellationToken)
     {
         ProductCombination? productCombination = await _productCombinationRepository.GetByIdAsync(request.Id);
-        if (productCombination is null) return Result.Fail(DomainErrors.NotFound(nameof(ProductCombination), request.Id));
+        if (productCombination is null) return DomainErrors.NotFound(nameof(ProductCombination), request.Id);
 
         var variantOptions = new List<VariantOption>();
 
         foreach (var variantOptionId in request.VariantOptionIds)
         {
             VariantOption? variantOption = await _variantOptionRepository.GetByIdAsync(variantOptionId);
-            if (variantOption is null) return Result.Fail(DomainErrors.NotFound(nameof(VariantOption), variantOptionId));
+            if (variantOption is null) return DomainErrors.NotFound(nameof(VariantOption), variantOptionId);
 
             variantOptions.Add(variantOption);
         }

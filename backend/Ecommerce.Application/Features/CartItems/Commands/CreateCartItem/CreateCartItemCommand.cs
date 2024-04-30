@@ -30,9 +30,7 @@ public class CreateCartItemCommandHandler(
         }
 
         ProductCombination? productCombination = await _productCombinationRepository.GetByIdAsync(request.ProductCombinationId);
-
-        if (productCombination is null)
-            return DomainErrors.NotFound(nameof(ProductCombination), request.ProductCombinationId);
+        if (productCombination is null) return DomainErrors.NotFound(nameof(ProductCombination), request.ProductCombinationId);
 
         Result<CartItem> createResult = CartItem.Create(cart.Id, request.ProductCombinationId, request.Quantity);
         if (createResult.IsFailed) return Result.Fail(createResult.Errors);

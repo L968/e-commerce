@@ -1,6 +1,4 @@
-﻿using Ecommerce.Application.Interfaces;
-
-namespace Ecommerce.Application.Features.Products.Commands.DeleteProduct;
+﻿namespace Ecommerce.Application.Features.Products.Commands.DeleteProduct;
 
 [Authorize]
 public record DeleteProductCommand(Guid Id) : IRequest<Result>;
@@ -20,7 +18,7 @@ public class DeleteProductCommandHandler(
         // TODO: Block delete if product has orders
         Product? product = await _productRepository.GetByIdAsync(request.Id);
 
-        if (product is null) return Result.Fail(DomainErrors.NotFound(nameof(Product), request.Id));
+        if (product is null) return DomainErrors.NotFound(nameof(Product), request.Id);
 
         foreach (var combination in product.Combinations)
         {

@@ -10,6 +10,8 @@ public sealed class ProductReview : AuditableEntity
 
     public Product? Product { get; private set; }
 
+    private ProductReview() { }
+
     public ProductReview(int userId, Guid productId, int rating, string? description)
     {
         UserId = userId;
@@ -17,5 +19,4 @@ public sealed class ProductReview : AuditableEntity
         Rating = rating;
         Description = description;
     }
-
 }

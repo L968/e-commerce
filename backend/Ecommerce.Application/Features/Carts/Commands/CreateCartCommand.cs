@@ -22,7 +22,8 @@ public class CreateCartCommandHandler(
         int userId = _currentUserService.UserId;
 
         Cart? existingCart = await _cartRepository.GetByUserIdAsync(userId);
-        if (existingCart is not null) return Result.Fail(DomainErrors.Cart.CartAlreadyExists);
+        if (existingCart is not null)
+            return DomainErrors.Cart.CartAlreadyExists;
 
         var cart = new Cart(userId);
 

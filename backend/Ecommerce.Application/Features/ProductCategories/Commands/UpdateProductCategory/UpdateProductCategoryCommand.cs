@@ -18,7 +18,7 @@ public class UpdateProductCategoryCommandHandler(IUnitOfWork unitOfWork, IProduc
     public async Task<Result> Handle(UpdateProductCategoryCommand request, CancellationToken cancellationToken)
     {
         ProductCategory? productCategory = await _productCategoryRepository.GetByIdAsync(request.Id);
-        if (productCategory is null) return Result.Fail(DomainErrors.NotFound(nameof(ProductCategory), request.Id));
+        if (productCategory is null) return DomainErrors.NotFound(nameof(ProductCategory), request.Id);
 
         var result = productCategory.Update(request.Name, request.Description, request.VariantIds);
         if (result.IsFailed) return result;

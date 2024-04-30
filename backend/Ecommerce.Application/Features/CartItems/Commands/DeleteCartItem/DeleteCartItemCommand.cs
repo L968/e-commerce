@@ -5,7 +5,7 @@ public record DeleteCartItemCommand(int Id) : IRequest<Result>;
 
 public class DeleteCartItemCommandHandler(
     IUnitOfWork unitOfWork,
-    ICartRepository cartRepository, 
+    ICartRepository cartRepository,
     ICurrentUserService currentUserService
     ) : IRequestHandler<DeleteCartItemCommand, Result>
 {
@@ -16,8 +16,7 @@ public class DeleteCartItemCommandHandler(
     public async Task<Result> Handle(DeleteCartItemCommand request, CancellationToken cancellationToken)
     {
         Cart? cart = await _cartRepository.GetByUserIdAsync(_currentUserService.UserId);
-
-        if (cart is null) return Result.Fail(DomainErrors.Cart.CartNotFound);
+        if (cart is null) return DomainErrors.Cart.CartNotFound;
 
         cart.RemoveCartItem(request.Id);
 

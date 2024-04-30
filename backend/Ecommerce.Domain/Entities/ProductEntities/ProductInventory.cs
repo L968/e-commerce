@@ -27,8 +27,8 @@ public sealed class ProductInventory : AuditableEntity
 
     public Result ValidateStock(int quantity)
     {
-        if (quantity <= 0) return Result.Fail(DomainErrors.ProductInventory.InvalidQuantity);
-        if (Stock < quantity) return Result.Fail(DomainErrors.ProductInventory.InsufficientStock);
+        if (quantity <= 0) return DomainErrors.ProductInventory.InvalidQuantity;
+        if (Stock < quantity) return DomainErrors.ProductInventory.InsufficientStock;
 
         return Result.Ok();
     }

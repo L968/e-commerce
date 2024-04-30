@@ -5,7 +5,7 @@ public sealed class Cart
     public Guid Id { get; private set; }
     public int UserId { get; private set; }
 
-    private readonly List<CartItem> _cartItems = new();
+    private readonly List<CartItem> _cartItems = [];
     public IReadOnlyCollection<CartItem> CartItems => _cartItems;
 
     public Cart(int userId)
@@ -16,7 +16,8 @@ public sealed class Cart
 
     public Result AddCartItem(CartItem cartItem)
     {
-        if (cartItem.CartId != Id) return Result.Fail(DomainErrors.Cart.CartItemNotBelongsToCart);
+        if (cartItem.CartId != Id)
+            return DomainErrors.Cart.CartItemNotBelongsToCart;
 
         CartItem? existingCartItem = _cartItems.FirstOrDefault(ci => ci.ProductCombinationId == cartItem.ProductCombinationId);
 

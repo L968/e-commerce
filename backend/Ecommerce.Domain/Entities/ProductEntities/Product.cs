@@ -107,7 +107,7 @@ public sealed class Product : AuditableEntity
         bool combinationAlreadyExists = Combinations.Any(pc => pc.CombinationString == productCombination.CombinationString);
 
         if (combinationAlreadyExists)
-            return Result.Fail(DomainErrors.ProductCombination.CombinationAlreadyExists);
+            return DomainErrors.ProductCombination.CombinationAlreadyExists;
 
         AddVariantOptions(variantOptions.Select(v => v.Id));
 

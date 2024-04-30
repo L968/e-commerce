@@ -53,9 +53,9 @@ public sealed class Variant
         var errors = new List<Error>();
 
         if (!options.Any())
-            return Result.Fail(DomainErrors.Variant.EmptyOptionList);
+            return DomainErrors.Variant.EmptyOptionList;
 
-        if (errors.Any())
+        if (errors.Count != 0)
             return Result.Fail(errors);
 
         return Result.Ok();

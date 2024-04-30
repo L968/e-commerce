@@ -25,10 +25,10 @@ public class UpdateProductCommandHandler(
     public async Task<Result> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
     {
         Product? product = await _productRepository.GetByIdAsync(request.Id);
-        if (product is null) return Result.Fail(DomainErrors.NotFound(nameof(Product), request.Id));
+        if (product is null) return DomainErrors.NotFound(nameof(Product), request.Id);
 
         ProductCategory? productCategory = await _productCategoryRepository.GetByIdAsync(request.ProductCategoryId);
-        if (productCategory is null) return Result.Fail(DomainErrors.NotFound(nameof(ProductCategory), request.ProductCategoryId));
+        if (productCategory is null) return DomainErrors.NotFound(nameof(ProductCategory), request.ProductCategoryId);
 
         var updateResult = product.Update(
             request.Name,

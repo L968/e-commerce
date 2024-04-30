@@ -27,7 +27,7 @@ public class CreateProductCommandHandler(
     public async Task<Result<GetProductDto>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
         ProductCategory? productCategory = await _productCategoryRepository.GetByIdAsync(request.ProductCategoryId);
-        if (productCategory is null) return Result.Fail(DomainErrors.NotFound(nameof(ProductCategory), request.ProductCategoryId));
+        if (productCategory is null) return DomainErrors.NotFound(nameof(ProductCategory), request.ProductCategoryId);
 
         var createResult = Product.Create(
             request.Name,

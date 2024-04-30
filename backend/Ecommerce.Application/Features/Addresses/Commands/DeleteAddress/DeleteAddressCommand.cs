@@ -20,7 +20,7 @@ public class DeleteAddressCommandHandler(
     public async Task<Result> Handle(DeleteAddressCommand request, CancellationToken cancellationToken)
     {
         Address? address = await _addressRepository.GetByIdAndUserIdAsync(request.Id, _currentUserService.UserId);
-        if (address is null) return Result.Fail(DomainErrors.NotFound(nameof(Address), request.Id));
+        if (address is null) return DomainErrors.NotFound(nameof(Address), request.Id);
 
         Guid? defaultAddressId = await _authorizationService.GetDefaultAddressIdAsync();
 

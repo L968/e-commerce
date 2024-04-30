@@ -11,7 +11,7 @@ public sealed class ProductCategory : AuditableEntity
     private readonly List<ProductCategoryVariant> _variants = new();
     public IReadOnlyCollection<ProductCategoryVariant> Variants => _variants;
 
-    private ProductCategory() {}
+    private ProductCategory() { }
 
     private ProductCategory(string name, string? description, IEnumerable<Guid> variantIds)
     {
@@ -58,9 +58,9 @@ public sealed class ProductCategory : AuditableEntity
         var errors = new List<Error>();
 
         if (!variantIds.Any())
-            return Result.Fail(DomainErrors.ProductCategory.EmptyVariantList);
+            return DomainErrors.ProductCategory.EmptyVariantList;
 
-        if (errors.Any())
+        if (errors.Count != 0)
             return Result.Fail(errors);
 
         return Result.Ok();

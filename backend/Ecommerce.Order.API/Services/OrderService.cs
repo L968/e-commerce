@@ -70,7 +70,7 @@ public class OrderService(
         CreateOrderAddressDto? address = await _ecommerceService.GetAddressByIdAsync(orderCheckout.ShippingAddressId);
 
         if (address is null)
-            return Result.Fail(DomainErrors.NotFound(nameof(Address), orderCheckout.ShippingAddressId));
+            return DomainErrors.NotFound(nameof(Address), orderCheckout.ShippingAddressId);
 
         var cartItems = new List<CreateOrderCartItemDto>();
 
@@ -79,10 +79,10 @@ public class OrderService(
             CreateOrderProductCombinationDto? productCombinationDto = await _ecommerceService.GetProductCombinationByIdAsync(cartItemDto.ProductCombinationId);
 
             if (productCombinationDto is null)
-                return Result.Fail(DomainErrors.NotFound(nameof(ProductCombination), cartItemDto.ProductCombinationId));
+                return DomainErrors.NotFound(nameof(ProductCombination), cartItemDto.ProductCombinationId);
 
             if (!productCombinationDto.Product.Active)
-                return Result.Fail(DomainErrors.Product.InactiveProduct(productCombinationDto.Product.Id));
+                return DomainErrors.Product.InactiveProduct(productCombinationDto.Product.Id);
 
             ProductCombination productCombination = _mapper.Map<ProductCombination>(productCombinationDto);
 
@@ -108,8 +108,7 @@ public class OrderService(
             shippingCountry: address.Country
         );
 
-        if (result.IsFailed)
-            return Result.Fail(result.Errors);
+        if (result.IsFailed) return Result.Fail(result.Errors);
 
         var order = result.Value;
 
@@ -126,7 +125,7 @@ public class OrderService(
             string? paypalCheckoutUrl = response.links.FirstOrDefault(link => link.rel == "payer-action")?.href;
 
             if (string.IsNullOrEmpty(paypalCheckoutUrl))
-                return Result.Fail(DomainErrors.PayPal.CheckoutUrlNotFound);
+                return DomainErrors.PayPal.CheckoutUrlNotFound;
 
             checkoutUrl = paypalCheckoutUrl;
         }
@@ -142,15 +141,15 @@ public class OrderService(
         GetOrderResponse? paypalOrder = await _payPalService.GetOrderAsync(token);
 
         if (paypalOrder is null)
-            return Result.Fail(DomainErrors.PayPal.OrderNotFound);
+            return DomainErrors.PayPal.OrderNotFound;
 
         if (paypalOrder.status != "APPROVED")
-            return Result.Fail(DomainErrors.PayPal.OrderNotApproved);
+            return DomainErrors.PayPal.OrderNotApproved;
 
         var order = await _orderRepository.GetByExternalPaymentIdAsync(token);
 
         if (order is null)
-            return Result.Fail(DomainErrors.Order.OrderNotFoundByExternalPaymentId);
+            return DomainErrors.Order.OrderNotFoundByExternalPaymentId;
 
         var result = order.CompletePayment();
 
@@ -167,12 +166,10 @@ public class OrderService(
         var order = await _orderRepository.GetByExternalPaymentIdAsync(token);
 
         if (order is null)
-            return Result.Fail(DomainErrors.Order.OrderNotFoundByExternalPaymentId);
+            return DomainErrors.Order.OrderNotFoundByExternalPaymentId;
 
         order.Cancel();
         await _orderRepository.UpdateAsync(order);
         return Result.Ok();
     }
-
-
 }
