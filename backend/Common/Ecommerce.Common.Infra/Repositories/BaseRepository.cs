@@ -79,8 +79,8 @@ public class BaseRepository<TContext, T>(TContext context)
     /// <summary>
     /// Applies a filter to the query based on the provided <paramref name="filter"/>.
     /// </summary>
-    /// <param name="query">The query to filter.</param>
-    /// <param name="filter">The filter parameters.</param>
+    /// <param name="query">The query to apply the filter to.</param>
+    /// <param name="filter">The filter parameters specifying the property to filter on, the operator, and the value.</param>
     /// <returns>The filtered query.</returns>
     protected static IQueryable<T> ApplyFilter(IQueryable<T> query, FilterParams filter)
     {
@@ -105,9 +105,13 @@ public class BaseRepository<TContext, T>(TContext context)
     }
 
     /// <summary>
-    /// Deletes an existing entity of type <typeparamref name="T"/> from the context.
+    /// Applies sorting to the specified query using the provided sort parameters.
     /// </summary>
-    /// <param name="entity">The entity to delete.</param>
+    /// <param name="query">The query to apply sorting to.</param>
+    /// <param name="sorter">The sort parameters specifying the property to sort on and the sort direction ("asc" or "desc").</param>
+    /// <returns>The sorted query.</returns>
+    /// <exception cref="ArgumentException">Thrown when the specified property is not found in the type.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when no suitable sorting method is found for the specified type.</exception>
     protected static IQueryable<T> ApplySort(IQueryable<T> query, SortParams sorter)
     {
         var property = GetPropertyInfo(sorter.Property)
@@ -132,7 +136,6 @@ public class BaseRepository<TContext, T>(TContext context)
         method = method.MakeGenericMethod(typeof(T), property.PropertyType);
 
         return (IQueryable<T>)method.Invoke(null, [query, lambda]);
-
     }
 
     /// <summary>
