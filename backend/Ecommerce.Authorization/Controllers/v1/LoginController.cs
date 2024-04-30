@@ -1,7 +1,10 @@
-﻿namespace Ecommerce.Authorization.Controllers;
+﻿using Asp.Versioning;
+
+namespace Ecommerce.Authorization.Controllers.v1;
 
 [ApiController]
-[Route("[controller]")]
+[ApiVersion(1)]
+[Route("v{v:apiVersion}/[controller]")]
 public class LoginController(ILoginService loginService) : ControllerBase
 {
     private readonly ILoginService _loginService = loginService;
@@ -26,14 +29,14 @@ public class LoginController(ILoginService loginService) : ControllerBase
         return Ok(result.Successes[0]);
     }
 
-    [HttpPost("/request-password-reset")]
+    [HttpPost("/v{v:apiVersion}/request-password-reset")]
     public async Task<IActionResult> RequestPasswordReset([FromBody] RequestPasswordResetRequest request)
     {
         await _loginService.RequestPasswordReset(request);
         return NoContent();
     }
 
-    [HttpPost("/password-reset")]
+    [HttpPost("/v{v:apiVersion}/password-reset")]
     public async Task<IActionResult> PasswordReset([FromBody] PasswordResetRequest request)
     {
         Result result = await _loginService.PasswordReset(request);

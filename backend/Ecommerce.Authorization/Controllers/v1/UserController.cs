@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 
-namespace Ecommerce.Authorization.Controllers;
+namespace Ecommerce.Authorization.Controllers.v1;
 
 [ApiController]
-[Route("[controller]")]
+[ApiVersion(1)]
+[Route("v{v:apiVersion}/[controller]")]
 public class UserController(IUserService userService) : ControllerBase
 {
     private readonly IUserService _userService = userService;

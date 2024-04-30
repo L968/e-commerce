@@ -1,8 +1,9 @@
-using System.Text;
+using Asp.Versioning;
 using Ecommerce.Authorization;
 using Ecommerce.Authorization.Data;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,7 @@ Config.Init(builder.Configuration);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Configuration.AddUserSecrets<Program>();
 
 builder.Services.AddIdentity<CustomIdentityUser, IdentityRole<int>>(options =>
@@ -19,8 +21,8 @@ builder.Services.AddIdentity<CustomIdentityUser, IdentityRole<int>>(options =>
     options.SignIn.RequireConfirmedEmail = true;
     options.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultPhoneProvider;
 })
-    .AddEntityFrameworkStores<AuthorizationContext>()
-    .AddDefaultTokenProviders();
+.AddEntityFrameworkStores<AuthorizationContext>()
+.AddDefaultTokenProviders();
 
 var authorizationConnectionString = builder.Configuration.GetConnectionString("AuthorizationConnection");
 var serverVersion = ServerVersion.AutoDetect(authorizationConnectionString);
@@ -65,6 +67,20 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader()
             .AllowAnyOrigin();
     });
+});
+
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1);
+    options.ReportApiVersions = true;
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ApiVersionReader = ApiVersionReader.Combine(
+        new UrlSegmentApiVersionReader(),
+        new HeaderApiVersionReader("X-Api-Version"));
+}).AddApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'V";
+    options.SubstituteApiVersionInUrl = true;
 });
 
 var app = builder.Build();
