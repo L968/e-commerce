@@ -1,6 +1,4 @@
-﻿using Ecommerce.Application.Interfaces;
-
-namespace Ecommerce.Application.Features.Addresses.Commands.DeleteAddress;
+﻿namespace Ecommerce.Application.Features.Addresses.Commands.DeleteAddress;
 
 [Authorize]
 public record DeleteAddressCommand(Guid Id) : IRequest<Result>;
