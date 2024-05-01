@@ -1,6 +1,6 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using Ecommerce.Application.Interfaces;
+using Ecommerce.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Http;
 
 namespace Ecommerce.Infra.IoC.Services;

@@ -1,4 +1,4 @@
-﻿using Ecommerce.Application.Interfaces;
+﻿using Ecommerce.Application.Common.Interfaces;
 using System.Net;
 
 namespace Ecommerce.Infra.IoC.Services;

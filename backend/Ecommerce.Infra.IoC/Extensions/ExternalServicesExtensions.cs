@@ -1,4 +1,4 @@
-﻿using Ecommerce.Application.Interfaces;
+﻿using Ecommerce.Application.Common.Interfaces;
 using Ecommerce.Common.Infra.Handlers;
 using Ecommerce.Infra.IoC.Services;
 using Microsoft.AspNetCore.Http;
