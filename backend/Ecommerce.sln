@@ -41,14 +41,24 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Consumers", "Consumers", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecommerce.Consumers.OrderCheckout", "Ecommerce.Consumers.OrderCheckout\Ecommerce.Consumers.OrderCheckout.csproj", "{EEF5578D-E05C-4EAC-9C28-CAB2EEE95378}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker-compose", "docker-compose", "{D4088664-B8CD-4EA0-82F8-5E15BDF4EEEF}"
-	ProjectSection(SolutionItems) = preProject
-		docker-compose.yaml = docker-compose.yaml
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{7E9DB91C-FCB1-4F05-B3BE-E2A20192D0E5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecommerce.Common.Infra", "Common\Ecommerce.Common.Infra\Ecommerce.Common.Infra.csproj", "{F7C574E3-C7EA-4586-ACFA-7B9CFFB8571E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker-compose", "docker-compose", "{1D21D512-4F3F-43DD-B410-568559E676AE}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose\docker-compose.yaml = docker-compose\docker-compose.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "prometheus", "prometheus", "{0127F26B-F817-4E71-B454-ABE62A274B65}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose\prometheus\prometheus.yaml = docker-compose\prometheus\prometheus.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "grafana", "grafana", "{53239A65-890F-4950-812A-35B223433E51}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose\grafana\datasource.yml = docker-compose\grafana\datasource.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -132,6 +142,8 @@ Global
 		{EEF5578D-E05C-4EAC-9C28-CAB2EEE95378} = {B5E8036C-95E8-46CC-9B9A-9545558ECD07}
 		{7E9DB91C-FCB1-4F05-B3BE-E2A20192D0E5} = {9D4FEA1E-937E-446E-8727-C4248D6AC8A1}
 		{F7C574E3-C7EA-4586-ACFA-7B9CFFB8571E} = {7E9DB91C-FCB1-4F05-B3BE-E2A20192D0E5}
+		{0127F26B-F817-4E71-B454-ABE62A274B65} = {1D21D512-4F3F-43DD-B410-568559E676AE}
+		{53239A65-890F-4950-812A-35B223433E51} = {1D21D512-4F3F-43DD-B410-568559E676AE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4667238D-291A-455F-9BA3-5123DA06325C}
