@@ -10,18 +10,11 @@ alerting:
     timeout: 10s
     api_version: v1
 scrape_configs:
-- job_name: prometheus
-  honor_timestamps: true
-  scrape_interval: 15s
-  scrape_timeout: 10s
-  metrics_path: /metrics
-  scheme: http
-  static_configs:
-  - targets:
-    - localhost:9090
-- job_name: ecommerce
-  scheme: https
-  metrics_path: /metrics
-  static_configs:
-  - targets:
-    - localhost:7105
+  - job_name: ecommerce-authorization
+    scrape_interval: 15s
+    scrape_timeout: 10s
+    scheme: http
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+        - "ecommerce-authorization:8080"

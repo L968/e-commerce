@@ -4,6 +4,8 @@ services:
     image: mysql:8.3.0
     container_name: mysql-database
     restart: unless-stopped
+    networks:
+      - ecommerce-bridge
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: ecommerce
@@ -16,6 +18,25 @@ services:
       retries: 5
       interval: 5s
       timeout: 30s
+
+  ecommerce-authorization:
+    image: ecommerce-authorization
+    container_name: ecommerce-authorization
+    networks:
+      - ecommerce-bridge
+    environment:
+      - AdminInfo:Password=""
+      - EmailSettings:From=""
+      - EmailSettings:Password=""
+      - EmailSettings:SmtpServer=""
+      - EmailSettings:Port=1
+      - Twilio:SID=""
+      - Twilio:AuthToken=""
+      - Twilio:PhoneNumber=""
+    ports:
+      - 7252:8080
+    depends_on:
+      - mysql
 
   prometheus:
     image: prom/prometheus
@@ -44,6 +65,8 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=grafana
     volumes:
       - ./grafana:/etc/grafana/provisioning/datasources
+    depends_on:
+      - prometheus
 
 volumes:
   mysql-data:
