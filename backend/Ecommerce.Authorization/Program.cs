@@ -1,13 +1,7 @@
-using Asp.Versioning;
-using Ecommerce.Authorization;
-using Ecommerce.Authorization.Data;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using Ecommerce.Authorization.DependencyInjections;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
-
-Config.Init(builder.Configuration);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -15,73 +9,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Configuration.AddUserSecrets<Program>();
 
-builder.Services.AddIdentity<CustomIdentityUser, IdentityRole<int>>(options =>
-{
-    options.User.RequireUniqueEmail = true;
-    options.SignIn.RequireConfirmedEmail = true;
-    options.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultPhoneProvider;
-})
-.AddEntityFrameworkStores<AuthorizationContext>()
-.AddDefaultTokenProviders();
-
-var authorizationConnectionString = builder.Configuration.GetConnectionString("AuthorizationConnection");
-var serverVersion = ServerVersion.AutoDetect(authorizationConnectionString);
-
-builder.Services.AddDbContext<AuthorizationContext>(options =>
-    options
-        .UseSnakeCaseNamingConvention()
-        .UseMySql(authorizationConnectionString, serverVersion)
-);
-
-builder.Services.AddAuthentication(auth =>
-{
-    auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(token =>
-{
-    token.RequireHttpsMetadata = false;
-    token.SaveToken = true;
-    token.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Config.JwtKey)),
-        ValidateIssuer = false,
-        ValidateAudience = false,
-        ClockSkew = TimeSpan.Zero,
-    };
-});
-
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<ILoginService, LoginService>();
-builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<IEmailService, EmailService>();
-builder.Services.AddScoped<ISmsService, SmsService>();
-
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(builder =>
-    {
-        builder.WithOrigins(Config.AllowedOrigins)
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowAnyOrigin();
-    });
-});
-
-builder.Services.AddApiVersioning(options =>
-{
-    options.DefaultApiVersion = new ApiVersion(1);
-    options.ReportApiVersions = true;
-    options.AssumeDefaultVersionWhenUnspecified = true;
-    options.ApiVersionReader = ApiVersionReader.Combine(
-        new UrlSegmentApiVersionReader(),
-        new HeaderApiVersionReader("X-Api-Version"));
-}).AddApiExplorer(options =>
-{
-    options.GroupNameFormat = "'v'V";
-    options.SubstituteApiVersionInUrl = true;
-});
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
@@ -101,5 +29,9 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.UseCors();
+
+app.UseMetricServer();
+
+app.UseHttpMetrics();
 
 app.Run();
