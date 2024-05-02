@@ -9,11 +9,11 @@ public static class DependencyInjection
         Config.Init(configuration);
 
         services.ConfigureDatabase();
-        services.AddServices(typeof(Program).Assembly.GetName().Name!);
-        services.ConfigureVersioning();
-        services.ConfigureAuthentication();
         services.ConfigureIdentity();
+        services.ConfigureAuthentication();
         services.ConfigureCorsPolicy();
+        services.ConfigureVersioning();
+        services.AddServices(typeof(Program).Assembly.GetName().Name!);
 
         return services;
     }
