@@ -39,4 +39,6 @@ app.UseMetricServer();
 
 app.UseHttpMetrics();
 
+app.MapMetrics().RequireAuthorization("ReadMetrics");
+
 app.Run();
