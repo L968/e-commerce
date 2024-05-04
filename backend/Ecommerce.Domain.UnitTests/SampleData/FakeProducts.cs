@@ -37,12 +37,12 @@ public static class FakeProducts
         return faker.Generate(count);
     }
 
-    public static Product GetProducts()
+    public static Product GetProduct(int productCombinationCount = 0)
     {
-        return GetProducts(1).ElementAt(0);
+        return GetProducts(productCombinationCount, 1).ElementAt(0);
     }
 
-    public static IEnumerable<Product> GetProducts(int count = 1)
+    public static IEnumerable<Product> GetProducts(int productCombinationCount = 1, int count = 1)
     {
         var faker = new Faker();
 
@@ -59,7 +59,7 @@ public static class FakeProducts
 
         foreach (Product product in products)
         {
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < productCombinationCount; i++)
             {
                 var variantOptions = FakeVariants.GetVariantOptions();
 
