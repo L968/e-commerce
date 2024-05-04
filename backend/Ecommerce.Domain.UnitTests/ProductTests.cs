@@ -31,11 +31,33 @@ public class ProductTests
     }
 
     [Fact]
+    public void GivenValidData_ShouldUpdateProduct()
+    {
+        // Arrange
+        var product = FakeProducts.GetProduct();
+        var newName = "New T-Shirt";
+        var newDescription = "Brand new T-Shirt";
+        var newActive = false;
+        var newVisible = true;
+        var newProductCategoryId = Guid.NewGuid();
+
+        // Act
+        var result = product.Update(newName, newDescription, newActive, newVisible, newProductCategoryId);
+
+        // Assert
+        Assert.False(result.IsFailed);
+        Assert.Equal(newName, product.Name);
+        Assert.Equal(newDescription, product.Description);
+        Assert.Equal(newActive, product.Active);
+        Assert.Equal(newVisible, product.Visible);
+        Assert.Equal(newProductCategoryId, product.ProductCategoryId);
+    }
+
+    [Fact]
     public void GivenValidData_ShouldAddReview()
     {
         // Arrange
-        Product product = FakeProducts.GetProducts();
-        Utils.SetPrivateProperty(product, "_reviews", new List<ProductReview>());
+        Product product = FakeProducts.GetProduct();
         var userId = 1;
         var rating = 5;
         var description = "Great product!";
@@ -54,8 +76,7 @@ public class ProductTests
     public void GivenNoReviews_ShouldReturnZeroRating()
     {
         // Arrange
-        Product product = FakeProducts.GetProducts();
-        Utils.SetPrivateProperty(product, "_reviews", new List<ProductReview>());
+        Product product = FakeProducts.GetProduct();
 
         // Act
         float averageRating = product.GetRating();
@@ -64,41 +85,50 @@ public class ProductTests
         Assert.Equal(0, averageRating);
     }
 
-    [Fact]
-    public void GivenMultipleReviews_ShouldCalculateAverageRating()
+    [Theory]
+    [InlineData([new int[] { 4, 5 }, 4.5])]
+    [InlineData([new int[] { 3, 3, 3 }, 3])]
+    [InlineData([new int[] { 1, 2, 3, 4, 5 }, 3])]
+    [InlineData([new int[] { 5, 5, 5, 5 }, 5])]
+    public void GivenMultipleReviews_ShouldCalculateAverageRating(int[] ratings, float expectedAverage)
     {
         // Arrange
-        Product product = FakeProducts.GetProducts();
-        Utils.SetPrivateProperty(product, "_reviews", new List<ProductReview>());
-        product.AddReview(1, 4, null);
-        product.AddReview(2, 5, null);
+        Product product = FakeProducts.GetProduct();
+
+        foreach (var rating in ratings)
+        {
+            product.AddReview(1, rating, null);
+        }
 
         // Act
         float averageRating = product.GetRating();
 
         // Assert
-        Assert.Equal(4.5, averageRating);
+        Assert.Equal(expectedAverage, averageRating);
     }
 
-    [Fact]
-    public void GivenVariantOptions_ShouldAddVariantOptions()
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(5)]
+    public void GivenVariantOptions_ShouldAddVariantOptions(int numOptions)
     {
         // Arrange
-        Product product = FakeProducts.GetProducts();
-        IEnumerable<VariantOption> variantOptions = FakeVariants.GetVariantOptions();
+        Product product = FakeProducts.GetProduct();
+        IEnumerable<VariantOption> variantOptions = FakeVariants.GetVariantOptions(numOptions);
 
         // Act
         product.AddVariantOptions(variantOptions.Select(vo => vo.Id));
 
         // Assert
-        Assert.Equal(2, product.VariantOptions.Count);
+        Assert.Equal(numOptions, product.VariantOptions.Count);
     }
 
     [Fact]
     public void GivenVariantOptionsToRemove_ShouldRemoveVariantOptionsByCombination()
     {
         // Arrange
-        Product product = FakeProducts.GetProducts();
+        Product product = FakeProducts.GetProduct(1);
 
         // Act
         product.RemoveVariantOptionsByCombination(product.Combinations.ElementAt(0).Id);
