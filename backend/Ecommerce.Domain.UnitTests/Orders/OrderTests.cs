@@ -1,7 +1,7 @@
 ﻿using Ecommerce.Domain.Entities.OrderEntities;
 using Ecommerce.Domain.Enums;
 
-namespace Ecommerce.Domain.UnitTests;
+namespace Ecommerce.Domain.UnitTests.Orders;
 
 public class OrderTests
 {

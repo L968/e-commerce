@@ -1,7 +1,7 @@
 ﻿using Ecommerce.Domain.Entities.CartEntities;
 using Ecommerce.Domain.Errors;
 
-namespace Ecommerce.Domain.UnitTests;
+namespace Ecommerce.Domain.UnitTests.Carts;
 
 public class CartTests
 {

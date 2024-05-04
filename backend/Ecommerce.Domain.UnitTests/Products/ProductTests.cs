@@ -3,7 +3,7 @@ using Ecommerce.Domain.Entities.VariantEntities;
 using Ecommerce.Domain.UnitTests.SampleData;
 using FluentResults;
 
-namespace Ecommerce.Domain.UnitTests;
+namespace Ecommerce.Domain.UnitTests.Products;
 
 public class ProductTests
 {

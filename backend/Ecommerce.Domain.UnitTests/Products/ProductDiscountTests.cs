@@ -1,7 +1,7 @@
 using Ecommerce.Domain.Entities.ProductEntities;
 using Ecommerce.Domain.Enums;
 
-namespace Ecommerce.Domain.UnitTests
+namespace Ecommerce.Domain.UnitTests.Products
 {
     public class ProductDiscountTests
     {
