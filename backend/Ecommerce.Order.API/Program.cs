@@ -10,6 +10,7 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Prometheus;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
@@ -114,5 +115,9 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseMetricServer();
+
+app.UseHttpMetrics();
 
 app.Run();

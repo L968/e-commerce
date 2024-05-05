@@ -21,13 +21,14 @@
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
+    <PackageReference Include="prometheus-net.AspNetCore" Version="8.2.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Common\Ecommerce.Common.Infra\Ecommerce.Common.Infra.csproj" />
     <ProjectReference Include="..\Ecommerce.Application\Ecommerce.Application.csproj" />
-    <ProjectReference Include="..\Ecommerce.Infra.IoC\Ecommerce.Infra.IoC.csproj" />
+    <ProjectReference Include="..\Ecommerce.Domain\Ecommerce.Domain.csproj" />
   </ItemGroup>
 
 </Project>

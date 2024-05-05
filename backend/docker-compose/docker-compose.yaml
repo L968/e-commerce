@@ -52,6 +52,19 @@ services:
     depends_on:
       - mysql
 
+  ecommerce-order-api:
+    image: ecommerce-order-api
+    container_name: ecommerce-order-api
+    networks:
+      - ecommerce-bridge
+    environment:
+      - PayPal:ClientId=""
+      - PayPal:ClientSecret=""
+    ports:
+      - 7204:8080
+    depends_on:
+      - mysql
+
   prometheus:
     image: prom/prometheus
     container_name: prometheus
