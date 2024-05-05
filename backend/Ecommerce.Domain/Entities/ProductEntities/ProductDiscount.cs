@@ -133,26 +133,28 @@ public sealed class ProductDiscount : AuditableEntity
 
     private static Result ValidateDomain(decimal discountValue, DiscountUnit discountUnit, decimal? maximumDiscountAmount, DateTime validFrom, DateTime? validUntil, decimal productPrice)
     {
+        var errors = new List<Error>();
+
         if (validFrom < DateTime.UtcNow)
-            return DomainErrors.ProductDiscount.DiscountStartDateInPast;
+            errors.Add(DomainErrors.ProductDiscount.DiscountStartDateInPast);
 
         if (validFrom >= validUntil)
-            return DomainErrors.ProductDiscount.DiscountEndDateMustBeAfterStartDate;
+            errors.Add(DomainErrors.ProductDiscount.DiscountEndDateMustBeAfterStartDate);
 
         if (discountValue <= 0)
-            return DomainErrors.ProductDiscount.InvalidDiscountValue;
+            errors.Add(DomainErrors.ProductDiscount.InvalidDiscountValue);
 
         if (validUntil is not null && validUntil <= validFrom.AddMinutes(5))
-            return DomainErrors.ProductDiscount.DiscountDurationTooShort;
+            errors.Add(DomainErrors.ProductDiscount.DiscountDurationTooShort);
 
         if (discountUnit == DiscountUnit.Percentage && discountValue >= 80)
-            return DomainErrors.ProductDiscount.DiscountPercentageExceedsLimit;
+            errors.Add(DomainErrors.ProductDiscount.DiscountPercentageExceedsLimit);
 
         if (discountUnit == DiscountUnit.FixedAmount)
         {
             decimal maxDiscountAmount = productPrice * 0.8m;
             if (discountValue >= maxDiscountAmount)
-                return DomainErrors.ProductDiscount.MaximumFixedDiscountExceeded;
+                errors.Add(DomainErrors.ProductDiscount.MaximumFixedDiscountExceeded);
         }
 
         if (maximumDiscountAmount is not null
@@ -160,8 +162,11 @@ public sealed class ProductDiscount : AuditableEntity
          && maximumDiscountAmount >= discountValue
         )
         {
-            return DomainErrors.ProductDiscount.MaximumDiscountAmountExceedsValue;
+            errors.Add(DomainErrors.ProductDiscount.MaximumDiscountAmountExceedsValue);
         }
+
+        if (errors.Count > 0)
+            return Result.Fail(errors);
 
         return Result.Ok();
     }

@@ -58,7 +58,7 @@ public sealed class ProductCategory : AuditableEntity
         var errors = new List<Error>();
 
         if (!variantIds.Any())
-            return DomainErrors.ProductCategory.EmptyVariantList;
+            errors.Add(DomainErrors.ProductCategory.EmptyVariantList);
 
         if (errors.Count != 0)
             return Result.Fail(errors);
