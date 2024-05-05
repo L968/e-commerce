@@ -115,12 +115,14 @@ public sealed class Product : AuditableEntity
         return productCombination;
     }
 
-    public ProductReview AddReview(int userId, int rating, string? description)
+    public Result<ProductReview> AddReview(int userId, int rating, string? description)
     {
-        var review = new ProductReview(userId, Id, rating, description);
-        _reviews.Add(review);
+        var result = ProductReview.Create(userId, Id, rating, description);
+        if (result.IsFailed) return result;
 
-        return review;
+        _reviews.Add(result.Value);
+
+        return result.Value;
     }
 
     /// <summary>

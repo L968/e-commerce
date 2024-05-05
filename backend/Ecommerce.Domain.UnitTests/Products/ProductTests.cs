@@ -63,9 +63,10 @@ public class ProductTests
         var description = "Great product!";
 
         // Act
-        product.AddReview(userId, rating, description);
+        var result = product.AddReview(userId, rating, description);
 
         // Assert
+        Assert.True(result.IsSuccess);
         Assert.Single(product.Reviews);
         Assert.Equal(userId, product.Reviews.ElementAt(0).UserId);
         Assert.Equal(rating, product.Reviews.ElementAt(0).Rating);
