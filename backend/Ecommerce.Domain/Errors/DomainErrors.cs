@@ -59,6 +59,13 @@ public static class DomainErrors
         public static readonly Error InsufficientStock = new("Insufficient stock");
     }
 
+    public static class ProductReview
+    {
+        public static readonly Error InvalidUserId = new("Invalid UserId");
+        public static readonly Error InvalidProductId = new("Invalid ProductId");
+        public static readonly Error InvalidRatingRange = new("Rating must be between 1 and 5");
+    }
+
     public static class Variant
     {
         public static readonly Error EmptyOptionList = new("Empty option list");
