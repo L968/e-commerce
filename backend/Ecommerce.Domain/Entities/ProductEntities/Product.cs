@@ -12,7 +12,9 @@ public sealed class Product : AuditableEntity
     public Guid ProductCategoryId { get; private set; }
 
     public ProductCategory? Category { get; private set; }
-    public List<ProductDiscount> Discounts { get; private set; } = [];
+
+    private readonly List<ProductDiscount> _discounts = [];
+    public IReadOnlyCollection<ProductDiscount> Discounts => _discounts;
 
     private readonly List<ProductCombination> _combinations = [];
     public IReadOnlyCollection<ProductCombination> Combinations => _combinations;
