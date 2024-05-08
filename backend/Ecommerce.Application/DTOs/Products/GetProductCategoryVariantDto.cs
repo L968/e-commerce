@@ -2,6 +2,6 @@
 
 public record GetProductCategoryVariantDto
 {
-    public string Name { get; set; } = "";
-    public List<string> Options { get; set; } = [];
+    public string Name { get; init; } = "";
+    public List<string> Options { get; init; } = [];
 }

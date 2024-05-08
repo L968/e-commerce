@@ -2,11 +2,11 @@
 
 public record GetProductByIdDto
 {
-    public Guid Id { get; set; }
-    public string Name { get; set; } = "";
-    public string Description { get; set; } = "";
-    public bool Active { get; set; }
-    public float Rating { get; set; }
+    public Guid Id { get; init; }
+    public string Name { get; init; } = "";
+    public string Description { get; init; } = "";
+    public bool Active { get; init; }
+    public float Rating { get; init; }
 
-    public List<GetProductDiscountDto> Discounts { get; set; } = [];
+    public List<GetProductDiscountDto> Discounts { get; init; } = [];
 }

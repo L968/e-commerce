@@ -2,5 +2,5 @@
 
 public record GetCartDto
 {
-    public List<GetCartItemDto> CartItems { get; set; } = [];
+    public List<GetCartItemDto> CartItems { get; init; } = [];
 }

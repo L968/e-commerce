@@ -4,13 +4,13 @@ namespace Ecommerce.Application.DTOs.Products;
 
 public record GetProductDto
 {
-    public Guid Id { get; set; }
-    public string Name { get; set; } = "";
-    public string Description { get; set; } = "";
-    public bool Active { get; set; }
-    public float Rating { get; set; }
+    public Guid Id { get; init; }
+    public string Name { get; init; } = "";
+    public string Description { get; init; } = "";
+    public bool Active { get; init; }
+    public float Rating { get; init; }
 
-    public List<GetProductCombinationDto> Combinations { get; set; } = [];
-    public List<GetVariantDto> Variants { get; set; } = [];
-    public List<GetProductReviewDto> Reviews { get; set; } = [];
+    public List<GetProductCombinationDto> Combinations { get; init; } = [];
+    public List<GetVariantDto> Variants { get; init; } = [];
+    public List<GetProductReviewDto> Reviews { get; init; } = [];
 }

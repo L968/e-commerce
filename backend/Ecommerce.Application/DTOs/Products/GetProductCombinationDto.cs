@@ -2,17 +2,17 @@
 
 public record GetProductCombinationDto
 {
-    public Guid Id { get; private init; }
-    public Guid ProductId { get; set; }
-    public string Name { get; set; } = "";
-    public string CombinationString { get; private set; } = "";
-    public decimal OriginalPrice { get; private set; }
-    public decimal DiscountedPrice { get; private set; }
-    public int Stock { get; private set; }
-    public float Length { get; private set; }
-    public float Width { get; private set; }
-    public float Height { get; private set; }
-    public float Weight { get; private set; }
+    public Guid Id { get; init; }
+    public Guid ProductId { get; init; }
+    public string Name { get; init; } = "";
+    public string CombinationString { get; init; } = "";
+    public decimal OriginalPrice { get; init; }
+    public decimal DiscountedPrice { get; init; }
+    public int Stock { get; init; }
+    public float Length { get; init; }
+    public float Width { get; init; }
+    public float Height { get; init; }
+    public float Weight { get; init; }
 
-    public List<string> Images { get; private set; } = [];
+    public List<string> Images { get; init; } = [];
 }

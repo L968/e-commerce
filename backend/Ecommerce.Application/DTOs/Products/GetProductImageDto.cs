@@ -2,6 +2,6 @@
 
 public record GetProductImageDto
 {
-    public int Id { get; set; }
-    public string? ImagePath { get; set; }
+    public int Id { get; init; }
+    public string? ImagePath { get; init; }
 }

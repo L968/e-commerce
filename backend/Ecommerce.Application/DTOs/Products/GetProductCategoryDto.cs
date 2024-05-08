@@ -4,8 +4,8 @@ namespace Ecommerce.Application.DTOs.Products;
 
 public record GetProductCategoryDto
 {
-    public Guid? Id { get; set; }
-    public string? Name { get; set; }
-    public string? Description { get; set; }
-    public List<GetVariantDto>? Variants { get; set; }
+    public Guid? Id { get; init; }
+    public string? Name { get; init; }
+    public string? Description { get; init; }
+    public List<GetVariantDto>? Variants { get; init; }
 }

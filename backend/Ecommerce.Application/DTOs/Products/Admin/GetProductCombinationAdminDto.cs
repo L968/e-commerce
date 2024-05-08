@@ -3,14 +3,14 @@
 public record GetProductCombinationAdminDto
 {
     public Guid Id { get; init; }
-    public string CombinationString { get; set; } = "";
-    public string Sku { get; set; } = "";
-    public decimal Price { get; set; }
-    public int Stock { get; set; }
-    public float Length { get; set; }
-    public float Width { get; private set; }
-    public float Height { get; set; }
-    public float Weight { get; set; }
+    public string CombinationString { get; init; } = "";
+    public string Sku { get; init; } = "";
+    public decimal Price { get; init; }
+    public int Stock { get; init; }
+    public float Length { get; init; }
+    public float Width { get; init; }
+    public float Height { get; init; }
+    public float Weight { get; init; }
 
-    public List<string> Images { get; set; } = [];
+    public List<string> Images { get; init; } = [];
 }

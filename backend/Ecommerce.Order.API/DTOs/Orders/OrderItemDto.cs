@@ -2,13 +2,13 @@
 
 public record OrderItemDto
 {
-    public Guid ProductCombinationId { get; set; }
-    public string ProductName { get; set; } = "";
-    public string ProductSku { get; set; } = "";
-    public string? ProductImagePath { get; set; }
-    public string Description { get; set; } = "";
-    public decimal TotalAmount { get; set; }
-    public decimal ProductUnitPrice { get; set; }
-    public decimal? ProductDiscount { get; set; }
-    public int Quantity { get; set; }
+    public Guid ProductCombinationId { get; init; }
+    public string ProductName { get; init; } = "";
+    public string ProductSku { get; init; } = "";
+    public string? ProductImagePath { get; init; }
+    public string Description { get; init; } = "";
+    public decimal TotalAmount { get; init; }
+    public decimal ProductUnitPrice { get; init; }
+    public decimal? ProductDiscount { get; init; }
+    public int Quantity { get; init; }
 }
