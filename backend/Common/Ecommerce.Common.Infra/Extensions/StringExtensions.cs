@@ -53,7 +53,8 @@ public static class StringExtensions
     {
         text = text.Trim();
 
-        if (text.StartsWith('{') && text.EndsWith('}') || text.StartsWith('{') && text.EndsWith('}'))
+        if ((text.StartsWith('{') && text.EndsWith('}')) ||
+            (text.StartsWith('[') && text.EndsWith(']')))
         {
             try
             {
