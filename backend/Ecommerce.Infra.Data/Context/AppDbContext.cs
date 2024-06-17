@@ -1,5 +1,7 @@
 ﻿using Ecommerce.Common.Infra.Extensions;
 using Ecommerce.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Ecommerce.Infra.Data.Context;
 
@@ -41,7 +43,7 @@ public class AppDbContext : DbContext
                 builder
                     .Entity(entity.ClrType)
                     .HasIndex(property.Name)
-                    .IsUnique();
+                .IsUnique();
             }
         }
     }

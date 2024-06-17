@@ -1,5 +1,4 @@
 ﻿using Ecommerce.Common.Infra.Extensions;
-using Ecommerce.Common.Infra.Repositories;
 using Ecommerce.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 

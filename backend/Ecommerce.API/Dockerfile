@@ -1,6 +1,3 @@
-# Run from ./backend
-# Build the Docker image for the Ecommerce API
-# Usage: docker build -f Ecommerce.API/Dockerfile -t ecommerce-api:latest .
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 

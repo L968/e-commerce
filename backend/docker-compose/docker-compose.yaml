@@ -1,9 +1,9 @@
-# docker-compose --project-name "backend" up -d
+# docker-compose --project-name "ecommerce" up -d
 version: "3.9"
 services:
-  mysql:
+  ecommerce.mysql:
     image: mysql:8.3.0
-    container_name: mysql-database
+    container_name: ecommerce.mysql
     restart: unless-stopped
     networks:
       - ecommerce-bridge
@@ -15,14 +15,17 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -proot"]
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       retries: 5
       interval: 5s
       timeout: 30s
 
-  ecommerce-api:
-    image: ecommerce-api
-    container_name: ecommerce-api
+  ecommerce.api:
+    image: ecommerce.api
+    container_name: ecommerce.api
+    build:
+      context: ../
+      dockerfile: Ecommerce.API/Dockerfile
     networks:
       - ecommerce-bridge
     environment:
@@ -31,11 +34,15 @@ services:
     ports:
       - 7105:8080
     depends_on:
-      - mysql
+      ecommerce.mysql:
+        condition: service_healthy
 
-  ecommerce-authorization:
-    image: ecommerce-authorization
-    container_name: ecommerce-authorization
+  ecommerce.authorization.api:
+    image: ecommerce.authorization.api
+    container_name: ecommerce.authorization.api
+    build:
+      context: ../
+      dockerfile: Ecommerce.Authorization/Dockerfile
     networks:
       - ecommerce-bridge
     environment:
@@ -50,11 +57,15 @@ services:
     ports:
       - 7252:8080
     depends_on:
-      - mysql
+      ecommerce.mysql:
+        condition: service_healthy
 
-  ecommerce-order-api:
-    image: ecommerce-order-api
-    container_name: ecommerce-order-api
+  ecommerce.order.api:
+    image: ecommerce.order.api
+    container_name: ecommerce.order.api
+    build:
+      context: ../
+      dockerfile: Ecommerce.Order.API/Dockerfile
     networks:
       - ecommerce-bridge
     environment:
@@ -63,11 +74,13 @@ services:
     ports:
       - 7204:8080
     depends_on:
-      - mysql
+      ecommerce.mysql:
+        condition: service_healthy
 
-  prometheus:
+
+  ecommerce.prometheus:
     image: prom/prometheus
-    container_name: prometheus
+    container_name: ecommerce.prometheus
     restart: unless-stopped
     networks:
       - ecommerce-bridge
@@ -79,9 +92,9 @@ services:
       - ./prometheus:/etc/prometheus
       - prom_data:/prometheus
 
-  grafana:
+  ecommerce.grafana:
     image: grafana/grafana
-    container_name: grafana
+    container_name: ecommerce.grafana
     restart: unless-stopped
     networks:
       - ecommerce-bridge
@@ -93,7 +106,7 @@ services:
     volumes:
       - ./grafana:/etc/grafana/provisioning/datasources
     depends_on:
-      - prometheus
+      - ecommerce.prometheus
 
 volumes:
   mysql-data:
