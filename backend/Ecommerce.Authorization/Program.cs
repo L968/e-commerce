@@ -1,5 +1,4 @@
 using Ecommerce.Authorization.DependencyInjections;
-using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,11 +28,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.UseCors();
-
-app.UseMetricServer();
-
-app.UseHttpMetrics();
-
-app.MapMetrics().RequireAuthorization("ReadMetrics");
 
 app.Run();

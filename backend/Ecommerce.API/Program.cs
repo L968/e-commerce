@@ -1,7 +1,6 @@
 using Ecommerce.Infra.IoC;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,11 +33,5 @@ app.MapHealthChecks("health", new HealthCheckOptions
 {
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });
-
-app.UseMetricServer();
-
-app.UseHttpMetrics();
-
-app.MapMetrics().RequireAuthorization("ReadMetrics");
 
 app.Run();

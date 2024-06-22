@@ -27,13 +27,6 @@ public static class AuthenticationExtensions
                 ClockSkew = TimeSpan.Zero,
             };
         });
-
-        services.AddAuthorizationBuilder()
-            .AddPolicy("ReadMetrics", policy =>
-            {
-                policy.RequireRole("admin");
-                policy.RequireAuthenticatedUser();
-            });
     }
 
     public static void ConfigureIdentity(this IServiceCollection services)

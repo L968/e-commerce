@@ -77,40 +77,8 @@ services:
       ecommerce.mysql:
         condition: service_healthy
 
-
-  ecommerce.prometheus:
-    image: prom/prometheus
-    container_name: ecommerce.prometheus
-    restart: unless-stopped
-    networks:
-      - ecommerce-bridge
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yaml'
-    ports:
-      - 9090:9090
-    volumes:
-      - ./prometheus:/etc/prometheus
-      - prom_data:/prometheus
-
-  ecommerce.grafana:
-    image: grafana/grafana
-    container_name: ecommerce.grafana
-    restart: unless-stopped
-    networks:
-      - ecommerce-bridge
-    ports:
-      - 3003:3000
-    environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=grafana
-    volumes:
-      - ./grafana:/etc/grafana/provisioning/datasources
-    depends_on:
-      - ecommerce.prometheus
-
 volumes:
   mysql-data:
-  prom_data:
 
 networks:
   ecommerce-bridge:
