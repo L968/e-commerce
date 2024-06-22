@@ -1,5 +1,4 @@
-﻿using Ecommerce.Infra.Data.Context;
-using Ecommerce.Infra.IoC.Extensions;
+﻿using Ecommerce.Infra.IoC.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,17 +10,16 @@ public static class DependencyInjection
     {
         Config.Init(configuration);
 
-        services.ConfigureDatabase();
+        services.AddLog();
+        services.AddTelemetry();
+        services.AddDatabase();
         services.AddRepositories("Ecommerce.Infra.Data");
         services.AddExternalServices();
-        services.ConfigureLibraries("Ecommerce.Application");
+        services.AddApplicationLibraries("Ecommerce.Application");
         services.ConfigureApplication();
-        services.ConfigureCorsPolicy();
+        services.AddCorsPolicy();
         services.ConfigureAuthentication();
-
-        services.AddHealthChecks()
-            .AddDbContextCheck<AppDbContext>()
-            .AddAzureBlobStorage(Config.AzureStorageConnectionString, containerName: Config.AzureStorageContainer);
+        services.ConfigureHealthChecks();
 
         return services;
     }

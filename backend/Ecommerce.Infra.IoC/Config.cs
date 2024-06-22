@@ -11,6 +11,9 @@ public static class Config
     public static string AuthorizationServiceBaseUrl { get; private set; } = "";
     public static int AuthorizationServiceTimeout { get; private set; }
 
+    public static string ApplicationInsightsInstrumentationKey { get; private set; } = "";
+    public static string ApplicationInsightsConnectionString { get; private set; } = "";
+
     public static string AzureStorageConnectionString { get; private set; } = "";
     public static string AzureStorageContainer { get; private set; } = "";
 
@@ -22,6 +25,9 @@ public static class Config
 
         AuthorizationServiceBaseUrl = configuration.GetValue<string>("AuthorizationService:BaseUrl") ?? throw new ArgumentNullException("AuthorizationService:BaseUrl");
         AuthorizationServiceTimeout = configuration.GetValue<int?>("AuthorizationService:Timeout") ?? throw new ArgumentNullException("AuthorizationService:Timeout");
+
+        ApplicationInsightsInstrumentationKey = configuration.GetValue<string>("ApplicationInsights:InstrumentationKey") ?? throw new ArgumentNullException("ApplicationInsights:InstrumentationKey");
+        ApplicationInsightsConnectionString = configuration.GetValue<string>("ApplicationInsights:ConnectionString") ?? throw new ArgumentNullException("ApplicationInsights:ConnectionString");
 
         AzureStorageConnectionString = configuration.GetValue<string>("AzureStorage:ConnectionString") ?? throw new ArgumentNullException("AzureStorage:ConnectionString");
         AzureStorageContainer = configuration.GetValue<string>("AzureStorage:Container") ?? throw new ArgumentNullException("AzureStorage:Container");
