@@ -2,9 +2,9 @@
 
 namespace Ecommerce.Infra.IoC.Extensions;
 
-public static class CorsPolicyExtensions
+internal static class CorsPolicyExtensions
 {
-    public static void ConfigureCorsPolicy(this IServiceCollection services)
+    public static void AddCorsPolicy(this IServiceCollection services)
     {
         services.AddCors(options =>
         {

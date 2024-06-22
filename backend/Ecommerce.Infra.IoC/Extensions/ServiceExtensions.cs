@@ -11,9 +11,9 @@ using System.Text.Json.Serialization;
 
 namespace Ecommerce.Infra.IoC.Extensions;
 
-public static class ServiceExtensions
+internal static class ServiceExtensions
 {
-    public static void ConfigureLibraries(this IServiceCollection services, string assemblyName)
+    public static void AddApplicationLibraries(this IServiceCollection services, string assemblyName)
     {
         CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
 

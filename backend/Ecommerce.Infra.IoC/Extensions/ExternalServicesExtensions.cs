@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Ecommerce.Infra.IoC.Extensions;
 
-public static class ExternalServicesExtensions
+internal static class ExternalServicesExtensions
 {
     public static void AddExternalServices(this IServiceCollection services)
     {

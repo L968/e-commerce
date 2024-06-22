@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Ecommerce.Infra.IoC.Extensions;
 
-public static class AuthenticationExtensions
+internal static class AuthenticationExtensions
 {
     public static void ConfigureAuthentication(this IServiceCollection services)
     {

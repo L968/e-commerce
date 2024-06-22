@@ -7,9 +7,9 @@ using System.Reflection;
 
 namespace Ecommerce.Infra.IoC.Extensions;
 
-public static partial class DatabaseExtensions
+internal static partial class DatabaseExtensions
 {
-    public static void ConfigureDatabase(this IServiceCollection services)
+    public static void AddDatabase(this IServiceCollection services)
     {
         var serverVersion = ServerVersion.AutoDetect(Config.ConnectionString);
 
