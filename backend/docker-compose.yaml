@@ -1,6 +1,4 @@
 # docker-compose --project-name "ecommerce" up -d
-version: "3.9"
-
 services:
   ecommerce.mysql:
     image: mysql:8.3.0
