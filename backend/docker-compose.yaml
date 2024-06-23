@@ -21,10 +21,10 @@ services:
       timeout: 30s
 
   ecommerce.api:
-    image: ecommerce.api
+    image: ${DOCKER_REGISTRY-}ecommerce.api
     container_name: ecommerce.api
     build:
-      context: ../
+      context: .
       dockerfile: Ecommerce.API/Dockerfile
     networks:
       - ecommerce-bridge
@@ -41,10 +41,10 @@ services:
         condition: service_healthy
 
   ecommerce.authorization.api:
-    image: ecommerce.authorization.api
+    image: ${DOCKER_REGISTRY-}ecommerce.authorization.api
     container_name: ecommerce.authorization.api
     build:
-      context: ../
+      context: .
       dockerfile: Ecommerce.Authorization/Dockerfile
     networks:
       - ecommerce-bridge
@@ -64,10 +64,10 @@ services:
         condition: service_healthy
 
   ecommerce.order.api:
-    image: ecommerce.order.api
+    image: ${DOCKER_REGISTRY-}ecommerce.order.api
     container_name: ecommerce.order.api
     build:
-      context: ../
+      context: .
       dockerfile: Ecommerce.Order.API/Dockerfile
     networks:
       - ecommerce-bridge

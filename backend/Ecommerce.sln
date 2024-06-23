@@ -41,11 +41,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{7E9DB9
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecommerce.Common.Infra", "Common\Ecommerce.Common.Infra\Ecommerce.Common.Infra.csproj", "{F7C574E3-C7EA-4586-ACFA-7B9CFFB8571E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker-compose", "docker-compose", "{1D21D512-4F3F-43DD-B410-568559E676AE}"
-	ProjectSection(SolutionItems) = preProject
-		docker-compose\docker-compose.yaml = docker-compose\docker-compose.yaml
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
