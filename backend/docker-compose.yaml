@@ -1,7 +1,7 @@
 # docker-compose --project-name "ecommerce" up -d
 services:
   ecommerce.mysql:
-    image: mysql:8.3.0
+    image: mysql:8.4.0
     container_name: ecommerce.mysql
     restart: unless-stopped
     networks:
