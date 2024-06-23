@@ -28,7 +28,10 @@ services:
       dockerfile: Ecommerce.API/Dockerfile
     networks:
       - ecommerce-bridge
+    env_file: .env
     environment:
+      - ApplicationInsights:InstrumentationKey=${APPLICATION_INSIGHTS_INSTRUMENTATION_KEY}
+      - ApplicationInsights:ConnectionString=${APPLICATION_INSIGHTS_CONNECTION_STRING}
       - AzureStorage:ConnectionString=""
       - AzureStorage:Container=""
     ports:
