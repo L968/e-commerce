@@ -13,6 +13,7 @@ COPY Ecommerce.Authorization/*.csproj ./Ecommerce.Authorization/
 COPY Ecommerce.Infra.Data/*.csproj ./Ecommerce.Infra.Data/
 COPY Ecommerce.Infra.IoC/*.csproj ./Ecommerce.Infra.IoC/
 COPY Ecommerce.API/*.csproj ./Ecommerce.API/
+COPY Ecommerce.Gateway.API/*.csproj ./Ecommerce.Gateway.API/
 COPY Ecommerce.Application.IntegrationTests/*.csproj ./Ecommerce.Application.IntegrationTests/
 COPY Ecommerce.Application.UnitTests/*.csproj ./Ecommerce.Application.UnitTests/
 COPY Ecommerce.Architecture.Tests/*.csproj ./Ecommerce.Architecture.Tests/

@@ -79,6 +79,21 @@ services:
       ecommerce.mysql:
         condition: service_healthy
 
+  ecommerce.gateway.api:
+    image: ${DOCKER_REGISTRY-}ecommerce.gateway.api
+    container_name: ecommerce.gateway.api
+    build:
+      context: .
+      dockerfile: Ecommerce.Gateway.API/Dockerfile
+    networks:
+      - ecommerce-bridge
+    ports:
+      - 5000:8080
+    depends_on:
+      - ecommerce.api
+      - ecommerce.authorization.api
+      - ecommerce.order.api
+
 volumes:
   mysql-data:
 

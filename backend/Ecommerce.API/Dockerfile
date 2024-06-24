@@ -13,6 +13,7 @@ COPY Common/Ecommerce.Common.Infra/*.csproj ./Common/Ecommerce.Common.Infra/
 # Copy additional projects necessary for restore, not used in the main image project
 COPY Ecommerce.Authorization/*.csproj ./Ecommerce.Authorization/
 COPY Ecommerce.Order.API/*.csproj ./Ecommerce.Order.API/
+COPY Ecommerce.Gateway.API/*.csproj ./Ecommerce.Gateway.API/
 COPY Ecommerce.Application.IntegrationTests/*.csproj ./Ecommerce.Application.IntegrationTests/
 COPY Ecommerce.Application.UnitTests/*.csproj ./Ecommerce.Application.UnitTests/
 COPY Ecommerce.Architecture.Tests/*.csproj ./Ecommerce.Architecture.Tests/
