@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 namespace Ecommerce.Application.Features.ProductCombinations.Commands.AddProductCombination;
 
 [Authorize]
-public record CreateProductCombinationCommand : IRequest<Result<GetProductCombinationDto>>
+public record CreateProductCombinationCommand : IRequest<GetProductCombinationDto>
 {
     public Guid ProductId { get; set; }
     public List<int> VariantOptionIds { get; set; } = null!;
@@ -30,7 +30,7 @@ public class CreateProductCombinationCommandHandler(
     IProductRepository productRepository,
     IVariantOptionRepository variantOptionRepository,
     IProductCombinationRepository productCombinationRepository
-    ) : IRequestHandler<CreateProductCombinationCommand, Result<GetProductCombinationDto>>
+    ) : IRequestHandler<CreateProductCombinationCommand, GetProductCombinationDto>
 {
     private readonly IMapper _mapper = mapper;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
@@ -39,24 +39,24 @@ public class CreateProductCombinationCommandHandler(
     private readonly IVariantOptionRepository _variantOptionRepository = variantOptionRepository;
     private readonly IProductCombinationRepository _productCombinationRepository = productCombinationRepository;
 
-    public async Task<Result<GetProductCombinationDto>> Handle(CreateProductCombinationCommand request, CancellationToken cancellationToken)
+    public async Task<GetProductCombinationDto> Handle(CreateProductCombinationCommand request, CancellationToken cancellationToken)
     {
         Product? product = await _productRepository.GetByIdAsync(request.ProductId);
-        if (product is null) return DomainErrors.NotFound(nameof(Product), request.ProductId);
+        DomainException.ThrowIfNull(product, request.ProductId);
 
         var variantOptions = new List<VariantOption>();
 
         foreach (var variantOptionId in request.VariantOptionIds)
         {
             VariantOption? variantOption = await _variantOptionRepository.GetByIdAsync(variantOptionId);
-            if (variantOption is null) return DomainErrors.NotFound(nameof(VariantOption), variantOptionId);
+            DomainException.ThrowIfNull(variantOption, variantOptionId);
 
             variantOptions.Add(variantOption);
         }
 
         IEnumerable<string> imagePaths = await _blobStorageService.UploadImage(request.Images); // TODO: Treat if create method throws an error (undo?)
 
-        var createResult = product.AddCombination(
+        var productCombination = product.AddCombination(
             variantOptions: variantOptions,
             sku: request.Sku,
             price: request.Price,
@@ -68,11 +68,8 @@ public class CreateProductCombinationCommandHandler(
             imagePaths: imagePaths
         );
 
-        if (createResult.IsFailed) return Result.Fail(createResult.Errors);
-
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        var dto = _mapper.Map<GetProductCombinationDto>(createResult.Value);
-        return Result.Ok(dto);
+        return _mapper.Map<GetProductCombinationDto>(productCombination);
     }
 }

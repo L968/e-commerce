@@ -15,18 +15,14 @@ public class PayPalController(IOrderService orderService) : ControllerBase
     [HttpPost("return")]
     public async Task<IActionResult> Return([FromBody] TokenModel tokenModel)
     {
-        var result = await _orderService.ProcessPayPalReturnAsync(tokenModel.token);
-        if (result.IsFailed) return BadRequest(result.Reasons[0]);
-
+        await _orderService.ProcessPayPalReturnAsync(tokenModel.token);
         return NoContent();
     }
 
     [HttpPost("cancel")]
     public async Task<IActionResult> Cancel([FromBody] TokenModel tokenModel)
     {
-        var result = await _orderService.ProcessPayPalCancelAsync(tokenModel.token);
-        if (result.IsFailed) return BadRequest(result.Reasons[0]);
-
+        await _orderService.ProcessPayPalCancelAsync(tokenModel.token);
         return NoContent();
     }
 }

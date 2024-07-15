@@ -62,12 +62,8 @@ public class OrderController(IOrderService orderService) : ControllerBase
     public async Task<IActionResult> CreateOrder([FromBody] OrderCheckoutDto orderCheckout)
     {
         orderCheckout.UserId = int.Parse(User.FindFirstValue("id")!);
-        var result = await _orderService.CreateOrderAsync(orderCheckout);
-        if (result.IsFailed)
-        {
-            return BadRequest(result.Reasons[0]);
-        }
+        string result = await _orderService.CreateOrderAsync(orderCheckout);
 
-        return Ok(result.Value);
+        return Ok(result);
     }
 }

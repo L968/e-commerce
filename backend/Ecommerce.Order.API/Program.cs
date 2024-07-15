@@ -2,6 +2,7 @@ using Ecommerce.Common.Infra.Binders;
 using Ecommerce.Common.Infra.Handlers;
 using Ecommerce.Order.API;
 using Ecommerce.Order.API.Context;
+using Ecommerce.Order.API.Handlers;
 using Ecommerce.Order.API.Interfaces;
 using Ecommerce.Order.API.Mappings;
 using Ecommerce.Order.API.Repositories;
@@ -23,6 +24,8 @@ builder.Services.AddSwaggerGen();
 Config.Init(builder.Configuration);
 
 builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
@@ -104,6 +107,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseExceptionHandler();
 
 app.UseMiddleware<GridParamsExceptionHandler>();
 

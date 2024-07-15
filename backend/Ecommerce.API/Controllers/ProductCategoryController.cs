@@ -32,21 +32,15 @@ namespace Ecommerce.API.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> GetVariants(Guid id)
         {
-            var result = await _mediator.Send(new GetVariantsByProductCategoryIdQuery(id));
-
-            if (result.IsFailed) return NotFound();
-
-            return Ok(result.Value);
+            var variants = await _mediator.Send(new GetVariantsByProductCategoryIdQuery(id));
+            return Ok(variants);
         }
 
         [HttpPost]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> Create([FromBody] CreateProductCategoryCommand command)
         {
-            var result = await _mediator.Send(command);
-            if (result.IsFailed) return BadRequest(result.Reasons);
-
-            var productCategory = result.Value;
+            var productCategory = await _mediator.Send(command);
             return CreatedAtAction(nameof(Get), null, productCategory);
         }
 
@@ -55,18 +49,8 @@ namespace Ecommerce.API.Controllers
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateProductCategoryCommand command)
         {
             command.Id = id;
-            Result result = await _mediator.Send(command);
 
-            if (result.IsFailed)
-            {
-                if (result.Reasons[0].Message.Contains("not found"))
-                {
-                    return NotFound();
-                }
-
-                return BadRequest(result.Reasons);
-            }
-
+            await _mediator.Send(command);
             return NoContent();
         }
 
@@ -74,10 +58,7 @@ namespace Ecommerce.API.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            Result result = await _mediator.Send(new DeleteProductCategoryCommand(id));
-
-            if (result.IsFailed) return NotFound();
-
+            await _mediator.Send(new DeleteProductCategoryCommand(id));
             return NoContent();
         }
     }

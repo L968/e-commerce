@@ -9,11 +9,11 @@ public static class FakeProducts
     public static ProductCategory GetProductCategory()
     {
         var faker = new Faker<ProductCategory>()
-            .CustomInstantiator(f => ProductCategory.Create(
+            .CustomInstantiator(f => new ProductCategory(
                 name: f.Commerce.Categories(1)[0],
                 description: f.Random.String(),
                 variantIds: [f.Random.Guid()]
-            ).Value);
+            ));
 
         return faker.Generate();
     }
@@ -21,7 +21,7 @@ public static class FakeProducts
     public static IEnumerable<ProductCombination> GetProductCombination(Guid productId, IEnumerable<VariantOption> variantOptions, int count = 1)
     {
         var faker = new Faker<ProductCombination>()
-            .CustomInstantiator(f => ProductCombination.Create(
+            .CustomInstantiator(f => new ProductCombination(
                 productId: productId,
                 variantOptions: variantOptions,
                 sku: f.Commerce.Ean13(),
@@ -32,7 +32,7 @@ public static class FakeProducts
                 height: f.Random.Float(1, 10),
                 weight: f.Random.Float(1, 10),
                 imagePaths: [f.Image.PicsumUrl(), f.Image.PicsumUrl()]
-             ).Value);
+             ));
 
         return faker.Generate(count);
     }
@@ -47,13 +47,13 @@ public static class FakeProducts
         var faker = new Faker();
 
         var productFaker = new Faker<Product>()
-            .CustomInstantiator(f => Product.Create(
+            .CustomInstantiator(f => new Product(
                 name: f.Commerce.Product(),
                 description: f.Commerce.ProductDescription(),
                 active: f.Random.Bool(),
                 visible: f.Random.Bool(),
                 productCategoryId: GetProductCategory().Id
-             ).Value);
+             ));
 
         var products = productFaker.Generate(count);
 

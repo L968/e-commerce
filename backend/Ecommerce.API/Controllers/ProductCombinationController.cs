@@ -27,11 +27,8 @@ public class ProductCombinationController(IMediator mediator) : ControllerBase
     [Authorize(Roles = "admin")]
     public async Task<IActionResult> Create([FromForm] CreateProductCombinationCommand command)
     {
-        Result<GetProductCombinationDto> result = await _mediator.Send(command);
-
-        if (result.IsFailed) return BadRequest(result.Reasons);
-
-        return Ok(result.Value);
+        GetProductCombinationDto productCombination = await _mediator.Send(command);
+        return Ok(productCombination);
     }
 
     [HttpPut("{id}")]
@@ -39,18 +36,8 @@ public class ProductCombinationController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> Update(Guid id, [FromForm] UpdateProductCombinationCommand command)
     {
         command.Id = id;
-        var result = await _mediator.Send(command);
 
-        if (result.IsFailed)
-        {
-            if (result.Reasons[0].Message.Contains("not found"))
-            {
-                return NotFound();
-            }
-
-            return BadRequest(result.Reasons);
-        }
-
+        await _mediator.Send(command);
         return NoContent();
     }
 
@@ -58,10 +45,7 @@ public class ProductCombinationController(IMediator mediator) : ControllerBase
     [Authorize(Roles = "admin")]
     public async Task<IActionResult> Delete(Guid id)
     {
-        Result result = await _mediator.Send(new DeleteProductCombinationCommand(id));
-
-        if (result.IsFailed) return NotFound();
-
+        await _mediator.Send(new DeleteProductCombinationCommand(id));
         return NoContent();
     }
 
@@ -69,11 +53,7 @@ public class ProductCombinationController(IMediator mediator) : ControllerBase
     [Authorize(Roles = "admin")]
     public async Task<IActionResult> ReduceStock(ReduceStockProductCombinationCommand command)
     {
-        var result = await _mediator.Send(command);
-
-        if (result.IsFailed)
-            return BadRequest(result.Reasons);
-
+        await _mediator.Send(command);
         return NoContent();
     }
 }

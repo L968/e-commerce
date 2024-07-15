@@ -54,12 +54,7 @@ namespace Ecommerce.API.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> Create([FromBody] CreateProductCommand command)
         {
-            Result<GetProductDto> result = await _mediator.Send(command);
-
-            if (result.IsFailed) return BadRequest(result.Reasons);
-
-            var product = result.Value;
-
+            GetProductDto product = await _mediator.Send(command);
             return CreatedAtAction(nameof(GetById), new { product.Id }, product);
         }
 
@@ -68,10 +63,8 @@ namespace Ecommerce.API.Controllers
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateProductCommand command)
         {
             command.Id = id;
-            Result result = await _mediator.Send(command);
 
-            if (result.IsFailed) return NotFound();
-
+            await _mediator.Send(command);
             return NoContent();
         }
 
@@ -79,10 +72,7 @@ namespace Ecommerce.API.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            Result result = await _mediator.Send(new DeleteProductCommand(id));
-
-            if (result.IsFailed) return NotFound();
-
+            await _mediator.Send(new DeleteProductCommand(id));
             return NoContent();
         }
     }

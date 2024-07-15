@@ -1,5 +1,6 @@
 ﻿using Bogus;
 using Ecommerce.Domain.Entities;
+using Ecommerce.Domain.Errors;
 
 namespace Ecommerce.Domain.UnitTests;
 
@@ -10,7 +11,7 @@ public  class AddressTests
     public AddressTests()
     {
         _addressFaker = new Faker<Address>()
-            .CustomInstantiator(f => Address.Create(
+            .CustomInstantiator(f => new Address(
                 userId: f.Random.Number(1, 1000),
                 recipientFullName: f.Name.FullName(),
                 recipientPhoneNumber: f.Random.Number(900000000, 999999999).ToString(),
@@ -23,7 +24,7 @@ public  class AddressTests
                 state: f.Address.State(),
                 country: f.Address.Country(),
                 additionalInformation: f.Random.String2(10)
-             ).Value);
+             ));
     }
 
     [Fact]
@@ -34,23 +35,34 @@ public  class AddressTests
         int userId = 1;
 
         // Act
-        var result = Address.Create(
+        var address = new Address(
             userId,
             addressData.RecipientFullName,
             addressData.RecipientPhoneNumber,
             addressData.PostalCode,
             addressData.StreetName,
             addressData.BuildingNumber,
-            null,
-            null,
+            addressData.Complement,
+            addressData.Neighborhood,
             addressData.City,
             addressData.State,
             addressData.Country,
-            null
+            addressData.AdditionalInformation
         );
 
         // Assert
-        Assert.True(result.IsSuccess);
+        Assert.Equal(userId, address.UserId);
+        Assert.Equal(addressData.RecipientFullName, address.RecipientFullName);
+        Assert.Equal(addressData.RecipientPhoneNumber, address.RecipientPhoneNumber);
+        Assert.Equal(addressData.PostalCode, address.PostalCode);
+        Assert.Equal(addressData.StreetName, address.StreetName);
+        Assert.Equal(addressData.BuildingNumber, address.BuildingNumber);
+        Assert.Equal(addressData.Complement, address.Complement);
+        Assert.Equal(addressData.Neighborhood, address.Neighborhood);
+        Assert.Equal(addressData.City, address.City);
+        Assert.Equal(addressData.State, address.State);
+        Assert.Equal(addressData.Country, address.Country);
+        Assert.Equal(addressData.AdditionalInformation, address.AdditionalInformation);
     }
 
     [Theory]
@@ -64,8 +76,8 @@ public  class AddressTests
         var addressData = _addressFaker.Generate();
         int userId = 1;
 
-        // Act
-        var result = Address.Create(
+        // Act & Assert
+        var exception = Assert.Throws<DomainException>(() => new Address(
             userId,
             addressData.RecipientFullName,
             invalidPhoneNumber,
@@ -78,10 +90,9 @@ public  class AddressTests
             addressData.State,
             addressData.Country,
             null
-        );
+        ));
 
-        // Assert
-        Assert.True(result.IsFailed);
+        Assert.Contains(DomainErrors.Address.InvalidRecipientPhoneNumber, exception.Errors);
     }
 
     [Fact]
@@ -92,7 +103,7 @@ public  class AddressTests
         var newAddress= _addressFaker.Generate();
 
         // Act
-        var result = address.Update(
+        address.Update(
             newAddress.RecipientFullName,
             newAddress.RecipientPhoneNumber,
             newAddress.PostalCode,
@@ -107,7 +118,6 @@ public  class AddressTests
         );
 
         // Assert
-        Assert.True(result.IsSuccess);
         Assert.Equal(newAddress.RecipientFullName, address.RecipientFullName);
         Assert.Equal(newAddress.RecipientPhoneNumber, address.RecipientPhoneNumber);
         Assert.Equal(newAddress.PostalCode, address.PostalCode);
@@ -132,8 +142,8 @@ public  class AddressTests
         var address = _addressFaker.Generate();
         var newAddress = _addressFaker.Generate();
 
-        // Act
-        var result = address.Update(
+        // Act and Assert
+        var exception = Assert.Throws<DomainException>(() => address.Update(
             newAddress.RecipientFullName,
             invalidPhoneNumber,
             newAddress.PostalCode,
@@ -145,9 +155,8 @@ public  class AddressTests
             newAddress.State,
             newAddress.Country,
             newAddress.AdditionalInformation
-        );
+        ));
 
-        // Assert
-        Assert.True(result.IsFailed);
+        Assert.Contains(DomainErrors.Address.InvalidRecipientPhoneNumber, exception.Errors);
     }
 }

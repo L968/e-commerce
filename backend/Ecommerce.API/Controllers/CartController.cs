@@ -23,30 +23,21 @@ namespace Ecommerce.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create()
         {
-            Result<GetCartDto> result = await _mediator.Send(new CreateCartCommand());
-
-            if (result.IsFailed) return BadRequest(result.Reasons);
-
-            return CreatedAtAction(nameof(Get), result.Value);
+            GetCartDto cart = await _mediator.Send(new CreateCartCommand());
+            return CreatedAtAction(nameof(Get), cart);
         }
 
         [HttpPost("add-item")]
         public async Task<IActionResult> AddCartItem([FromBody] CreateCartItemCommand command)
         {
-            Result result = await _mediator.Send(command);
-
-            if (result.IsFailed) return BadRequest(result.Reasons);
-
+            await _mediator.Send(command);
             return NoContent();
         }
 
         [HttpDelete("remove-item/{cartItemId}")]
         public async Task<IActionResult> RemoveCartItem(int cartItemId)
         {
-            Result result = await _mediator.Send(new DeleteCartItemCommand(cartItemId));
-
-            if (result.IsFailed) return BadRequest(result.Reasons);
-
+            await _mediator.Send(new DeleteCartItemCommand(cartItemId));
             return NoContent();
         }
 
@@ -54,20 +45,15 @@ namespace Ecommerce.API.Controllers
         public async Task<IActionResult> UpdateCartItemQuantity(int cartItemId, [FromBody] UpdateCartItemQuantityCommand command)
         {
             command.Id = cartItemId;
-            Result result = await _mediator.Send(command);
 
-            if (result.IsFailed) return BadRequest(result.Reasons);
-
+            await _mediator.Send(command);
             return NoContent();
         }
 
         [HttpPatch("clear-items")]
         public async Task<IActionResult> ClearCartItems([FromBody] Guid[] productCombinationIds)
         {
-            Result result = await _mediator.Send(new ClearCartItemsCommand(productCombinationIds));
-
-            if (result.IsFailed) return BadRequest(result.Reasons);
-
+            await _mediator.Send(new ClearCartItemsCommand(productCombinationIds));
             return NoContent();
         }
     }

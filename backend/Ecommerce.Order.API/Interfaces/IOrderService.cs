@@ -10,7 +10,7 @@ public interface IOrderService
     Task<OrderStatusCountDto> GetStatusCountAsync();
     Task<OrderDto?> GetByIdAsync(Guid id);
     Task<OrderDto?> GetByIdAsync(Guid id, int userId);
-    Task<Result<string>> CreateOrderAsync(OrderCheckoutDto order);
-    Task<Result> ProcessPayPalReturnAsync(string token);
-    Task<Result> ProcessPayPalCancelAsync(string token);
+    Task<string> CreateOrderAsync(OrderCheckoutDto order);
+    Task ProcessPayPalReturnAsync(string token);
+    Task ProcessPayPalCancelAsync(string token);
 }

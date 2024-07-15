@@ -32,11 +32,7 @@ namespace Ecommerce.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateAddressCommand command)
         {
-            Result<GetAddressDto> result = await _mediator.Send(command);
-
-            if (result.IsFailed) return BadRequest(result.Reasons);
-            var address = result.Value;
-
+            GetAddressDto address = await _mediator.Send(command);
             return CreatedAtAction(nameof(GetById), new { address.Id }, address);
         }
 
@@ -44,20 +40,14 @@ namespace Ecommerce.API.Controllers
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateAddressCommand command)
         {
             command.Id = id;
-            Result result = await _mediator.Send(command);
-
-            if (result.IsFailed) return BadRequest(result.Reasons);
-
+            await _mediator.Send(command);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            Result result = await _mediator.Send(new DeleteAddressCommand(id));
-
-            if (result.IsFailed) return NotFound();
-
+            await _mediator.Send(new DeleteAddressCommand(id));
             return NoContent();
         }
     }

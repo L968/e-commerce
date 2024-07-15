@@ -1,24 +1,24 @@
 ﻿namespace Ecommerce.Application.Features.Addresses.Commands.DeleteAddress;
 
 [Authorize]
-public record DeleteAddressCommand(Guid Id) : IRequest<Result>;
+public record DeleteAddressCommand(Guid Id) : IRequest;
 
 public class DeleteAddressCommandHandler(
     IUnitOfWork unitOfWork,
     IAddressRepository addressRepository,
     ICurrentUserService currentUserService,
     IAuthorizationService authorizationService
-    ) : IRequestHandler<DeleteAddressCommand, Result>
+    ) : IRequestHandler<DeleteAddressCommand>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IAddressRepository _addressRepository = addressRepository;
     private readonly ICurrentUserService _currentUserService = currentUserService;
     private readonly IAuthorizationService _authorizationService = authorizationService;
 
-    public async Task<Result> Handle(DeleteAddressCommand request, CancellationToken cancellationToken)
+    public async Task Handle(DeleteAddressCommand request, CancellationToken cancellationToken)
     {
         Address? address = await _addressRepository.GetByIdAndUserIdAsync(request.Id, _currentUserService.UserId);
-        if (address is null) return DomainErrors.NotFound(nameof(Address), request.Id);
+        DomainException.ThrowIfNull(address, request.Id);
 
         Guid? defaultAddressId = await _authorizationService.GetDefaultAddressIdAsync();
 
@@ -29,7 +29,5 @@ public class DeleteAddressCommandHandler(
 
         _addressRepository.Delete(address);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-        return Result.Ok();
     }
 }

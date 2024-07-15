@@ -15,7 +15,7 @@ public class DeleteAddressTests : BaseTestFixture
         // Arrange
         RunAsRegularUser();
 
-        Result<GetAddressDto> createResult = await SendAsync(new CreateAddressCommand()
+        GetAddressDto createdAddress = await SendAsync(new CreateAddressCommand()
         {
             RecipientFullName = "John Smith",
             RecipientPhoneNumber = "1234567890",
@@ -30,14 +30,10 @@ public class DeleteAddressTests : BaseTestFixture
             AdditionalInformation = "Please deliver to the front desk"
         });
 
-        GetAddressDto createdAddress = createResult.Value;
-
         // Act
-        Result result = await SendAsync(new DeleteAddressCommand(createdAddress.Id));
+        await SendAsync(new DeleteAddressCommand(createdAddress.Id));
 
         // Assert
-        Assert.True(result.IsSuccess);
-
         GetAddressDto? addresses = await SendAsync(new GetAddressByIdAndUserIdQuery(createdAddress.Id));
 
         Assert.IsNull(addresses);

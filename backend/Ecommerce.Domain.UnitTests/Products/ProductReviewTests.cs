@@ -18,13 +18,9 @@ public class ProductReviewTests
         var description = _faker.Lorem.Sentence();
 
         // Act
-        var result = ProductReview.Create(userId, productId, rating, description);
+        var productReview = new ProductReview(userId, productId, rating, description);
 
         // Assert
-        Assert.True(result.IsSuccess);
-        Assert.NotNull(result.Value);
-
-        var productReview = result.Value;
         Assert.Equal(userId, productReview.UserId);
         Assert.Equal(productId, productReview.ProductId);
         Assert.Equal(rating, productReview.Rating);
@@ -34,23 +30,20 @@ public class ProductReviewTests
     [Theory]
     [InlineData(0)]
     [InlineData(-1)]
-    public void Create_WithInvalidUserId_ShouldReturnError(int userId)
+    public void Create_WithInvalidUserId_ShouldFail(int userId)
     {
         // Arrange
         var productId = _faker.Random.Guid();
         var rating = _faker.Random.Number(1, 5);
         var description = _faker.Lorem.Sentence();
 
-        // Act
-        var result = ProductReview.Create(userId, productId, rating, description);
-
-        // Assert
-        Assert.False(result.IsSuccess);
-        Assert.Equal(DomainErrors.ProductReview.InvalidUserId, result.Errors[0]);
+        // Act and Assert
+        var exception = Assert.Throws<DomainException>(() => new ProductReview(userId, productId, rating, description));
+        Assert.Contains(DomainErrors.ProductReview.InvalidUserId, exception.Errors);
     }
 
     [Fact]
-    public void Create_WithInvalidProductId_ShouldReturnError()
+    public void Create_WithInvalidProductId_ShouldFail()
     {
         // Arrange
         var userId = _faker.Random.Number(1, 1000);
@@ -58,29 +51,23 @@ public class ProductReviewTests
         var rating = _faker.Random.Number(1, 5);
         var description = _faker.Lorem.Sentence();
 
-        // Act
-        var result = ProductReview.Create(userId, productId, rating, description);
-
-        // Assert
-        Assert.False(result.IsSuccess);
-        Assert.Equal(DomainErrors.ProductReview.InvalidProductId, result.Errors[0]);
+        // Act and Assert
+        var exception = Assert.Throws<DomainException>(() => new ProductReview(userId, productId, rating, description));
+        Assert.Contains(DomainErrors.ProductReview.InvalidProductId, exception.Errors);
     }
 
     [Theory]
     [InlineData(0)]
     [InlineData(6)]
-    public void Create_WithInvalidRating_ShouldReturnError(int rating)
+    public void Create_WithInvalidRating_ShouldFail(int rating)
     {
         // Arrange
         var userId = _faker.Random.Number(1, 1000);
         var productId = _faker.Random.Guid();
         var description = _faker.Lorem.Sentence();
 
-        // Act
-        var result = ProductReview.Create(userId, productId, rating, description);
-
-        // Assert
-        Assert.False(result.IsSuccess);
-        Assert.Equal(DomainErrors.ProductReview.InvalidRatingRange, result.Errors[0]);
+        // Act and Assert
+        var exception = Assert.Throws<DomainException>(() => new ProductReview(userId, productId, rating, description));
+        Assert.Contains(DomainErrors.ProductReview.InvalidRatingRange, exception.Errors);
     }
 }

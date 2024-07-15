@@ -5,7 +5,7 @@ namespace Ecommerce.Application.Features.Variants.Queries;
 public record GetVariantQuery() : IRequest<IEnumerable<GetVariantDto>>;
 
 public class GetVariantQueryHandler(
-    IMapper mapper, 
+    IMapper mapper,
     IVariantRepository variantRepository
     ) : IRequestHandler<GetVariantQuery, IEnumerable<GetVariantDto>>
 {

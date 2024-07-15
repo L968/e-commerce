@@ -13,34 +13,21 @@ public sealed class Variant
 
     private Variant() { }
 
-    private Variant(string name, List<string> options)
+    public Variant(string name, List<string> options)
     {
+        ValidateDomain(options);
+
         Id = Guid.NewGuid();
         Name = name;
         SetOptions(options);
     }
 
-    public static Result<Variant> Create(string name, List<string> options)
+    public void Update(string name, IEnumerable<string> options)
     {
-        var validation = ValidateDomain(options);
-
-        if (validation.IsFailed)
-            return validation;
-
-        return Result.Ok(new Variant(name, options));
-    }
-
-    public Result Update(string name, IEnumerable<string> options)
-    {
-        var validation = ValidateDomain(options);
-
-        if (validation.IsFailed)
-            return validation;
+        ValidateDomain(options);
 
         Name = name;
         SetOptions(options);
-
-        return Result.Ok();
     }
 
     private void SetOptions(IEnumerable<string> options)
@@ -49,16 +36,14 @@ public sealed class Variant
         _options.AddRange(options.Select(option => new VariantOption(Id, option)));
     }
 
-    private static Result ValidateDomain(IEnumerable<string> options)
+    private static void ValidateDomain(IEnumerable<string> options)
     {
-        var errors = new List<Error>();
+        var errors = new List<string>();
 
         if (!options.Any())
-            return DomainErrors.Variant.EmptyOptionList;
+            errors.Add(DomainErrors.Variant.EmptyOptionList);
 
-        if (errors.Count != 0)
-            return Result.Fail(errors);
-
-        return Result.Ok();
+        if (errors.Count > 0)
+            throw new DomainException(errors);
     }
 }

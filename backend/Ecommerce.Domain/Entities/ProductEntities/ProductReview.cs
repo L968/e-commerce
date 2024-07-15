@@ -12,25 +12,20 @@ public sealed class ProductReview : AuditableEntity
 
     private ProductReview() { }
 
-    private ProductReview(int userId, Guid productId, int rating, string? description)
+    public ProductReview(int userId, Guid productId, int rating, string? description)
     {
+        if (userId <= 0)
+            throw new DomainException(DomainErrors.ProductReview.InvalidUserId);
+
+        if (productId == Guid.Empty)
+            throw new DomainException(DomainErrors.ProductReview.InvalidProductId);
+
+        if (rating < 1 || rating > 5)
+            throw new DomainException(DomainErrors.ProductReview.InvalidRatingRange);
+
         UserId = userId;
         ProductId = productId;
         Rating = rating;
         Description = description;
-    }
-
-    public static Result<ProductReview> Create(int userId, Guid productId, int rating, string? description)
-    {
-        if (userId <= 0)
-            return DomainErrors.ProductReview.InvalidUserId;
-
-        if (productId == Guid.Empty)
-            return DomainErrors.ProductReview.InvalidProductId;
-
-        if (rating < 1 || rating > 5)
-            return DomainErrors.ProductReview.InvalidRatingRange;
-
-        return Result.Ok(new ProductReview(userId, productId, rating, description));
     }
 }
