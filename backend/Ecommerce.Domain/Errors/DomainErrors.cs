@@ -11,7 +11,7 @@ public static class DomainErrors
     {
         public const string CartAlreadyExists = "A cart already exists for the current user";
         public const string CartItemNotBelongsToCart = "CartItem does not belong to this cart";
-        public static string CartNotFound(int userId) => $"Cart not found for user {userId}";
+        public const string CartNotFound = "Cart not found for user {userId}";
     }
 
     public static class CartItem
@@ -80,7 +80,7 @@ public static class DomainErrors
         public const string DiscountUnitNotImplemented = "Discount unit is not implemented";
         public const string CannotAddItemToCancelledOrder = "Cannot add item to a cancelled order";
         public const string InvalidPaymentStatus = "Invalid payment status";
-        public static string OrderNotFoundByExternalPaymentId(string token) => $"Failed to find an order with the provided payment token: {token}";
+        public const string OrderNotFoundByExternalPaymentId = "Failed to find an order with the provided payment token: {token}";
     }
 
     public static class PayPal

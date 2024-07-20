@@ -140,7 +140,7 @@ public class OrderService(
         var order = await _orderRepository.GetByExternalPaymentIdAsync(token);
 
         if (order is null)
-            throw new DomainException(DomainErrors.Order.OrderNotFoundByExternalPaymentId(token));
+            DomainException.ThrowIfNull(order, DomainErrors.Order.OrderNotFoundByExternalPaymentId, token);
 
         order.CompletePayment();
 
@@ -152,7 +152,7 @@ public class OrderService(
         var order = await _orderRepository.GetByExternalPaymentIdAsync(token);
 
         if (order is null)
-            throw new DomainException(DomainErrors.Order.OrderNotFoundByExternalPaymentId(token));
+            DomainException.ThrowIfNull(order, DomainErrors.Order.OrderNotFoundByExternalPaymentId, token);
 
         order.Cancel();
         await _orderRepository.UpdateAsync(order);

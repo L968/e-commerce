@@ -16,7 +16,7 @@ public class DeleteCartItemCommandHandler(
     public async Task Handle(DeleteCartItemCommand request, CancellationToken cancellationToken)
     {
         Cart? cart = await _cartRepository.GetByUserIdAsync(_currentUserService.UserId);
-        DomainException.ThrowIfNull(cart, DomainErrors.Cart.CartNotFound(_currentUserService.UserId));
+        DomainException.ThrowIfNull(cart, DomainErrors.Cart.CartNotFound, _currentUserService.UserId);
 
         cart.RemoveCartItem(request.Id);
 

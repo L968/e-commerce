@@ -21,7 +21,7 @@ public class UpdateCartItemQuantityCommandHandler(
     public async Task Handle(UpdateCartItemQuantityCommand request, CancellationToken cancellationToken)
     {
         Cart? cart = await _cartRepository.GetByUserIdAsync(_currentUserService.UserId);
-        DomainException.ThrowIfNull(cart, DomainErrors.Cart.CartNotFound(_currentUserService.UserId));
+        DomainException.ThrowIfNull(cart, DomainErrors.Cart.CartNotFound, _currentUserService.UserId);
 
         CartItem? cartItem = cart.CartItems.FirstOrDefault(ci => ci.Id == request.Id);
         DomainException.ThrowIfNull(cartItem, request.Id);
