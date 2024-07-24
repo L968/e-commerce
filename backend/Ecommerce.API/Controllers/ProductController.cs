@@ -17,16 +17,18 @@ namespace Ecommerce.API.Controllers
         public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
             var query = new GetProductQuery(page, pageSize);
-            var result = await _mediator.Send(query);
-
-            return Ok(result);
+            return Ok(await _mediator.Send(query));
         }
 
         [HttpGet("drafts")]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> GetDrafts()
         {
-            return Ok(await _mediator.Send(new GetProductDraftsQuery()));
+            var products = await _mediator.Send(new GetProductDraftsQuery());
+
+            if (products is null) return NotFound();
+
+            return Ok(products);
         }
 
         [HttpGet("{id}")]
@@ -54,12 +56,7 @@ namespace Ecommerce.API.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> Create([FromBody] CreateProductCommand command)
         {
-            Result<GetProductDto> result = await _mediator.Send(command);
-
-            if (result.IsFailed) return BadRequest(result.Reasons);
-
-            var product = result.Value;
-
+            GetProductDto product = await _mediator.Send(command);
             return CreatedAtAction(nameof(GetById), new { product.Id }, product);
         }
 
@@ -68,10 +65,8 @@ namespace Ecommerce.API.Controllers
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateProductCommand command)
         {
             command.Id = id;
-            Result result = await _mediator.Send(command);
 
-            if (result.IsFailed) return NotFound();
-
+            await _mediator.Send(command);
             return NoContent();
         }
 
@@ -79,10 +74,7 @@ namespace Ecommerce.API.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            Result result = await _mediator.Send(new DeleteProductCommand(id));
-
-            if (result.IsFailed) return NotFound();
-
+            await _mediator.Send(new DeleteProductCommand(id));
             return NoContent();
         }
     }

@@ -6,7 +6,7 @@ namespace Ecommerce.Application.Features.ProductDiscounts.Queries;
 public record GetProductDiscountsQuery() : IRequest<IEnumerable<GetProductDiscountDto>>;
 
 public class GetProductDiscountsQueryHandler(
-    IMapper mapper, 
+    IMapper mapper,
     IProductDiscountRepository productDiscountRepository
     ) : IRequestHandler<GetProductDiscountsQuery, IEnumerable<GetProductDiscountDto>>
 {

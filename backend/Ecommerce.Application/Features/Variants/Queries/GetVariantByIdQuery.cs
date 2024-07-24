@@ -5,7 +5,7 @@ namespace Ecommerce.Application.Features.Variants.Queries;
 public record GetVariantByIdQuery(Guid Id) : IRequest<GetVariantDto?>;
 
 public class GetVariantByIdQueryHandler(
-    IMapper mapper, 
+    IMapper mapper,
     IVariantRepository variantRepository
     ) : IRequestHandler<GetVariantByIdQuery, GetVariantDto?>
 {

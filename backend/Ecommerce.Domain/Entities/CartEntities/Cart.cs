@@ -14,10 +14,10 @@ public sealed class Cart
         UserId = userId;
     }
 
-    public Result AddCartItem(CartItem cartItem)
+    public void AddCartItem(CartItem cartItem)
     {
         if (cartItem.CartId != Id)
-            return DomainErrors.Cart.CartItemNotBelongsToCart;
+            throw new DomainException(DomainErrors.Cart.CartItemNotBelongsToCart);
 
         CartItem? existingCartItem = _cartItems.FirstOrDefault(ci => ci.ProductCombinationId == cartItem.ProductCombinationId);
 
@@ -29,8 +29,6 @@ public sealed class Cart
         {
             _cartItems.Add(cartItem);
         }
-
-        return Result.Ok();
     }
 
     public void RemoveCartItem(int cartItemId)

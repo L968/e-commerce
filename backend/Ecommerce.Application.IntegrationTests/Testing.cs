@@ -36,8 +36,8 @@ public partial class Testing
         var respawnerOptions = new RespawnerOptions
         {
             DbAdapter = DbAdapter.MySql,
-            SchemasToInclude = new[] { "ecommerce_tests" },
-            TablesToIgnore = new Respawn.Graph.Table[] { "__EFMigrationsHistory" }
+            SchemasToInclude = ["ecommerce_tests"],
+            TablesToIgnore = ["__EFMigrationsHistory"]
         };
 
         _respawner = Respawner.CreateAsync(Connection, respawnerOptions).GetAwaiter().GetResult();

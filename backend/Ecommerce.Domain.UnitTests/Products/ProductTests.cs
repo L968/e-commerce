@@ -1,7 +1,6 @@
 ﻿using Ecommerce.Domain.Entities.ProductEntities;
 using Ecommerce.Domain.Entities.VariantEntities;
 using Ecommerce.Domain.UnitTests.SampleData;
-using FluentResults;
 
 namespace Ecommerce.Domain.UnitTests.Products;
 
@@ -18,16 +17,15 @@ public class ProductTests
         var productCategoryId = Guid.NewGuid();
 
         // Act
-        Result<Product> result = Product.Create(name, description, active, visible, productCategoryId);
+        var product = new Product(name, description, active, visible, productCategoryId);
 
         // Assert
-        Assert.False(result.IsFailed);
-        Assert.NotNull(result.Value);
-        Assert.Equal(name, result.Value.Name);
-        Assert.Equal(description, result.Value.Description);
-        Assert.Equal(active, result.Value.Active);
-        Assert.Equal(visible, result.Value.Visible);
-        Assert.Equal(productCategoryId, result.Value.ProductCategoryId);
+        Assert.NotNull(product);
+        Assert.Equal(name, product.Name);
+        Assert.Equal(description, product.Description);
+        Assert.Equal(active, product.Active);
+        Assert.Equal(visible, product.Visible);
+        Assert.Equal(productCategoryId, product.ProductCategoryId);
     }
 
     [Fact]
@@ -42,10 +40,9 @@ public class ProductTests
         var newProductCategoryId = Guid.NewGuid();
 
         // Act
-        var result = product.Update(newName, newDescription, newActive, newVisible, newProductCategoryId);
+        product.Update(newName, newDescription, newActive, newVisible, newProductCategoryId);
 
         // Assert
-        Assert.False(result.IsFailed);
         Assert.Equal(newName, product.Name);
         Assert.Equal(newDescription, product.Description);
         Assert.Equal(newActive, product.Active);
@@ -63,10 +60,9 @@ public class ProductTests
         var description = "Great product!";
 
         // Act
-        var result = product.AddReview(userId, rating, description);
+        product.AddReview(userId, rating, description);
 
         // Assert
-        Assert.True(result.IsSuccess);
         Assert.Single(product.Reviews);
         Assert.Equal(userId, product.Reviews.ElementAt(0).UserId);
         Assert.Equal(rating, product.Reviews.ElementAt(0).Rating);

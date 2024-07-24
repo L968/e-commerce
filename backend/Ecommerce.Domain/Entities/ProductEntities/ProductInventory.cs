@@ -16,20 +16,15 @@ public sealed class ProductInventory : AuditableEntity
         Stock = stock;
     }
 
-    public Result ReduceStock(int quantity)
+    public void ReduceStock(int quantity)
     {
-        var result = ValidateStock(quantity);
-        if (result.IsFailed) return result;
-
+        ValidateStock(quantity);
         Stock -= quantity;
-        return Result.Ok();
     }
 
-    public Result ValidateStock(int quantity)
+    public void ValidateStock(int quantity)
     {
-        if (quantity <= 0) return DomainErrors.ProductInventory.InvalidQuantity;
-        if (Stock < quantity) return DomainErrors.ProductInventory.InsufficientStock;
-
-        return Result.Ok();
+        if (quantity <= 0) throw new DomainException(DomainErrors.ProductInventory.InvalidQuantity);
+        if (Stock < quantity) throw new DomainException( DomainErrors.ProductInventory.InsufficientStock);
     }
 }

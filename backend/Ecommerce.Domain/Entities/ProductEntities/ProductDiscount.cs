@@ -17,26 +17,7 @@ public sealed class ProductDiscount : AuditableEntity
 
     private ProductDiscount() { }
 
-    private ProductDiscount(
-        Guid productId,
-        string name,
-        decimal discountValue,
-        DiscountUnit discountUnit,
-        decimal? maximumDiscountAmount,
-        DateTime validFrom,
-        DateTime? validUntil
-    )
-    {
-        ProductId = productId;
-        Name = name;
-        DiscountValue = discountValue;
-        DiscountUnit = discountUnit;
-        MaximumDiscountAmount = maximumDiscountAmount;
-        ValidFrom = validFrom;
-        ValidUntil = validUntil;
-    }
-
-    public static Result<ProductDiscount> Create(
+    public ProductDiscount(
         Guid productId,
         string name,
         decimal discountValue,
@@ -47,21 +28,18 @@ public sealed class ProductDiscount : AuditableEntity
         decimal productPrice
     )
     {
-        var validationResult = ValidateDomain(discountValue, discountUnit, maximumDiscountAmount, validFrom, validUntil, productPrice);
-        if (validationResult.IsFailed) return validationResult;
+        ValidateDomain(discountValue, discountUnit, maximumDiscountAmount, validFrom, validUntil, productPrice);
 
-        return Result.Ok(new ProductDiscount(
-            productId,
-            name,
-            discountValue,
-            discountUnit,
-            maximumDiscountAmount,
-            validFrom,
-            validUntil
-        ));
+        ProductId = productId;
+        Name = name;
+        DiscountValue = discountValue;
+        DiscountUnit = discountUnit;
+        MaximumDiscountAmount = maximumDiscountAmount;
+        ValidFrom = validFrom;
+        ValidUntil = validUntil;
     }
 
-    public Result Update(
+    public void Update(
         string name,
         decimal discountValue,
         DiscountUnit discountUnit,
@@ -72,10 +50,9 @@ public sealed class ProductDiscount : AuditableEntity
     )
     {
         if (HasExpired())
-            return DomainErrors.ProductDiscount.CannotUpdateExpiredDiscount;
+            throw new DomainException(DomainErrors.ProductDiscount.CannotUpdateExpiredDiscount);
 
-        var validationResult = ValidateDomain(discountValue, discountUnit, maximumDiscountAmount, validFrom, validUntil, productPrice);
-        if (validationResult.IsFailed) return validationResult;
+        ValidateDomain(discountValue, discountUnit, maximumDiscountAmount, validFrom, validUntil, productPrice);
 
         Name = name;
         DiscountValue = discountValue;
@@ -83,7 +60,6 @@ public sealed class ProductDiscount : AuditableEntity
         MaximumDiscountAmount = maximumDiscountAmount;
         ValidFrom = validFrom;
         ValidUntil = validUntil;
-        return Result.Ok();
     }
 
     public bool IsCurrentlyActive()
@@ -131,9 +107,9 @@ public sealed class ProductDiscount : AuditableEntity
         return false;
     }
 
-    private static Result ValidateDomain(decimal discountValue, DiscountUnit discountUnit, decimal? maximumDiscountAmount, DateTime validFrom, DateTime? validUntil, decimal productPrice)
+    private static void ValidateDomain(decimal discountValue, DiscountUnit discountUnit, decimal? maximumDiscountAmount, DateTime validFrom, DateTime? validUntil, decimal productPrice)
     {
-        var errors = new List<Error>();
+        var errors = new List<string>();
 
         if (validFrom < DateTime.UtcNow)
             errors.Add(DomainErrors.ProductDiscount.DiscountStartDateInPast);
@@ -166,8 +142,6 @@ public sealed class ProductDiscount : AuditableEntity
         }
 
         if (errors.Count > 0)
-            return Result.Fail(errors);
-
-        return Result.Ok();
+            throw new DomainException(errors);
     }
 }

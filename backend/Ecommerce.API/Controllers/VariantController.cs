@@ -32,10 +32,7 @@ namespace Ecommerce.API.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> Create([FromBody] CreateVariantCommand command)
         {
-            var result = await _mediator.Send(command);
-            if (result.IsFailed) return BadRequest(result.Reasons);
-
-            var variant = result.Value;
+            GetVariantDto variant = await _mediator.Send(command);
             return CreatedAtAction(nameof(Get), null, variant);
         }
 
@@ -44,18 +41,8 @@ namespace Ecommerce.API.Controllers
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateVariantCommand command)
         {
             command.Id = id;
-            Result result = await _mediator.Send(command);
 
-            if (result.IsFailed)
-            {
-                if (result.Reasons[0].Message.Contains("not found"))
-                {
-                    return NotFound();
-                }
-
-                return BadRequest(result.Reasons);
-            }
-
+            await _mediator.Send(command);
             return NoContent();
         }
     }

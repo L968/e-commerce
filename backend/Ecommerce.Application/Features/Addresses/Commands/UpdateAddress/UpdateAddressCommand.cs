@@ -1,7 +1,7 @@
 ﻿namespace Ecommerce.Application.Features.Addresses.Commands.UpdateAddress;
 
 [Authorize]
-public record UpdateAddressCommand : IRequest<Result>
+public record UpdateAddressCommand : IRequest
 {
     [JsonIgnore]
     public Guid Id { get; set; }
@@ -22,18 +22,18 @@ public class UpdateAddressCommandHandler(
     IUnitOfWork unitOfWork,
     IAddressRepository addressRepository,
     ICurrentUserService currentUserService
-    ) : IRequestHandler<UpdateAddressCommand, Result>
+    ) : IRequestHandler<UpdateAddressCommand>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IAddressRepository _addressRepository = addressRepository;
     private readonly ICurrentUserService _currentUserService = currentUserService;
 
-    public async Task<Result> Handle(UpdateAddressCommand request, CancellationToken cancellationToken)
+    public async Task Handle(UpdateAddressCommand request, CancellationToken cancellationToken)
     {
         Address? address = await _addressRepository.GetByIdAndUserIdAsync(request.Id, _currentUserService.UserId);
-        if (address is null) return DomainErrors.NotFound(nameof(Address), request.Id);
+        DomainException.ThrowIfNull(address, request.Id);
 
-        Result updateResult = address.Update(
+        address.Update(
             request.RecipientFullName,
             request.RecipientPhoneNumber,
             request.PostalCode,
@@ -47,11 +47,7 @@ public class UpdateAddressCommandHandler(
             request.AdditionalInformation
         );
 
-        if (updateResult.IsFailed) return updateResult;
-
         _addressRepository.Update(address);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-        return Result.Ok();
     }
 }

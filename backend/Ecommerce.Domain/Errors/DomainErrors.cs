@@ -4,102 +4,103 @@ public static class DomainErrors
 {
     public static class Address
     {
-        public static readonly Error InvalidRecipientPhoneNumber = new("RecipientPhoneNumber must contain numbers only");
+        public const string InvalidRecipientPhoneNumber = "RecipientPhoneNumber must contain numbers only";
     }
 
     public static class Cart
     {
-        public static readonly Error CartAlreadyExists = new("A cart already exists for the current user");
-        public static readonly Error CartItemNotBelongsToCart = new("CartItem does not belong to this cart");
-        public static readonly Error CartNotFound = new("Cart not found");
+        public const string CartAlreadyExists = "A cart already exists for the current user";
+        public const string CartItemNotBelongsToCart = "CartItem does not belong to this cart";
+        public const string CartNotFound = "Cart not found for user {userId}";
     }
 
     public static class CartItem
     {
-        public static readonly Error InvalidQuantity = new("Invalid quantity value");
+        public const string InvalidQuantity = "Invalid quantity value";
     }
 
     public static class Product
     {
-        public static readonly Error InvalidPriceValue = new("Invalid price value");
-        public static readonly Error EmptyImagePathList = new("Empty image path list");
-        public static readonly Error InvalidLengthValue = new("Invalid length value");
-        public static readonly Error InvalidWidthValue = new("Invalid width value");
-        public static readonly Error InvalidHeightValue = new("Invalid height value");
-        public static readonly Error InvalidWeightValue = new("Invalid weight value");
-        public static Error InactiveProduct(Guid id) => new($"Product {id} is inactive");
+        public const string InvalidPriceValue = "Invalid price value";
+        public const string EmptyImagePathList = "Empty image path list";
+        public const string InvalidLengthValue = "Invalid length value";
+        public const string InvalidWidthValue = "Invalid width value";
+        public const string InvalidHeightValue = "Invalid height value";
+        public const string InvalidWeightValue = "Invalid weight value";
+        public static string InactiveProduct(Guid id) => $"Product {id} is inactive";
     }
 
     public static class ProductCombination
     {
-        public static readonly Error CombinationAlreadyExists = new("Combination already exists for this product");
+        public const string CombinationAlreadyExists = "Combination already exists for this product";
     }
 
     public static class ProductCategory
     {
-        public static readonly Error EmptyVariantList = new("Empty variant list");
+        public const string EmptyVariantList = "Empty variant list";
     }
 
     public static class ProductDiscount
     {
-        public static readonly Error DiscountStartDateInPast = new("Discount start date cannot be in the past");
-        public static readonly Error DiscountEndDateMustBeAfterStartDate = new("Discount end date must be later than start date");
-        public static readonly Error InvalidDiscountValue = new("Invalid discount value");
-        public static readonly Error CannotUpdateExpiredDiscount = new("Cannot update an expired discount");
-        public static readonly Error MaximumDiscountAmountExceedsValue = new("Maximum discount amount cannot be greater than or equal to the discount value");
-        public static readonly Error DiscountDurationTooShort = new("Discount duration must be at least 5 minutes");
-        public static readonly Error DiscountPercentageExceedsLimit = new("Discount percentage exceeds the limit of 80%");
-        public static readonly Error DiscountHasOverlap = new("This discount conflicts with other existing discounts");
-        public static readonly Error MaximumFixedDiscountExceeded = new ("Maximum discount amount for fixed discount exceeded (80% of original price)");
+        public const string DiscountStartDateInPast = "Discount start date cannot be in the past";
+        public const string DiscountEndDateMustBeAfterStartDate = "Discount end date must be later than start date";
+        public const string InvalidDiscountValue = "Invalid discount value";
+        public const string CannotUpdateExpiredDiscount = "Cannot update an expired discount";
+        public const string MaximumDiscountAmountExceedsValue = "Maximum discount amount cannot be greater than or equal to the discount value";
+        public const string DiscountDurationTooShort = "Discount duration must be at least 5 minutes";
+        public const string DiscountPercentageExceedsLimit = "Discount percentage exceeds the limit of 80%";
+        public const string DiscountHasOverlap = "This discount conflicts with other existing discounts";
+        public const string MaximumFixedDiscountExceeded = "Maximum discount amount for fixed discount exceeded (80% of original price)";
     }
 
     public static class ProductInventory
     {
-        public static readonly Error InvalidQuantity = new("Invalid quantity value");
-        public static readonly Error InsufficientStock = new("Insufficient stock");
+        public const string InvalidQuantity = "Invalid quantity value";
+        public const string InsufficientStock = "Insufficient stock";
     }
 
     public static class ProductReview
     {
-        public static readonly Error InvalidUserId = new("Invalid UserId");
-        public static readonly Error InvalidProductId = new("Invalid ProductId");
-        public static readonly Error InvalidRatingRange = new("Rating must be between 1 and 5");
+        public const string InvalidUserId = "Invalid UserId";
+        public const string InvalidProductId = "Invalid ProductId";
+        public const string InvalidRatingRange = "Rating must be between 1 and 5";
     }
 
     public static class Variant
     {
-        public static readonly Error EmptyOptionList = new("Empty option list");
+        public const string EmptyOptionList = "Empty option list";
     }
 
     public static class Order
     {
-        public static readonly Error InvalidUserId = new("Invalid User Id");
-        public static readonly Error EmptyProductList = new("Product list cannot be empty");
-        public static readonly Error InsufficientStock = new("Insufficient stock for some products");
-        public static readonly Error InactiveProduct = new("Inactive product cannot be added to the order");
-        public static readonly Error DiscountUnitNotImplemented = new("Discount unit is not implemented");
-        public static readonly Error CannotAddItemToCancelledOrder = new("Cannot add item to a cancelled order");
-        public static readonly Error InvalidPaymentStatus = new("Invalid payment status");
-        public static readonly Error OrderNotFoundByExternalPaymentId = new("Failed to find an order with the provided payment token");
+        public const string InvalidUserId = "Invalid User Id";
+        public const string EmptyProductList = "Product list cannot be empty";
+        public const string InsufficientStock = "Insufficient stock for some products";
+        public const string InactiveProduct = "Inactive product cannot be added to the order";
+        public const string DiscountUnitNotImplemented = "Discount unit is not implemented";
+        public const string CannotAddItemToCancelledOrder = "Cannot add item to a cancelled order";
+        public const string InvalidPaymentStatus = "Invalid payment status";
+        public const string OrderNotFoundByExternalPaymentId = "Failed to find an order with the provided payment token: {token}";
     }
 
     public static class PayPal
     {
-        public static readonly Error OrderNotFound = new("Failed to retrieve PayPal order details. Please try again");
-        public static readonly Error OrderNotApproved = new("The PayPal order status is not approved. Cannot process payment");
-        public static readonly Error CheckoutUrlNotFound = new("PayPal checkout url not found");
+        public const string OrderNotFound = "Failed to retrieve PayPal order details. Please try again";
+        public const string OrderNotApproved = "The PayPal order status is not approved. Cannot process payment";
+        public const string CheckoutUrlNotFound = "PayPal checkout url not found";
     }
 
-    public static Error NotFound(string entityName, int id)
+    public static string NotFound(string entityName, int id)
     {
-        return new Error($"{entityName} with ID {id} not found");
+        return $"{entityName} with ID {id} not found";
     }
 
-    public static Error NotFound(string entityName, Guid guid)
+    public static string NotFound(string entityName, Guid guid)
     {
-        return new Error($"{entityName} with Guid {guid} not found");
+        return $"{entityName} with Guid {guid} not found";
     }
 }
+
 
 //public class DomainError : Error
 //{

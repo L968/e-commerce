@@ -27,7 +27,7 @@ public sealed class Product : AuditableEntity
 
     private Product() { }
 
-    private Product(
+    public Product(
         string name,
         string description,
         bool active,
@@ -43,26 +43,7 @@ public sealed class Product : AuditableEntity
         ProductCategoryId = productCategoryId;
     }
 
-    public static Result<Product> Create(
-        string name,
-        string description,
-        bool active,
-        bool visible,
-        Guid productCategoryId
-    )
-    {
-        var product = new Product(
-            name,
-            description,
-            active,
-            visible,
-            productCategoryId
-        );
-
-        return Result.Ok(product);
-    }
-
-    public Result Update(
+    public void Update(
         string name,
         string description,
         bool active,
@@ -75,10 +56,9 @@ public sealed class Product : AuditableEntity
         Active = active;
         Visible = visible;
         ProductCategoryId = productCategoryId;
-        return Result.Ok();
     }
 
-    public Result<ProductCombination> AddCombination(
+    public ProductCombination AddCombination(
         IEnumerable<VariantOption> variantOptions,
         string sku,
         decimal price,
@@ -90,9 +70,8 @@ public sealed class Product : AuditableEntity
         IEnumerable<string> imagePaths
     )
     {
-        var result = ProductCombination.Create(
+        var productCombination = new ProductCombination(
             Id,
-            variantOptions,
             sku,
             price,
             stock,
@@ -100,16 +79,14 @@ public sealed class Product : AuditableEntity
             width,
             height,
             weight,
-            imagePaths
+            imagePaths,
+            variantOptions
         );
 
-        if (result.IsFailed) return result;
-
-        ProductCombination productCombination = result.Value;
         bool combinationAlreadyExists = Combinations.Any(pc => pc.CombinationString == productCombination.CombinationString);
 
         if (combinationAlreadyExists)
-            return DomainErrors.ProductCombination.CombinationAlreadyExists;
+            throw new DomainException(DomainErrors.ProductCombination.CombinationAlreadyExists);
 
         AddVariantOptions(variantOptions.Select(v => v.Id));
 
@@ -117,14 +94,13 @@ public sealed class Product : AuditableEntity
         return productCombination;
     }
 
-    public Result<ProductReview> AddReview(int userId, int rating, string? description)
+    public ProductReview AddReview(int userId, int rating, string? description)
     {
-        var result = ProductReview.Create(userId, Id, rating, description);
-        if (result.IsFailed) return result;
+        var productReview = new ProductReview(userId, Id, rating, description);
 
-        _reviews.Add(result.Value);
+        _reviews.Add(productReview);
 
-        return result.Value;
+        return productReview;
     }
 
     /// <summary>
@@ -170,7 +146,8 @@ public sealed class Product : AuditableEntity
 
         foreach (ProductCombination combination in Combinations)
         {
-            if (combination.Id == productCombinationId) continue;
+            if (combination.Id == productCombinationId)
+                continue;
 
             foreach (var variantOption in variantOptions)
             {
@@ -186,7 +163,9 @@ public sealed class Product : AuditableEntity
         foreach (var variantOptionToDelete in variantOptionsToDelete)
         {
             ProductVariantOption? variantOption = _variantOptions.FirstOrDefault(pvo => pvo.VariantOptionId == variantOptionToDelete.Id);
-            if (variantOption != null) _variantOptions.Remove(variantOption);
+
+            if (variantOption != null)
+                _variantOptions.Remove(variantOption);
         }
     }
 }

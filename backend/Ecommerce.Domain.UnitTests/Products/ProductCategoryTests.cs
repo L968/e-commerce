@@ -11,11 +11,11 @@ public class ProductCategoryTests
     public ProductCategoryTests()
     {
         _productCategoryFaker = new Faker<ProductCategory>()
-            .CustomInstantiator(f => ProductCategory.Create(
+            .CustomInstantiator(f => new ProductCategory(
                 name: f.Commerce.Categories(1)[0],
                 description: f.Lorem.Sentence(),
                 variantIds: [f.Random.Guid(), f.Random.Guid()]
-            ).Value);
+            ));
     }
 
     [Fact]
@@ -25,36 +25,30 @@ public class ProductCategoryTests
         var productCategory = _productCategoryFaker.Generate();
 
         // Act
-        var result = ProductCategory.Create(
+        var createdProductCategory = new ProductCategory(
             name: productCategory.Name,
             description: productCategory.Description,
             variantIds: [Guid.NewGuid(), Guid.NewGuid()]
         );
 
         // Assert
-        Assert.True(result.IsSuccess);
-        Assert.NotNull(result.Value);
-
-        var createdProductCategory = result.Value;
+        Assert.NotNull(createdProductCategory);
         Assert.NotEmpty(createdProductCategory.Name);
         Assert.NotEmpty(createdProductCategory.Description!);
         Assert.NotEmpty(createdProductCategory.Variants);
     }
 
     [Fact]
-    public void Create_WithEmptyVariantList_ShouldReturnError()
+    public void Create_WithEmptyVariantList_ShouldFail()
     {
         // Arrange
         var name = "CategoryName";
         var description = "CategoryDescription";
         var variantIds = new List<Guid>();
 
-        // Act
-        var result = ProductCategory.Create(name, description, variantIds);
-
-        // Assert
-        Assert.True(result.IsFailed);
-        Assert.Equal(DomainErrors.ProductCategory.EmptyVariantList, result.Errors[0]);
+        // Act and Assert
+        var exception = Assert.Throws<DomainException>(() => new ProductCategory(name, description, variantIds));
+        Assert.Contains(DomainErrors.ProductCategory.EmptyVariantList, exception.Errors);
     }
 
     [Fact]
@@ -67,17 +61,16 @@ public class ProductCategoryTests
         var newVariantIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
 
         // Act
-        var result = productCategory.Update(newName, newDescription, newVariantIds);
+        productCategory.Update(newName, newDescription, newVariantIds);
 
         // Assert
-        Assert.True(result.IsSuccess);
         Assert.Equal(newName, productCategory.Name);
         Assert.Equal(newDescription, productCategory.Description);
         Assert.Equal(newVariantIds, productCategory.Variants.Select(v => v.VariantId).ToList());
     }
 
     [Fact]
-    public void Update_WithEmptyVariantList_ShouldReturnError()
+    public void Update_WithEmptyVariantList_ShouldFail()
     {
         // Arrange
         var productCategory = _productCategoryFaker.Generate();
@@ -85,11 +78,8 @@ public class ProductCategoryTests
         var newDescription = "NewCategoryDescription";
         var newVariantIds = new List<Guid>();
 
-        // Act
-        var result = productCategory.Update(newName, newDescription, newVariantIds);
-
-        // Assert
-        Assert.False(result.IsSuccess);
-        Assert.Equal(DomainErrors.ProductCategory.EmptyVariantList, result.Errors[0]);
+        // Act and Assert
+        var exception = Assert.Throws<DomainException>(() => productCategory.Update(newName, newDescription, newVariantIds));
+        Assert.Contains(DomainErrors.ProductCategory.EmptyVariantList, exception.Errors);
     }
 }

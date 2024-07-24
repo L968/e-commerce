@@ -20,7 +20,7 @@ public sealed class Address : AuditableEntity
 
     private Address() { }
 
-    private Address(
+    public Address(
         int userId,
         string recipientFullName,
         string recipientPhoneNumber,
@@ -35,6 +35,8 @@ public sealed class Address : AuditableEntity
         string? additionalInformation
     )
     {
+        ValidateDomain(recipientPhoneNumber);
+
         Id = Guid.NewGuid();
         UserId = userId;
         RecipientFullName = recipientFullName;
@@ -50,8 +52,7 @@ public sealed class Address : AuditableEntity
         AdditionalInformation = additionalInformation;
     }
 
-    public static Result<Address> Create(
-        int userId,
+    public void Update(
         string recipientFullName,
         string recipientPhoneNumber,
         string postalCode,
@@ -65,41 +66,7 @@ public sealed class Address : AuditableEntity
         string? additionalInformation
     )
     {
-        var validationResult = ValidateDomain(recipientPhoneNumber);
-        if (validationResult.IsFailed) return validationResult;
-
-        return Result.Ok(new Address(
-            userId,
-            recipientFullName,
-            recipientPhoneNumber,
-            postalCode,
-            streetName,
-            buildingNumber,
-            complement,
-            neighborhood,
-            city,
-            state,
-            country,
-            additionalInformation
-        ));
-    }
-
-    public Result Update(
-        string recipientFullName,
-        string recipientPhoneNumber,
-        string postalCode,
-        string streetName,
-        string buildingNumber,
-        string? complement,
-        string? neighborhood,
-        string city,
-        string state,
-        string country,
-        string? additionalInformation
-    )
-    {
-        var validationResult = ValidateDomain(recipientPhoneNumber);
-        if (validationResult.IsFailed) return validationResult;
+        ValidateDomain(recipientPhoneNumber);
 
         RecipientFullName = recipientFullName;
         RecipientPhoneNumber = recipientPhoneNumber;
@@ -112,16 +79,18 @@ public sealed class Address : AuditableEntity
         State = state;
         Country = country;
         AdditionalInformation = additionalInformation;
-        return Result.Ok();
     }
 
-    private static Result ValidateDomain(string recipientPhoneNumber)
+    private static void ValidateDomain(string recipientPhoneNumber)
     {
+        var errors = new List<string>();
+
         if (!Regex.IsMatch(recipientPhoneNumber, @"^[0-9]+$"))
         {
-            return DomainErrors.Address.InvalidRecipientPhoneNumber;
+            errors.Add(DomainErrors.Address.InvalidRecipientPhoneNumber);
         }
 
-        return Result.Ok();
+        if (errors.Count > 0)
+            throw new DomainException(errors);
     }
 }

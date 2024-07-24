@@ -20,10 +20,7 @@ namespace Ecommerce.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateProductDiscountCommand command)
         {
-            Result<GetProductDiscountDto> result = await _mediator.Send(command);
-            if (result.IsFailed) return BadRequest(result.Reasons);
-
-            var productDiscount = result.Value;
+            GetProductDiscountDto productDiscount = await _mediator.Send(command);
             return CreatedAtAction(nameof(Get), null, productDiscount);
         }
     }

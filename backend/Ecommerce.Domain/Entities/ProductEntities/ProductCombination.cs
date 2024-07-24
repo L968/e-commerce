@@ -1,6 +1,5 @@
 ﻿using Ecommerce.Domain.Entities.VariantEntities;
 using Ecommerce.Domain.Enums;
-using static Ecommerce.Domain.Errors.DomainErrors;
 
 namespace Ecommerce.Domain.Entities.ProductEntities;
 
@@ -24,9 +23,8 @@ public sealed class ProductCombination : AuditableEntity
 
     private ProductCombination() { }
 
-    private ProductCombination(
+    public ProductCombination(
         Guid productId,
-        string combinationString,
         string sku,
         decimal price,
         int stock,
@@ -34,9 +32,14 @@ public sealed class ProductCombination : AuditableEntity
         float width,
         float height,
         float weight,
-        IEnumerable<string> imagePaths
+        IEnumerable<string> imagePaths,
+        IEnumerable<VariantOption> variantOptions
     )
     {
+        ValidateDomain(price, imagePaths, length, width, height, weight);
+
+        string combinationString = GenerateCombinationString(variantOptions);
+
         Id = Guid.NewGuid();
         ProductId = productId;
         CombinationString = combinationString;
@@ -50,42 +53,7 @@ public sealed class ProductCombination : AuditableEntity
         _images = imagePaths.Select(i => new ProductImage(Id, i)).ToList();
     }
 
-    public static Result<ProductCombination> Create(
-        Guid productId,
-        IEnumerable<VariantOption> variantOptions,
-        string sku,
-        decimal price,
-        int stock,
-        float length,
-        float width,
-        float height,
-        float weight,
-        IEnumerable<string> imagePaths
-    )
-    {
-        var validationResult = ValidateDomain(price, imagePaths, length, width, height, weight);
-        if (validationResult.IsFailed)
-            return validationResult;
-
-        string combinationString = GenerateCombinationString(variantOptions);
-
-        var productCombination = new ProductCombination(
-            productId,
-            combinationString,
-            sku,
-            price,
-            stock,
-            length,
-            width,
-            height,
-            weight,
-            imagePaths
-        );
-
-        return Result.Ok(productCombination);
-    }
-
-    public Result Update(
+    public void Update(
         IEnumerable<VariantOption> variantOptions,
         string sku,
         decimal price,
@@ -96,8 +64,7 @@ public sealed class ProductCombination : AuditableEntity
         IEnumerable<string> imagePaths
     )
     {
-        Result validationResult = ValidateDomain(price, imagePaths, length, width, height, weight);
-        if (validationResult.IsFailed) return validationResult;
+        ValidateDomain(price, imagePaths, length, width, height, weight);
 
         Product.RemoveVariantOptionsByCombination(Id);
         Product.AddVariantOptions(variantOptions.Select(vo => vo.Id));
@@ -108,7 +75,7 @@ public sealed class ProductCombination : AuditableEntity
         bool combinationAlreadyExists = existingCombinations.Any(pc => pc.CombinationString == combinationString);
 
         if (combinationAlreadyExists)
-            return DomainErrors.ProductCombination.CombinationAlreadyExists;
+            throw new DomainException(DomainErrors.ProductCombination.CombinationAlreadyExists);
 
         CombinationString = combinationString;
         Sku = sku;
@@ -119,10 +86,9 @@ public sealed class ProductCombination : AuditableEntity
         Weight = weight;
         _images.Clear();
         _images.AddRange(imagePaths.Select(i => new ProductImage(Id, i)).ToList());
-        return Result.Ok();
     }
 
-    public Result<decimal> GetDiscount()
+    public decimal GetDiscount()
     {
         decimal productDiscount = 0;
         ProductDiscount? activeProductDiscount = Product.Discounts.FirstOrDefault(d => d.IsCurrentlyActive());
@@ -138,16 +104,16 @@ public sealed class ProductCombination : AuditableEntity
                     productDiscount = activeProductDiscount.DiscountValue;
                     break;
                 default:
-                    return DomainErrors.Order.DiscountUnitNotImplemented;
+                    throw new DomainException(DomainErrors.Order.DiscountUnitNotImplemented);
             }
         }
 
-        return Result.Ok(productDiscount);
+        return productDiscount;
     }
 
     public decimal GetDiscountedPrice()
     {
-        decimal discountedPrice = Price - GetDiscount().Value;
+        decimal discountedPrice = Price - GetDiscount();
         return Math.Round(discountedPrice, 2, MidpointRounding.AwayFromZero);
     }
 
@@ -157,9 +123,9 @@ public sealed class ProductCombination : AuditableEntity
         return string.Join("/", combinationStrings);
     }
 
-    private static Result ValidateDomain(decimal price, IEnumerable<string> imagePaths, float length, float width, float height, float weight)
+    private static void ValidateDomain(decimal price, IEnumerable<string> imagePaths, float length, float width, float height, float weight)
     {
-        var errors = new List<Error>();
+        var errors = new List<string>();
 
         if (price <= 0)
             errors.Add(DomainErrors.Product.InvalidPriceValue);
@@ -180,8 +146,6 @@ public sealed class ProductCombination : AuditableEntity
             errors.Add(DomainErrors.Product.InvalidWeightValue);
 
         if (errors.Count > 0)
-            return Result.Fail(errors);
-
-        return Result.Ok();
+            throw new DomainException(errors);
     }
 }

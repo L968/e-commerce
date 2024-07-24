@@ -12,23 +12,14 @@ public sealed class CartItem : AuditableEntity
 
     private CartItem() { }
 
-    private CartItem(Guid cartId, Guid productCombinationId, int quantity)
+    public CartItem(Guid cartId, Guid productCombinationId, int quantity)
     {
+        if (quantity <= 0)
+
+            throw new DomainException(DomainErrors.CartItem.InvalidQuantity);
         CartId = cartId;
         ProductCombinationId = productCombinationId;
         Quantity = quantity;
-    }
-
-    public static Result<CartItem> Create(Guid cartId, Guid productCombinationId, int quantity)
-    {
-        if (quantity <= 0)
-            return DomainErrors.CartItem.InvalidQuantity;
-
-        return Result.Ok(new CartItem(
-            cartId,
-            productCombinationId,
-            quantity
-        ));
     }
 
     public void IncrementQuantity(int quantity)

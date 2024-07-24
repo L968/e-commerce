@@ -8,7 +8,6 @@ using Ecommerce.Domain.Errors;
 using Ecommerce.Order.API.Interfaces;
 using Ecommerce.Order.API.Models.PayPal;
 using Ecommerce.Order.API.Repositories;
-using Address = Ecommerce.Domain.Entities.Address;
 
 namespace Ecommerce.Order.API.Services;
 
@@ -65,24 +64,20 @@ public class OrderService(
         return _mapper.Map<OrderDto>(order);
     }
 
-    public async Task<Result<string>> CreateOrderAsync(OrderCheckoutDto orderCheckout)
+    public async Task<string> CreateOrderAsync(OrderCheckoutDto orderCheckout)
     {
         CreateOrderAddressDto? address = await _ecommerceService.GetAddressByIdAsync(orderCheckout.ShippingAddressId);
-
-        if (address is null)
-            return DomainErrors.NotFound(nameof(Address), orderCheckout.ShippingAddressId);
+        DomainException.ThrowIfNull(address, orderCheckout.ShippingAddressId);
 
         var cartItems = new List<CreateOrderCartItemDto>();
 
         foreach (var cartItemDto in orderCheckout.OrderCheckoutItems)
         {
             CreateOrderProductCombinationDto? productCombinationDto = await _ecommerceService.GetProductCombinationByIdAsync(cartItemDto.ProductCombinationId);
-
-            if (productCombinationDto is null)
-                return DomainErrors.NotFound(nameof(ProductCombination), cartItemDto.ProductCombinationId);
+            DomainException.ThrowIfNull(productCombinationDto, cartItemDto.ProductCombinationId);
 
             if (!productCombinationDto.Product.Active)
-                return DomainErrors.Product.InactiveProduct(productCombinationDto.Product.Id);
+                throw new DomainException(DomainErrors.Product.InactiveProduct(productCombinationDto.Product.Id));
 
             ProductCombination productCombination = _mapper.Map<ProductCombination>(productCombinationDto);
 
@@ -93,7 +88,7 @@ public class OrderService(
             });
         }
 
-        var result = Domain.Entities.OrderEntities.Order.Create(
+        var order = Domain.Entities.OrderEntities.Order.Create(
             userId: orderCheckout.UserId,
             cartItems: cartItems,
             paymentMethod: orderCheckout.PaymentMethod,
@@ -108,10 +103,6 @@ public class OrderService(
             shippingCountry: address.Country
         );
 
-        if (result.IsFailed) return Result.Fail(result.Errors);
-
-        var order = result.Value;
-
         // Payment ==================================================================================================
 
         string checkoutUrl = "";
@@ -125,7 +116,7 @@ public class OrderService(
             string? paypalCheckoutUrl = response.links.FirstOrDefault(link => link.rel == "payer-action")?.href;
 
             if (string.IsNullOrEmpty(paypalCheckoutUrl))
-                return DomainErrors.PayPal.CheckoutUrlNotFound;
+                throw new DomainException(DomainErrors.PayPal.CheckoutUrlNotFound);
 
             checkoutUrl = paypalCheckoutUrl;
         }
@@ -133,43 +124,37 @@ public class OrderService(
         await _orderRepository.CreateAsync(order);
         await _ecommerceService.ClearCartAsync(orderCheckout.OrderCheckoutItems.Select(i => i.ProductCombinationId));
 
-        return Result.Ok(checkoutUrl);
+        return checkoutUrl;
     }
 
-    public async Task<Result> ProcessPayPalReturnAsync(string token)
+    public async Task ProcessPayPalReturnAsync(string token)
     {
         GetOrderResponse? paypalOrder = await _payPalService.GetOrderAsync(token);
 
         if (paypalOrder is null)
-            return DomainErrors.PayPal.OrderNotFound;
+            throw new DomainException(DomainErrors.PayPal.OrderNotFound);
 
         if (paypalOrder.status != "APPROVED")
-            return DomainErrors.PayPal.OrderNotApproved;
+            throw new DomainException(DomainErrors.PayPal.OrderNotApproved);
 
         var order = await _orderRepository.GetByExternalPaymentIdAsync(token);
 
         if (order is null)
-            return DomainErrors.Order.OrderNotFoundByExternalPaymentId;
+            DomainException.ThrowIfNull(order, DomainErrors.Order.OrderNotFoundByExternalPaymentId, token);
 
-        var result = order.CompletePayment();
-
-        if (result.IsFailed)
-            return result;
+        order.CompletePayment();
 
         await _orderRepository.UpdateAsync(order);
-
-        return Result.Ok();
     }
 
-    public async Task<Result> ProcessPayPalCancelAsync(string token)
+    public async Task ProcessPayPalCancelAsync(string token)
     {
         var order = await _orderRepository.GetByExternalPaymentIdAsync(token);
 
         if (order is null)
-            return DomainErrors.Order.OrderNotFoundByExternalPaymentId;
+            DomainException.ThrowIfNull(order, DomainErrors.Order.OrderNotFoundByExternalPaymentId, token);
 
         order.Cancel();
         await _orderRepository.UpdateAsync(order);
-        return Result.Ok();
     }
 }

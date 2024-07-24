@@ -25,13 +25,12 @@ public class CartTests
         // Arrange
         var userId = 1;
         var cart = new Cart(userId);
-        var cartItem = CartItem.Create(cart.Id, Guid.NewGuid(), 1).Value;
+        var cartItem = new CartItem(cart.Id, Guid.NewGuid(), 1);
 
         // Act
-        var result = cart.AddCartItem(cartItem);
+        cart.AddCartItem(cartItem);
 
         // Assert
-        Assert.True(result.IsSuccess);
         Assert.Single(cart.CartItems);
     }
 
@@ -41,14 +40,10 @@ public class CartTests
         // Arrange
         var userId = 1;
         var cart = new Cart(userId);
-        var cartItem = CartItem.Create(Guid.NewGuid(), Guid.NewGuid(), 1).Value;
+        var cartItem = new CartItem(Guid.NewGuid(), Guid.NewGuid(), 1);
 
-        // Act
-        var result = cart.AddCartItem(cartItem);
-
-        // Assert
-        Assert.True(result.IsFailed);
-        Assert.Equal(DomainErrors.Cart.CartItemNotBelongsToCart.Message, result.Errors[0].Message);
+        // Act & Assert
+        var exception = Assert.Throws<DomainException>(() => cart.AddCartItem(cartItem));
     }
 
     [Fact]
@@ -56,7 +51,7 @@ public class CartTests
     {
         // Arrange
         var cart = new Cart(1);
-        var cartItem = CartItem.Create(cart.Id, Guid.NewGuid(), 1).Value;
+        var cartItem = new CartItem(cart.Id, Guid.NewGuid(), 1);
         cart.AddCartItem(cartItem);
 
         // Act
@@ -73,9 +68,9 @@ public class CartTests
         var cart = new Cart(1);
         var cartItems = new List<CartItem>
         {
-            CartItem.Create(cart.Id, Guid.NewGuid(), 1).Value,
-            CartItem.Create(cart.Id, Guid.NewGuid(), 1).Value,
-            CartItem.Create(cart.Id, Guid.NewGuid(), 1).Value
+            new CartItem(cart.Id, Guid.NewGuid(), 1),
+            new CartItem(cart.Id, Guid.NewGuid(), 1),
+            new CartItem(cart.Id, Guid.NewGuid(), 1)
         };
 
         foreach (var cartItem in cartItems)

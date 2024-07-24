@@ -6,7 +6,7 @@ namespace Ecommerce.Application.Features.Products.Queries;
 public record GetProductDraftsQuery() : IRequest<IEnumerable<GetProductListDto>>;
 
 public class GetProductDraftsQueryHandler(
-    IMapper mapper, 
+    IMapper mapper,
     IProductRepository productRepository
     ) : IRequestHandler<GetProductDraftsQuery, IEnumerable<GetProductListDto>>
 {

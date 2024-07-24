@@ -5,7 +5,7 @@ namespace Ecommerce.Application.Features.ProductCategories.Queries;
 public record GetProductCategoryQuery() : IRequest<IEnumerable<GetProductCategoryDto>>;
 
 public class GetProductCategoryQueryHandler(
-    IMapper mapper, 
+    IMapper mapper,
     IProductCategoryRepository productCategoryRepository
     ) : IRequestHandler<GetProductCategoryQuery, IEnumerable<GetProductCategoryDto>>
 {

@@ -73,7 +73,7 @@ public sealed class Order : AuditableEntity
         }
     }
 
-    public static Result<Order> Create(
+    public static Order Create(
         int userId,
         IEnumerable<CreateOrderCartItemDto> cartItems,
         PaymentMethod paymentMethod,
@@ -89,10 +89,10 @@ public sealed class Order : AuditableEntity
     )
     {
         if (userId <= 0)
-            return DomainErrors.Order.InvalidUserId;
+            throw new DomainException(DomainErrors.Order.InvalidUserId);
 
         if (!cartItems.Any())
-            return DomainErrors.Order.EmptyProductList;
+            throw new DomainException(DomainErrors.Order.EmptyProductList);
 
         var orderItems = new List<CreateOrderItemDto>();
 
@@ -102,20 +102,14 @@ public sealed class Order : AuditableEntity
             Product product = productCombination.Product;
 
             if (!product.Active)
-                return DomainErrors.Order.InactiveProduct;
+                throw new DomainException(DomainErrors.Order.InactiveProduct);
 
             if (cartItem.Quantity <= 0)
-                return DomainErrors.CartItem.InvalidQuantity;
+                throw new DomainException( DomainErrors.CartItem.InvalidQuantity);
 
-            var validateStockResult = productCombination.Inventory.ValidateStock(cartItem.Quantity);
-            if (validateStockResult.IsFailed)
-                return validateStockResult;
+            productCombination.Inventory.ValidateStock(cartItem.Quantity);
 
-            var discountResult = productCombination.GetDiscount();
-            if (discountResult.IsFailed)
-                return Result.Fail(discountResult.Errors);
-
-            decimal productDiscount = discountResult.Value;
+            decimal productDiscount = productCombination.GetDiscount();
 
             orderItems.Add(new CreateOrderItemDto {
                 ProductCombinationId = cartItem.ProductCombination.Id,
@@ -145,7 +139,7 @@ public sealed class Order : AuditableEntity
 
         order.AddHistory(OrderStatus.PendingPayment, "Order created, awaiting payment");
 
-        return Result.Ok(order);
+        return order;
     }
 
     public decimal GetTotalAmount()
@@ -159,15 +153,13 @@ public sealed class Order : AuditableEntity
         return _items.Sum(item => item.GetTotalDiscount());
     }
 
-    public Result CompletePayment()
+    public void CompletePayment()
     {
         if (Status != OrderStatus.PendingPayment)
-            return DomainErrors.Order.InvalidPaymentStatus;
+            throw new DomainException(DomainErrors.Order.InvalidPaymentStatus);
 
         Status = OrderStatus.Processing;
         AddHistory(OrderStatus.Processing, "Payment completed, order processing");
-
-        return Result.Ok();
     }
 
     public void Cancel()

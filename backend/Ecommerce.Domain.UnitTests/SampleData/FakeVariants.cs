@@ -17,10 +17,10 @@ public static class FakeVariants
                     options.Add(f.Random.String2(4));
                 }
 
-                return Variant.Create(
+                return new Variant(
                     name: f.Random.String2(4),
                     options: options
-                ).Value;
+                );
             });
 
         var variant = faker.Generate();

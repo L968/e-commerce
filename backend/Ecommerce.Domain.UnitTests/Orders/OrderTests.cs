@@ -24,7 +24,7 @@ public class OrderTests
                 shippingCity: f.Address.City(),
                 shippingState: f.Address.StateAbbr(),
                 shippingCountry: f.Address.Country()
-            ).Value);
+            ));
     }
 
     [Fact]

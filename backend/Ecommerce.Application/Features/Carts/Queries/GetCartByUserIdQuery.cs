@@ -6,8 +6,8 @@ namespace Ecommerce.Application.Features.Carts.Queries;
 public record GetCartByUserIdQuery() : IRequest<IEnumerable<GetCartItemDto>?>;
 
 public class GetCartByUserIdQueryHandler(
-    IMapper mapper, 
-    ICartRepository cartRepository, 
+    IMapper mapper,
+    ICartRepository cartRepository,
     ICurrentUserService currentUserService
     ) : IRequestHandler<GetCartByUserIdQuery, IEnumerable<GetCartItemDto>?>
 {

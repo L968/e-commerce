@@ -1,4 +1,5 @@
 ﻿using Ecommerce.Domain.Entities.CartEntities;
+using Ecommerce.Domain.Errors;
 
 namespace Ecommerce.Domain.UnitTests.Carts;
 
@@ -13,10 +14,12 @@ public class CartItemTests
         var quantity = 1;
 
         // Act
-        var result = CartItem.Create(cartId, productCombinationId, quantity);
+        var cartItem = new CartItem(cartId, productCombinationId, quantity);
 
         // Assert
-        Assert.True(result.IsSuccess);
+        Assert.Equal(cartId, cartItem.CartId);
+        Assert.Equal(productCombinationId, cartItem.ProductCombinationId);
+        Assert.Equal(quantity, cartItem.Quantity);
     }
 
     [Theory]
@@ -28,18 +31,15 @@ public class CartItemTests
         var cartId = Guid.NewGuid();
         var productCombinationId = Guid.NewGuid();
 
-        // Act
-        var result = CartItem.Create(cartId, productCombinationId, quantity);
-
-        // Assert
-        Assert.True(result.IsFailed);
+        // Act & Assert
+        var exception = Assert.Throws<DomainException>(() => new CartItem(cartId, productCombinationId, quantity));
     }
 
     [Fact]
     public void IncrementQuantity_ValidQuantity_ShouldIncreaseQuantity()
     {
         // Arrange
-        var cartItem = CartItem.Create(Guid.NewGuid(), Guid.NewGuid(), 1).Value;
+        var cartItem = new CartItem(Guid.NewGuid(), Guid.NewGuid(), 1);
         var quantity = 2;
 
         // Act
@@ -53,7 +53,7 @@ public class CartItemTests
     public void SetQuantity_ValidQuantity_ShouldSetQuantity()
     {
         // Arrange
-        var cartItem = CartItem.Create(Guid.NewGuid(), Guid.NewGuid(), 1).Value;
+        var cartItem = new CartItem(Guid.NewGuid(), Guid.NewGuid(), 1);
         var quantity = 5;
 
         // Act
