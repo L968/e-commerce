@@ -17,16 +17,18 @@ namespace Ecommerce.API.Controllers
         public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
             var query = new GetProductQuery(page, pageSize);
-            var result = await _mediator.Send(query);
-
-            return Ok(result);
+            return Ok(await _mediator.Send(query));
         }
 
         [HttpGet("drafts")]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> GetDrafts()
         {
-            return Ok(await _mediator.Send(new GetProductDraftsQuery()));
+            var products = await _mediator.Send(new GetProductDraftsQuery());
+
+            if (products is null) return NotFound();
+
+            return Ok(products);
         }
 
         [HttpGet("{id}")]
