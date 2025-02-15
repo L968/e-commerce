@@ -15,8 +15,8 @@ public sealed class CartItem : AuditableEntity
     public CartItem(Guid cartId, Guid productCombinationId, int quantity)
     {
         if (quantity <= 0)
-
             throw new DomainException(DomainErrors.CartItem.InvalidQuantity);
+
         CartId = cartId;
         ProductCombinationId = productCombinationId;
         Quantity = quantity;

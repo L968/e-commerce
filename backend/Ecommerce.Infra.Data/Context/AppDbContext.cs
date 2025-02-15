@@ -1,7 +1,5 @@
 ﻿using Ecommerce.Common.Infra.Extensions;
 using Ecommerce.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Ecommerce.Infra.Data.Context;
 

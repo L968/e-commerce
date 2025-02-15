@@ -39,17 +39,6 @@ public interface IBaseRepository<T>
     Task<T?> GetByIdAsync(Guid id);
 
     /// <summary>
-    ///     Applies the specified grid parameters to the query, including filters, sorters, and pagination settings.
-    /// </summary>
-    /// <param name="gridParams">The grid parameters containing filters, sorters, and pagination settings.</param>
-    /// <remarks>
-    ///     This method is used to dynamically apply grid params settings to the query, as well as <b>chain EF Core Includes for related entities.</b>
-    /// </remarks>
-    /// <returns>The IQueryable instance with the specified grid parameters applied.</returns>
-    /// <exception cref="GridParamsException"></exception>
-    IQueryable<T> ApplyGridParams(GridParams gridParams);
-
-    /// <summary>
     /// Adds a new entity of type <typeparamref name="T"/> to the context.
     /// </summary>
     /// <param name="entity">The entity to add.</param>
@@ -67,4 +56,15 @@ public interface IBaseRepository<T>
     /// </summary>
     /// <param name="entity">The entity to delete.</param>
     void Delete(T entity);
+
+    /// <summary>
+    ///     Applies the specified grid parameters to the query, including filters, sorters, and pagination settings.
+    /// </summary>
+    /// <param name="gridParams">The grid parameters containing filters, sorters, and pagination settings.</param>
+    /// <remarks>
+    ///     This method is used to dynamically apply grid params settings to the query, as well as <b>chain EF Core Includes for related entities.</b>
+    /// </remarks>
+    /// <returns>The IQueryable instance with the specified grid parameters applied.</returns>
+    /// <exception cref="GridParamsException"></exception>
+    IQueryable<T> ApplyGridParams(GridParams gridParams);
 }

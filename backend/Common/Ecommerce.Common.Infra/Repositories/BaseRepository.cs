@@ -37,6 +37,20 @@ public class BaseRepository<TContext, T>(TContext context)
     {
         return await _context.Set<T>().FindAsync(id);
     }
+    public virtual T Create(T entity)
+    {
+        _context.Set<T>().Add(entity);
+        return entity;
+    }
+    public virtual void Update(T entity)
+    {
+        _context.Set<T>().Update(entity);
+    }
+    public virtual void Delete(T entity)
+    {
+        _context.Set<T>().Remove(entity);
+    }
+
     public IQueryable<T> ApplyGridParams(GridParams gridParams)
     {
         try
@@ -62,19 +76,6 @@ public class BaseRepository<TContext, T>(TContext context)
         {
             throw new GridParamsException(ex.Message);
         }
-    }
-    public virtual T Create(T entity)
-    {
-        _context.Set<T>().Add(entity);
-        return entity;
-    }
-    public virtual void Update(T entity)
-    {
-        _context.Set<T>().Update(entity);
-    }
-    public virtual void Delete(T entity)
-    {
-        _context.Set<T>().Remove(entity);
     }
 
     /// <summary>
@@ -109,7 +110,9 @@ public class BaseRepository<TContext, T>(TContext context)
         var propertyAccess = Expression.MakeMemberAccess(parameter, property);
         var lambda = Expression.Lambda(propertyAccess, parameter);
 
-        var methodName = sorter.Direction.ToLower() == "desc" ? "OrderByDescending" : "OrderBy";
+        var methodName = sorter.Direction.Equals("desc", StringComparison.CurrentCultureIgnoreCase)
+            ? "OrderByDescending"
+            : "OrderBy";
 
         var method = typeof(Queryable)
             .GetMethods()
